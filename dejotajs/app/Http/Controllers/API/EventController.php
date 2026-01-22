@@ -30,7 +30,6 @@ class EventController extends Controller
         $event = Event::create($validated);
 
         $event->danceGroups()->attach($validated['dance_group_ids']);
-
         return (new EventResource($event->load('danceGroups','member.danceGroup')))->response()->setStatusCode(201);
     }
 
