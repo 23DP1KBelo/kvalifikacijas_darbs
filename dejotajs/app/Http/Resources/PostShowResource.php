@@ -19,6 +19,15 @@ class PostShowResource extends JsonResource
             'description' => $this->description,
             'private' => $this->private === 1 ? 'Privāts' : 'publisks',
             'created_at' => $this->created_at,
+            
+            'dance_group_member' => [
+                'user' => [
+                    'name' => $this->danceGroupMember->appUser?->name,
+                ],
+                'dance_group' => [
+                    'name' => $this->danceGroupMember->danceGroup?->name,
+                ],
+            ]
         ];
     }
 }

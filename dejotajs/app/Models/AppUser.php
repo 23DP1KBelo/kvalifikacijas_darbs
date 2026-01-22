@@ -14,4 +14,8 @@ class AppUser extends Model
         'role',
         'phone_number',
     ];
+
+    public function danceGroupMembers(){
+        return $this->hasMany(DanceGroupMember::class, 'user_id', 'id');
+    }
 }

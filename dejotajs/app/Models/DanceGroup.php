@@ -17,4 +17,16 @@ class DanceGroup extends Model
         'gener',
         'created_at',
     ];
+
+    public function ageGroups(){
+        return $this->hasMany(AgeGroup::class, 'dance_group_id', 'id');
+    }
+
+    public function members(){
+        return $this->hasMany(DanceGroupMember::class, 'dance_group_id', 'id');
+    }
+
+    public function events() {
+        return $this->belongsToMany(Event::class, 'dance_groups_in_events', 'dance_group_id', 'event_id');
+    }
 }

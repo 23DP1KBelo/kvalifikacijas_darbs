@@ -15,8 +15,9 @@ class DanceGroupController extends Controller
      */
     public function index()
     {
-        $users = DanceGroup::all();
-        return DanceGroupResource::collection($users);
+        $danceGroups = DanceGroup::all();
+        $danceGroups->load('ageGroups', 'members');
+        return DanceGroupResource::collection($danceGroups);
     }
 
     /**
@@ -36,6 +37,8 @@ class DanceGroupController extends Controller
      */
     public function show(DanceGroup $danceGroup)
     {
+        $danceGroup->load('ageGroups', 'members');
+
         return new DanceGroupResource($danceGroup);
     }
 

@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class PostRequest extends FormRequest
+class DanceGroupMemberRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,10 +22,10 @@ class PostRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title' => 'required|max:255',
-            'description' => 'max:500',
-            'dance_group_member_id' => 'integer|exists:dance_group_members,id'
+            'role' => 'required',
+            'user_id' => 'required|integer|exists:app_users,id',
+            'age_group_id' => 'required_unless:role,leader|integer|exists:age_groups,id',
+            'dance_group_id' => 'required|integer|exists:dance_groups,id',
         ];
     }
 }
-

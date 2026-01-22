@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class AgeGroupResource extends JsonResource
+class DanceGroupMemberResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -15,16 +15,24 @@ class AgeGroupResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'name' => $this->name,
-            'age_group' => $this->age_group,
-            'status_admission' => $this->status_admission,
-            'dance_group_id' => $this->dance_group_id,
-            'created_at' => $this->created_at,
+            'id' => $this->id,
+            'status' => $this->status,
+            'role' => $this->role,
+
+            'app_user' =>[
+                'name' => $this->appUser->name,
+                'email' => $this->appUser->email
+            ],
 
             'dance_group' => [
                 'id' => $this->danceGroup->id,
                 'name' => $this->danceGroup->name,
             ],
+
+            'age_group' => [
+                'name' => $this->ageGroup?->name,
+                'age_group' => $this->ageGroup?->age_group
+            ]
         ];
     }
 }

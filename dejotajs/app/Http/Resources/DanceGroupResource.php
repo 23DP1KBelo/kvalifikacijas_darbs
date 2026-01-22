@@ -25,6 +25,13 @@ class DanceGroupResource extends JsonResource
             'status' => $this->status,
             'gener' => $this->gener,
             'created_at' => $this->created_at,
+
+            'age_groups' => AgeGroupResource::collection(
+                $this->whenLoaded('ageGroups')
+            ),
+            'members' => DanceGroupMemberResource::collection(
+                $this->whenLoaded('members')
+            ),
         ];
     }
 }

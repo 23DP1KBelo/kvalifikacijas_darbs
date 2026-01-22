@@ -17,8 +17,8 @@ class PostController extends Controller
     public function index()
     {
         $isPrivate = request()->input('private');
+        $posts = Post::with('danceGroupMember.appUser', 'danceGroupMember.danceGroup')->orderBy('id', 'desc');
 
-        $posts = Post::orderBy('id', 'desc');
         if(isset($isPrivate) && in_array($isPrivate, [0, 1])) {
             $posts = $posts->where('private', $isPrivate);
         }
@@ -29,22 +29,6 @@ class PostController extends Controller
         }
 
         return PostResource::collection($posts->get());
-
-        // if(isset($isPrivate)){
-        //     if($isPrivate == 1){
-        //         $posts = Post::where('private', 1)->get();
-        //         return PostResource::collection($posts);
-        //     }elseif ($isPrivate == 0){
-        //         $posts = Post::where('private', 0)->get();
-        //         return PostResource::collection($posts);
-        //     }else{
-        //         $posts = Post::all();
-        //         return PostResource::collection($posts);
-        //     }
-        // }else {
-        //     $posts = Post::all();
-        //     return PostResource::collection($posts);
-        // }
     }
 
     /**
@@ -64,6 +48,7 @@ class PostController extends Controller
      */
     public function show(Post $post)
     {
+        $post->load('danceGroupMember.appUser', 'danceGroupMember.danceGRoup');
         return new PostShowResource($post);
     }
 

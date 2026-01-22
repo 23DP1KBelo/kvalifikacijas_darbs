@@ -1,11 +1,16 @@
-@import 'tailwindcss';
 
-@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
-@source '../../storage/framework/views/*.php';
-@source '../**/*.blade.php';
-@source '../**/*.js';
+body, #app {
+  font-family: "Red Hat Text", sans-serif;
+  margin: 0;
+  padding: 0;
+}
 
-@theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-        'Segoe UI Symbol', 'Noto Color Emoji';
+h1, h2, h3, h4, h5, h6, .app-bar-title {
+  font-family: "DM Serif Text", serif;
+  margin: 0;
+  letter-spacing: 0.07em;
+}
+
+.app-bar-title{
+    font-size: 24px;
 }

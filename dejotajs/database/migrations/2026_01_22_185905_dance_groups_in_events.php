@@ -11,12 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('posts', function (Blueprint $table) {
-            $table->id();
-            $table->string('title');
-            $table->text('description')->nullable();
-            $table->boolean('private')->default(true);
-            $table->foreignId("dance_group_member_id")->constrained('dance_group_members')->cascadeOnDelete();
+        Schema::create('dance_groups_in_events', function (Blueprint $table) {
+            $table->foreignId('dance_group_id')->constrained('dance_groups')->cascadeOnDelete();
+            $table->foreignId('event_id')->constrained('events')->cascadeOnDelete();
             $table->timestamps();
         });
     }
@@ -26,6 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('posts');
+        Schema::dropIfExists('dance_groups_in_events');
     }
 };
