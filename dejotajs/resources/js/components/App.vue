@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <NavBar/>
-    <div>
+    <div class="mt-8">
       <RouterView />
     </div>
     <Footer/>
