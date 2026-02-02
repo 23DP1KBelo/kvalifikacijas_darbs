@@ -16,7 +16,9 @@ return new class extends Migration
             $table->string('title');
             $table->text('description')->nullable();
             $table->boolean('private')->default(true);
-            $table->foreignId("dance_group_member_id")->constrained('dance_group_members')->cascadeOnDelete();
+            $table->foreignId('dance_group_member_id')
+      ->constrained('dance_group_members')
+      ->cascadeOnDelete();
             $table->timestamps();
         });
     }

@@ -17,7 +17,9 @@ return new class extends Migration
             $table->enum('role', ['dancer', 'leader'])->default('dancer');
             $table->foreignId('user_id')->constrained('app_users')->cascadeOnDelete();
             $table->foreignId('age_group_id')->nullable()->constrained('age_groups');
-            $table->foreignId('dance_group_id')->constrained('dance_groups')->cascadeOnDelete();
+                $table->foreignId('dance_group_id')
+          ->constrained('dance_groups')
+          ->onDelete('cascade');
             $table->timestamps();
         });
     }
