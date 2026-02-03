@@ -8,7 +8,21 @@
             <v-form ref="form" v-model="valid">
               <v-text-field label="E-pasts" v-model="email" required></v-text-field>
               <v-text-field label="Parole" v-model="password" type="password" required></v-text-field>
-              <v-btn class="mt-4 text-center d-flex justify-center" color="primary">
+
+              <v-alert
+                v-if="error"
+                type="error"
+                dense
+                outlined
+                class="mt-2"
+              >
+                {{ error }}
+              </v-alert>
+              <v-btn
+                class="mt-4"
+                color="primary"
+                @click="login"
+              >
                 Pieslēgties
               </v-btn>
             </v-form>
@@ -20,15 +34,47 @@
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
-    data() {
-        return {
-        email: '',
-        password: '',
-        valid: false,
+  data() {
+    return {
+      email: '',
+      password: '',
+      valid: false,
+      error: '',
+    }
+  },
+  methods: {
+    async login() {
+      try {
+        // Sanctum CSRF cookie
+        await axios.get('/sanctum/csrf-cookie');
+
+        const response = await axios.post('/login', {
+          email: this.email,
+          password: this.password,
+        });
+
+        console.log(response.data);
+
+        // redirect pēc login
+        this.$router.push('/');
+
+      } catch (err) {
+          if (err.response && err.response.data && err.response.data.errors) {
+            // Laravel validācijas kļūdas
+            this.error = Object.values(err.response.data.errors)
+                              .flat()
+                              .join(' ');
+          } else if (err.response && err.response.data && err.response.data.message) {
+            this.error = err.response.data.message;
+          } else {
+            this.error = 'Nezināma kļūda. Mēģiniet vēlreiz.';
+          }
         }
-    },
-    methods: {
-    },
+    }
+  }
 }
+
 </script>

@@ -2,7 +2,7 @@
   <v-app>
     <v-main>
       <v-container>
-        <h1 class="text-center">Aktualitātes</h1>
+        <h1 class="text-center mt-8">Aktualitātes</h1>
           <v-card v-for="post in posts" :key="post.id" class="mx-auto my-8 pb-7" color="secondary" elevation="16"  >
             <v-card-title class="text-h4">{{ post.title }}</v-card-title>
             <v-card-subtitle>{{ post.dance_group_member?.dance_group?.name}}</v-card-subtitle>

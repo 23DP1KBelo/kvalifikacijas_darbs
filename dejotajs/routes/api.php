@@ -29,3 +29,4 @@ Route::apiResource('admissions', AdmissionController::class);
 Route::apiResource('events', EventController::class);
 
 
+

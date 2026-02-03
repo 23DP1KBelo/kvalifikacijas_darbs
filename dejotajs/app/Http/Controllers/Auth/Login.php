@@ -3,27 +3,22 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Requests\LoginRequest;
 
 class Login extends Controller
 {
-
-    public function __invoke(Request $request)
+    public function __invoke(LoginRequest $request)
     {
-        $credentials = $request->validate([
-            'email' => 'required|email',
-            'password' => 'required',
-        ]);
+        $credentials = $request->only('email', 'password');
 
-        if(Auth::attempt($credentials)) {
+        if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
 
-            return response()->json(['message' => 'Login successful'], 200);
+            return response()->json(['message' => 'Pieslēgšanās veiksmīga'], 200);
         }
 
-        return response()->json([
-            'message' => 'Invalid credentials',
-        ], 401);
+        return response()->json(['message' => 'Nepareizs e-pasts vai parole'], 401);
     }
 }
+

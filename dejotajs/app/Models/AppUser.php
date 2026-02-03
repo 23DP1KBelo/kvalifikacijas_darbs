@@ -2,10 +2,12 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
-class AppUser extends Model
+class AppUser extends Authenticatable
 {
+    protected $table = 'app_users';
+
     protected $fillable = [
         'name',
         'surname',
@@ -15,7 +17,13 @@ class AppUser extends Model
         'phone_number',
     ];
 
-    public function danceGroupMembers(){
+    protected $hidden = [
+        'password',
+        'remember_token',
+    ];
+
+    public function danceGroupMembers()
+    {
         return $this->hasMany(DanceGroupMember::class, 'user_id', 'id');
     }
 }
