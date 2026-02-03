@@ -45,11 +45,13 @@ export default {
         const response = await axios.post('/login', {
           email: this.email,
           password: this.password,
-        });
+        },{ withCredentials: true });
 
-        console.log(response.data);
+        const userResponse = await axios.get('/user', { withCredentials: true });
 
-        // redirect pēc login
+        this.$root.loggedIn = true; 
+        this.$root.user = userResponse.data.user; 
+        this.$router.push('/'); 
         this.$router.push('/');
 
       } catch (err) {
