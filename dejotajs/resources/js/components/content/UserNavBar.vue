@@ -1,7 +1,7 @@
 <template>
     <v-app-bar :elevation="2" class="bg-primary" >
         <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
-        <v-app-bar-title class="app-bar-title text-center" @click="this.$router.push('/')">Dejotājs</v-app-bar-title>
+        <v-app-bar-title class="app-bar-title text-center" @click="this.$router.push('/')" style="cursor: pointer;">Dejotājs</v-app-bar-title>
         <div class="d-flex align-center">
           <v-btn icon @click="this.$router.push('/danceGroups')" class="ms-3">
             <v-icon>
@@ -11,7 +11,7 @@
           <v-menu v-model="menu" offset-y class="ms-3 p-0 m-0">
             <template #activator="{ props, attrs }">
               <v-btn icon v-bind="{...props, ...attrs}">
-                <v-icon>mdi-account</v-icon>
+                <v-icon>mdi-account-circle</v-icon>
               </v-btn>
             </template>
 
@@ -89,10 +89,9 @@ export default {
             'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
           }
         });
-        
         this.$root.loggedIn = false;
         this.$root.user = null;
-        this.$router.push('/'); 
+        this.$router.push('/');
       } catch (e) {
         console.error('Logout failed', e);
       }

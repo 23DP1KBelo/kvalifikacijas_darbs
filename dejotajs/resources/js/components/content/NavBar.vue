@@ -1,7 +1,7 @@
 <template>
     <v-app-bar :elevation="2" class="bg-primary" >
         <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
-        <v-app-bar-title class="app-bar-title text-center" @click="this.$router.push('/')">Dejotājs</v-app-bar-title>
+        <v-app-bar-title class="app-bar-title text-center" @click="this.$router.push('/')" style="cursor: pointer;">Dejotājs</v-app-bar-title>
         <v-btn icon @click="this.$router.push('/login')">
           <v-icon>
             mdi-account
