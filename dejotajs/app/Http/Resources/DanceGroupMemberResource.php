@@ -21,6 +21,7 @@ class DanceGroupMemberResource extends JsonResource
 
             'app_user' =>[
                 'name' => $this->appUser->name,
+                'surname' => $this->appUser->surname,
                 'email' => $this->appUser->email
             ],
 

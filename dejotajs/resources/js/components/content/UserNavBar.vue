@@ -16,7 +16,7 @@
             </template>
 
             <v-list>
-              <v-list-item @click="logout" width="100px">
+              <v-list-item @click="logout">
                 <v-list-item-title>Iziet</v-list-item-title>
               </v-list-item>
             </v-list>
@@ -35,12 +35,7 @@
     :location="$vuetify.display.mobile ? 'bottom' : undefined"
     temporary>
     <v-list>
-      <v-list-item
-        v-for="link in links"
-        :key="link"
-        link
-        @click="handleClick(link)"
-      >
+      <v-list-item link @click="goTo(linkRoutes[index])" v-for="(link, index) in links" :key="link">
         <v-list-item-title>{{ link }}</v-list-item-title>
       </v-list-item>
     </v-list>
@@ -67,6 +62,14 @@ export default {
         'Uzņemšana',
         'Profils'
       ],
+
+      linkRoutes: [
+        '/',
+        '/',
+        '/',
+        '/',
+        '/profile'
+      ]
     }
   },
   methods: {
@@ -80,6 +83,10 @@ export default {
       this.isDark = !this.isDark
       this.$vuetify.theme.global.name = this.isDark ? 'dark' : 'light'
     },
+    goTo(route) {
+      this.drawer = false;
+      this.$router.push(route);
+    },
     async logout() {
       try {
         await fetch('/logout', {
@@ -89,13 +96,16 @@ export default {
             'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
           }
         });
+
         this.$root.loggedIn = false;
         this.$root.user = null;
-        this.$router.push('/');
+
+        this.$router.push('/login');
+
       } catch (e) {
         console.error('Logout failed', e);
       }
     }
-  }
+  } 
 }
 </script>

@@ -39,6 +39,7 @@ class AppUserRequest extends FormRequest
             'surname.max' => 'Uzvārdam jābūt ne vairāk kā 50 rakstzīmēm.',
             'email.required' => 'E-pasta lauks ir obligāts.',
             'email.email' => 'E-pastam jābūt derīgā formātā.',
+            'email.unique' => 'Šis e-pasts jau ir reģistrēts.',
             'password.required' => 'Paroles lauks ir obligāts.',
             'password.min' => 'Parolei jābūt vismaz 8 rakstzīmēm.',
             'password.max' => 'Parolei jābūt ne vairāk kā 50 rakstzīmēm.',
