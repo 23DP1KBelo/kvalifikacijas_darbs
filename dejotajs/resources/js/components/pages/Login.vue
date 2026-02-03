@@ -1,35 +1,26 @@
 <template>
   <v-container class="d-flex justify-center align-center mt-8">
-    <v-row justify="center">
-      <v-col cols="12" sm="8" md="4">
-        <v-card>
+        <v-card class=" bg-secondary" elevation="16" width="450px">
           <v-card-title class="text-h5 text-center py-4">Pieslēgšanās</v-card-title>
           <v-card-text>
-            <v-form ref="form" v-model="valid">
+            <v-form ref="form" v-model="valid" class="mt-4">
               <v-text-field label="E-pasts" v-model="email" required></v-text-field>
               <v-text-field label="Parole" v-model="password" type="password" required></v-text-field>
-
-              <v-alert
-                v-if="error"
-                type="error"
-                dense
-                outlined
-                class="mt-2"
-              >
+              <v-alert v-if="error" type="error" dense outlined class="mt-3">
                 {{ error }}
               </v-alert>
-              <v-btn
-                class="mt-4"
-                color="primary"
-                @click="login"
-              >
-                Pieslēgties
-              </v-btn>
+              <div class="d-flex justify-center align-center text-center flex-column">
+                <v-btn class="mt-2 mb-4" color="primary" @click="login">
+                  Pieslēgties
+                </v-btn>
+                <v-card-text class="mt-4">Neesi reģistrējies?</v-card-text>
+                <v-btn class="mb-4" color="primary" @click="this.$router.push('/register')">
+                  Reģistrēties
+                </v-btn>
+              </div>
             </v-form>
           </v-card-text>
         </v-card>
-      </v-col>
-    </v-row>
   </v-container>
 </template>
 
@@ -63,7 +54,6 @@ export default {
 
       } catch (err) {
           if (err.response && err.response.data && err.response.data.errors) {
-            // Laravel validācijas kļūdas
             this.error = Object.values(err.response.data.errors)
                               .flat()
                               .join(' ');

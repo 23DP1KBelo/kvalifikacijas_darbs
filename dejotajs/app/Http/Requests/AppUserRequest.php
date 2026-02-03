@@ -29,4 +29,21 @@ class AppUserRequest extends FormRequest
             'phone_number' => 'required|max:20',
         ];
     }
+
+        public function messages(): array
+    {
+        return [
+            'name.required' => 'Vārda lauks ir obligāts.',
+            'name.max' => 'Vārdam jābūt ne vairāk kā 50 rakstzīmēm.',
+            'surname.required' => 'Uzvārda lauks ir obligāts.',
+            'surname.max' => 'Uzvārdam jābūt ne vairāk kā 50 rakstzīmēm.',
+            'email.required' => 'E-pasta lauks ir obligāts.',
+            'email.email' => 'E-pastam jābūt derīgā formātā.',
+            'password.required' => 'Paroles lauks ir obligāts.',
+            'password.min' => 'Parolei jābūt vismaz 8 rakstzīmēm.',
+            'password.max' => 'Parolei jābūt ne vairāk kā 50 rakstzīmēm.',
+            'phone_number.required' => 'Telefona numura lauks ir obligāts.',
+            'phone_number.max' => 'Telefona numuram jābūt ne vairāk kā 20 rakstzīmēm.',
+        ];
+    }
 }
