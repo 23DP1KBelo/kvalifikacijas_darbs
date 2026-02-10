@@ -2,15 +2,20 @@
   <v-container class="d-flex mx-0 flex-wrap">
     <v-container class="bg-secondary mx-0 mb-4" style="max-height: 300px; max-width:700px; overflow-y: auto;">
       <v-card-title>Deju kolektīvu apstiprinājumi</v-card-title>
-      <v-card v-for="group in groups" :key="group.id" class="mt-8 bg-primary">
-        <v-card-title>{{ group.name }}</v-card-title>
-        <v-card-subtitle>Statuss: {{ group.statuss }}</v-card-subtitle>
-        <v-card-text>{{ group.approval }}</v-card-text>
-        <v-card-actions class="d-flex justify-end">
+      <div v-if="groups.length > 0">
+        <v-card v-for="group in groups" :key="group.id" class="mt-8 bg-primary">
+          <v-card-title>{{ group.name }}</v-card-title>
+          <v-card-subtitle>Statuss: {{ group.statuss }}</v-card-subtitle>
+          <v-card-text>{{ group.approval }}</v-card-text>
+          <v-card-actions class="d-flex justify-end">
             <v-btn color="green" size="x-small" @click="updateStatus(group.id, 'approve')">Apstiprināt</v-btn>
             <v-btn color="red" size="x-small" @click="updateStatus(group.id, 'decline')">Noraidīt</v-btn>
-        </v-card-actions>
-      </v-card>
+          </v-card-actions>
+        </v-card>
+      </div>
+      <div v-else>
+        <v-card-subtitle>Nav atrasti kolektīvi, kam nepieciešams apstiprinājums.</v-card-subtitle>
+      </div>
     </v-container>
 
       <v-container class="bg-primary mx-0" style="max-height: 155px; max-width:400px; overflow-y: auto;">
