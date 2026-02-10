@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\API\AppUserController;
+use App\Http\Controllers\Auth\AdminController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\Login;
 use App\Http\Controllers\Auth\RegistrationController;
@@ -27,7 +29,16 @@ Route::middleware('auth')->group(function (){
     Route::get('api/profile', ProfileController::class);
 });
 
+Route::middleware(['auth', 'admin'])->group(function () {
 
+    Route::get('/admin/users', [AppUserController::class, 'index']);
+
+    Route::get('/admin/danceGroups', [AdminController::class, 'showDanceGroups']);
+
+    Route::post('/admin/danceGroups/approval', [AdminController::class, 'approveDanceGroup']);
+
+    Route::post('/admin/danceGroups/decline', [AdminController::class, 'declineDanceGroup']);
+});
 
 Route::get('/{any}', function () {
     return view('welcome');

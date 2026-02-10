@@ -19,12 +19,6 @@ class DanceGroupMemberResource extends JsonResource
             'status' => $this->status,
             'role' => $this->role,
 
-            'app_user' =>[
-                'name' => $this->appUser->name,
-                'surname' => $this->appUser->surname,
-                'email' => $this->appUser->email
-            ],
-
             'dance_group' => [
                 'id' => $this->danceGroup->id,
                 'name' => $this->danceGroup->name,

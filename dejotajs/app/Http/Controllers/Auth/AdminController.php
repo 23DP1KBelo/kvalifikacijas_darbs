@@ -1,0 +1,41 @@
+<?php
+
+namespace App\Http\Controllers\Auth;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use App\Models\DanceGroup;
+
+class AdminController extends Controller
+{
+
+    
+
+    public function showDanceGroups(){
+        $groups = DanceGroup::where('status', 'waiting')->get();
+        return response()->json($groups);
+    }
+    public function approveDanceGroup(Request $request){
+        $groupId = $request->id;
+
+        DanceGroup::where('id', $groupId)->update([
+            'status' => 'approved'
+        ]);
+
+        return response()->json([
+            'message' => 'Veiksmīgi apstiprināts deju kolektīvs'
+        ]);
+    }
+
+        public function declineDanceGroup(Request $request){
+        $groupId = $request->id;
+
+        DanceGroup::where('id', $groupId)->update([
+            'status' => 'declined'
+        ]);
+
+        return response()->json([
+            'message' => 'Veiksmīgi neapstriprināts deju kolektīvs'
+        ]);
+    }
+}

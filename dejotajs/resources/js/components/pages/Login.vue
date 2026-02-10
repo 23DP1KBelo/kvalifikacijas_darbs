@@ -40,19 +40,25 @@ export default {
     async login() {
       try {
         // Sanctum CSRF cookie
-        await axios.get('/sanctum/csrf-cookie');
+        await axios.get('/sanctum/csrf-cookie', { withCredentials: true });
 
         const response = await axios.post('/login', {
           email: this.email,
           password: this.password,
         },{ withCredentials: true });
 
-        const userResponse = await axios.get('/user', { withCredentials: true });
+        const userResponse = await axios.get('/user', { withCredentials: true })
 
-        this.$root.loggedIn = true; 
-        this.$root.user = userResponse.data.user; 
-        this.$router.push('/'); 
-        this.$router.push('/');
+        const user = userResponse.data.user;
+
+        this.$root.user = user;
+        this.$root.loggedIn = true;  
+
+        if(user.role === 'admin') {
+          this.$router.push('/dashboard');
+        } else {
+          this.$router.push('/');
+        }
 
       } catch (err) {
           if (err.response && err.response.data && err.response.data.errors) {

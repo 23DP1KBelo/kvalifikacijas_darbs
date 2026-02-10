@@ -16,10 +16,12 @@ class ProfileController extends Controller
             return response()->json(['message' => 'Not authenticated'], 401);
         }
 
-        // Ielādē dance group members ar visām saistītajām tabulām
-        $members = $user->danceGroupMembers()->with(['danceGroup', 'appUser', 'ageGroup'])->get();
+        $members = $user->danceGroupMembers()->with(['danceGroup', 'ageGroup'])->get();
 
-        return DanceGroupMemberResource::collection($members);
+        return response()->json([
+            'user' => $user,
+            'dance_group_members' => DanceGroupMemberResource::collection($members)
+        ]);
     }
 }
 

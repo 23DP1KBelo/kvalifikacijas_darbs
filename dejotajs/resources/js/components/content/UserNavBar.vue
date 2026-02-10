@@ -16,6 +16,9 @@
             </template>
 
             <v-list>
+              <v-list-item @click="$router.push('/profile')">
+                <v-list-item-title>Profils</v-list-item-title>
+              </v-list-item>
               <v-list-item @click="logout">
                 <v-list-item-title>Iziet</v-list-item-title>
               </v-list-item>
@@ -34,7 +37,12 @@
     v-model="drawer"
     :location="$vuetify.display.mobile ? 'bottom' : undefined"
     temporary>
-    <v-list>
+    <v-list v-if="isAdmin">
+      <v-list-item link @click="goTo(adminRoutes[index])" v-for="(link, index) in adminLinks" :key="link">
+        <v-list-item-title>{{ link }}</v-list-item-title>
+      </v-list-item>
+    </v-list>
+    <v-list v-else>
       <v-list-item link @click="goTo(linkRoutes[index])" v-for="(link, index) in links" :key="link">
         <v-list-item-title>{{ link }}</v-list-item-title>
       </v-list-item>
@@ -43,6 +51,8 @@
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
   props: {
     user: {
@@ -55,12 +65,13 @@ export default {
       menu: false,
       drawer: false,
       isDark: false,
+      isAdmin: false,
+
       links: [
         'Sākums',
         'Deju grupas',
         'Kalendārs',
         'Uzņemšana',
-        'Profils'
       ],
 
       linkRoutes: [
@@ -68,7 +79,22 @@ export default {
         '/',
         '/',
         '/',
-        '/profile'
+      ],
+
+      adminLinks: [
+        'Admin Panelis',
+        'Sākums',
+        'Deju grupas',
+        'Kalendārs',
+        'Uzņemšana',
+      ],
+
+      adminRoutes: [
+        '/dashboard',
+        '/',
+        '/',
+        '/',
+        '/',
       ]
     }
   },
@@ -106,6 +132,20 @@ export default {
         console.error('Logout failed', e);
       }
     }
-  } 
+  }, 
+  async mounted() {
+    try {
+      const res = await axios.get('api/profile', { withCredentials: true });
+      this.user.role = res.data.user.role;
+
+      if(this.user.role === 'admin'){
+        this.isAdmin = true
+      }
+
+    }  catch (err) {
+      this.error = 'Neizdevās noteikt lomu';
+      console.error(err);
+    }
+  }
 }
 </script>

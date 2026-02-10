@@ -32,27 +32,21 @@ export default {
     try {
       const res = await axios.get('api/profile', { withCredentials: true });
 
-      if (res.data.data.length) {
-        const profileData = res.data.data;
+      this.user.name = res.data.user.name;
+      this.user.surname = res.data.user.surname;
+      this.user.email = res.data.user.email;
+      this.user.role = res.data.user.role;
 
-        this.user.name = profileData[0].app_user.name;
-        this.user.surname = profileData[0].app_user.surname;
-        this.user.email = profileData[0].app_user.email;
+      this.user.dance_groups = res.data.dance_group_members.map(member => ({
+        id: member.dance_group.id,
+        name: member.dance_group.name,
+        role: member.role,
+        age_group: member.age_group?.age_group || null
+      }));
 
-        this.user.dance_groups = profileData.map(member => ({
-          id: member.dance_group.id,
-          name: member.dance_group.name,
-          role: member.role,
-          age_group: member.age_group?.age_group || null
-        }));
-      }
     }  catch (err) {
       this.error = 'Neizdevās ielādēt profilu';
       console.error(err);
-
-      if (err.response && err.response.status === 401) {
-        this.$router.push('/login');
-      }
     }
   }
 }
