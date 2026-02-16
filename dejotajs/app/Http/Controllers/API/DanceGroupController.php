@@ -26,10 +26,20 @@ class DanceGroupController extends Controller
     public function store(DanceGroupRequest $request)
     {
         $validated = $request->validated();
+
+        if ($request->hasFile('picture')) {
+            $validated['picture'] = $request->file('picture')->store('dance_images', 'public');
+        }
+
+        if ($request->hasFile('approval')) {
+            $validated['approval'] = $request->file('approval')->store('dance_documents', 'public');
+        }
+
         $danceGroup = DanceGroup::create($validated);
 
-        return (new DanceGroupResource($danceGroup))->response()->setStatusCode(201);
-
+        return (new DanceGroupResource($danceGroup))
+            ->response()
+            ->setStatusCode(201);
     }
 
     /**

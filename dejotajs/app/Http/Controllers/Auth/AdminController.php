@@ -5,16 +5,17 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\DanceGroup;
+use App\Http\Resources\DanceGroupResource;
 
 class AdminController extends Controller
 {
-
-    
-
-    public function showDanceGroups(){
+    public function showDanceGroups()
+    {
         $groups = DanceGroup::where('status', 'waiting')->get();
-        return response()->json($groups);
+
+        return DanceGroupResource::collection($groups);
     }
+
     public function approveDanceGroup(Request $request){
         $groupId = $request->id;
 

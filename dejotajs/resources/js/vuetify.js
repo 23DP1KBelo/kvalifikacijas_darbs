@@ -1,6 +1,10 @@
 import { createVuetify } from 'vuetify'
+import { VFileUpload } from 'vuetify/labs/VFileUpload'
 
 export const vuetify = createVuetify({
+    components: {
+        VFileUpload,
+    },
     theme: {
         defaultTheme: 'light',
         themes: {

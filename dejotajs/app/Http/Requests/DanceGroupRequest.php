@@ -22,12 +22,14 @@ class DanceGroupRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|max:255',
-            'description' => 'required:max:500',
-            'city' => 'required:max:255',
-            'address' => 'required|max:255',
-            'picture' => 'max:255',
-            'approval'=> 'max:255',
+            'name' => 'required|string|max:255',
+            'description' => 'required|string|max:500',
+            'city' => 'required|string|max:255',
+            'address' => 'required|string|max:255',
+            'gener' => 'required|string|max:255',
+            'picture' => 'nullable|file|mimes:jpg,jpeg,png|max:2048',     // max 2MB
+            'approval' => 'required|file|mimes:pdf,doc,docx,jpg,jpeg,png|max:5120',   // max 5MB
         ];
     }
+
 }
