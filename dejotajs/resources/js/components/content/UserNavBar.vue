@@ -15,9 +15,6 @@
         </template>
 
         <v-list>
-          <v-list-item v-if="isLeader()" @click="$router.push('/danceForm')">
-            <v-list-item-title>Izveidot kolektīvu</v-list-item-title>
-          </v-list-item>
           <v-list-item v-for="group in userGroups" :key="group.id"  @click="$router.push(`/group/${group.dance_group.id}`)">
             <v-list-item-title>{{ group.dance_group.name || 'Nav kolektīvu' }}</v-list-item-title>
           </v-list-item>
@@ -52,12 +49,29 @@
 
   <v-navigation-drawer v-model="drawer" :location="$vuetify.display.mobile ? 'bottom' : undefined" temporary>
     <v-list v-if="isAdmin">
+      <v-list-item link @click="goTo(leaderRoutes[index])" v-for="(link, index) in links" :key="link">
+        <v-list-item-title>{{ link }}</v-list-item-title>
+      </v-list-item>
+      <v-list-item class="bg-secondary mt-8">
+        <v-list-item-title>Administratora lapas</v-list-item-title>
+      </v-list-item>
       <v-list-item link @click="goTo(adminRoutes[index])" v-for="(link, index) in adminLinks" :key="link">
         <v-list-item-title>{{ link }}</v-list-item-title>
       </v-list-item>
     </v-list>
+    <v-list v-else-if="isLeaderRole">
+      <v-list-item link @click="goTo(leaderRoutes[index])" v-for="(link, index) in links" :key="link">
+        <v-list-item-title>{{ link }}</v-list-item-title>
+      </v-list-item>
+      <v-list-item class="bg-secondary mt-8">
+        <v-list-item-title>Vadītāja lapas</v-list-item-title>
+      </v-list-item>
+      <v-list-item link v-for="(link, index) in leaderLinks" :key="link" @click="goTo(leaderRoutes[index])">
+        <v-list-item-title>{{ link }}</v-list-item-title>
+      </v-list-item>
+    </v-list>
     <v-list v-else>
-      <v-list-item link @click="goTo(linkRoutes[index])" v-for="(link, index) in links" :key="link">
+      <v-list-item link @click="goTo(leaderRoutes[index])" v-for="(link, index) in links" :key="link">
         <v-list-item-title>{{ link }}</v-list-item-title>
       </v-list-item>
     </v-list>
@@ -94,19 +108,19 @@ export default {
         '/', 
         '/'
       ],
+      leaderLinks: [
+        'Kolektīva izveide',
+        'Dejotāju apstiprināšana',
+      ],
+      leaderRoutes: [
+        '/danceForm', 
+        '/',
+      ],
       adminLinks: [
         'Admin Panelis',
-        'Sākums', 
-        'Deju grupas', 
-        'Kalendārs', 
-        'Uzņemšana'
       ],
       adminRoutes: [
         '/dashboard', 
-        '/', 
-        '/', 
-        '/', 
-        '/'
       ]
     };
   },
@@ -142,17 +156,12 @@ export default {
         console.error('Logout failed', e);
       }
     },
-    isLeader() {
-      return this.userGroups.some(group => group.role === 'leader');
-    }
   },
   async mounted() {
     try {
       const res = await axios.get('api/profile', { withCredentials: true });
       this.user.role = res.data.user.role;
       this.userGroups = res.data.dance_group_members || []; 
-
-      this.isLeaderRole = this.isLeader();
 
       if (this.user.role === 'admin') {
         this.isAdmin = true;
@@ -161,6 +170,12 @@ export default {
       this.error = 'Neizdevās noteikt lomu';
       console.error(err);
     }
+  },
+  computed: {
+  isLeaderRole() {
+    return this.userGroups.some(group => group.role === 'leader');
   }
+}
+
 };
 </script>
