@@ -39,9 +39,13 @@ export default {
         this.group = res.data.dance_group
         this.posts = res.data.posts
       } catch (err) {
-        console.error('Kļūda ielādējot postus:', err)
-        this.group = {}
-        this.posts = []
+        if (err.response && err.response.status === 403) {
+          this.$router.push('/no-access')
+        } else {
+          console.error('Kļūda ielādējot postus:', err)
+          this.group = {}
+          this.posts = []
+        }
       }
     },
     formatDate(date) {

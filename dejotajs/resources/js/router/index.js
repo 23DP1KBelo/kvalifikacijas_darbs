@@ -7,6 +7,7 @@ import Profile from '../components/pages/Profile.vue';
 import AdminDashboard from '../components/pages/AdminDashboard.vue';
 import DanceGroupForm from '../components/pages/DanceGroupForm.vue';
 import DanceGroupPage from '../components/pages/DanceGroupPage.vue';
+import NoAccess from '../components/errors/NoAccess.vue';
 
 const routes = [
     { path: '/', component: Home },
@@ -14,8 +15,9 @@ const routes = [
     { path: '/register', component: Registration },
     { path: '/profile', component: Profile, meta: { requiresAuth: true } },
     { path: '/dashboard', component: AdminDashboard, meta: { requiresAuth: true, requiresAdmin: true } },
-    {path: '/danceForm', component: DanceGroupForm},
+    { path: '/danceForm', component: DanceGroupForm},
     { path: '/group/:id', component: DanceGroupPage, meta: { requiresAuth: true }},
+    { path: '/no-access', component: NoAccess }
 ];
 
 const router = createRouter({
