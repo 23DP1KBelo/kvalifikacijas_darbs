@@ -11,10 +11,13 @@
                     <v-select label="Žanrs" :items="genres" item-title="title" item-value="value" v-model="selectedGenre" variant="outlined"/>
                     <v-file-input label="Augšupielādē kolektīva attēlu" v-model="picture" accept="image/*"/>
                     <v-file-input label="Augšupielādē kolektīva dokumentu" v-model="approval" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" required/>
+                    <v-alert v-if="error" type="error" dense outlined class="mt-3">
+                        {{ error }}
+                    </v-alert>
                     <div class="d-flex justify-center align-center text-center mb-4">
-                        <v-btn class="mt-4" color="primary" @click="submitForm">
-                            Reģistrēt
-                        </v-btn>
+                      <v-btn class="mt-4" color="primary" @click="submitForm">
+                          Reģistrēt
+                      </v-btn>
                     </div>
                 </v-form>
             </v-card-text>
@@ -30,23 +33,22 @@ export default {
 
   data() {
     return {
-        name: "",
-        description: "",
-        city: "",
-        address: "",
-        selectedGenre: null,
-        picture: null,
-        approval: null,
-        genres: [
-            { title: "Liriskās dejas", value: "lyrical dance" },
-            { title: "Balets", value: "ballet" },
-            { title: "Mūsdienīgās dejas", value: "contemporary dance" },
-            { title: "Tautas dejas", value: "folk dance" },
-            { title: "Hip-hop", value: "hip hop" },
-            { title: "Cits", value: "other" }
-        ]
-
-
+      name: "",
+      description: "",
+      city: "",
+      address: "",
+      selectedGenre: null,
+      picture: null,
+      approval: null,
+      error: '',
+      genres: [
+          { title: "Liriskās dejas", value: "lyrical dance" },
+          { title: "Balets", value: "ballet" },
+          { title: "Mūsdienīgās dejas", value: "contemporary dance" },
+          { title: "Tautas dejas", value: "folk dance" },
+          { title: "Hip-hop", value: "hip hop" },
+          { title: "Cits", value: "other" }
+      ]
     }
   },
 
@@ -78,15 +80,18 @@ export default {
 
     alert("Kolektīvs veiksmīgi reģistrēts!")
 
-  } catch (error) {
-    if (error.response) {
-      console.error(error.response.data)
-      alert(Object.values(error.response.data.errors).flat().join("\n"))
+  } catch (err) {
+    if (err.response && err.response.data && err.response.data.errors) {
+      this.error = Object.values(err.response.data.errors).flat().join(' ');
+    } else if (err.response && err.response.data && err.response.data.message) {
+      this.error = err.response.data.message;
+    } else {
+      this.error = 'Nezināma kļūda. Mēģiniet vēlreiz.';
     }
   }
 }
 
-  }
+}
 }
 </script>
 
