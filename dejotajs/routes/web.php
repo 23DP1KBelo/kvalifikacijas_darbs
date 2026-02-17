@@ -7,6 +7,7 @@ use App\Http\Controllers\Auth\Login;
 use App\Http\Controllers\Auth\RegistrationController;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Auth\ProfileController;
+use App\Http\Controllers\API\PostController;
 
 Route::post('/login', Login::class);
 Route::post('/register',RegistrationController::class . '@register');
@@ -27,6 +28,9 @@ Route::middleware('auth')->group(function (){
     });
 
     Route::get('api/profile', ProfileController::class);
+     
+    Route::get('/api/my-posts', [PostController::class, 'myPosts']);
+    Route::get('/api/my-posts/{danceGroupId}', [PostController::class, 'myGroupPosts']);
 });
 
 Route::middleware(['auth', 'admin'])->group(function () {

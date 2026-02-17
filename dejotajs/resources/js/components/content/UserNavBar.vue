@@ -18,7 +18,7 @@
           <v-list-item v-if="isLeader()" @click="$router.push('/danceForm')">
             <v-list-item-title>Izveidot kolektīvu</v-list-item-title>
           </v-list-item>
-          <v-list-item v-for="group in userGroups" :key="group.id" @click="$router.push('/group')">
+          <v-list-item v-for="group in userGroups" :key="group.id"  @click="$router.push(`/group/${group.dance_group.id}`)">
             <v-list-item-title>{{ group.dance_group.name || 'Nav kolektīvu' }}</v-list-item-title>
           </v-list-item>
         </v-list>

@@ -16,20 +16,50 @@ class PostController extends Controller
      */
     public function index()
     {
-        $isPrivate = request()->input('private');
-        $posts = Post::with('danceGroupMember.appUser', 'danceGroupMember.danceGroup')->orderBy('id', 'desc');
+        // atlasām tikai publiskos postus (private = 0)
+        $posts = Post::with('danceGroupMember.appUser', 'danceGroupMember.danceGroup')
+            ->where('private', 0)
+            ->orderBy('id', 'desc')
+            ->get();
 
-        if(isset($isPrivate) && in_array($isPrivate, [0, 1])) {
-            $posts = $posts->where('private', $isPrivate);
-        }
-                
-        $createdBefore = request()->input('created_before');
-        if(isset($createdBefore)) {
-            $posts = $posts->where('created_at', '<', $createdBefore);
-        }
-
-        return PostResource::collection($posts->get());
+        return PostResource::collection($posts);
     }
+
+    public function myGroupPosts(Request $request, $danceGroupId)
+    {
+        $user = $request->user();
+
+        // Pārbauda, vai lietotājs pieder šai kolektīvai (jebkurā lomā)
+        $isMember = $user->danceGroupMembers()
+            ->where('dance_group_id', $danceGroupId)
+            ->exists();
+
+        if (!$isMember) {
+            return response()->json([
+                'data' => [],
+                'message' => 'Jūs nepiederat šim kolektīvam'
+            ], 403);
+        }
+
+        // Iegūst visus postus šai grupai (no visiem memberiem)
+        $posts = Post::with('danceGroupMember.appUser', 'danceGroupMember.danceGroup')
+            ->whereHas('danceGroupMember', function ($query) use ($danceGroupId) {
+                $query->where('dance_group_id', $danceGroupId);
+            })
+            ->orderBy('id', 'desc')
+            ->get();
+
+        // Atgriež arī grupas info
+        $group = \App\Models\DanceGroup::find($danceGroupId);
+
+        return response()->json([
+            'dance_group' => $group,
+            'posts' => PostResource::collection($posts)
+        ]);
+    }
+
+
+
 
     /**
      * Store a newly created resource in storage.
@@ -74,17 +104,5 @@ class PostController extends Controller
         return new PostResource($post);
     }
 
-    // public function getPublic()
-    // {
-    //     $posts = Post::where('private', 0)->get();
 
-    //     return PostResource::collection($posts);
-    // }
-
-    // public function getPrivate()
-    // {
-    //     $posts = Post::where('private', 1)->get();
-
-    //     return PostResource::collection($posts);
-    // }
 }

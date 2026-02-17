@@ -15,7 +15,7 @@ const routes = [
     { path: '/profile', component: Profile, meta: { requiresAuth: true } },
     { path: '/dashboard', component: AdminDashboard, meta: { requiresAuth: true, requiresAdmin: true } },
     {path: '/danceForm', component: DanceGroupForm},
-    { path: '/group', component: DanceGroupPage, meta: { requiresAuth: true }},
+    { path: '/group/:id', component: DanceGroupPage, meta: { requiresAuth: true }},
 ];
 
 const router = createRouter({
