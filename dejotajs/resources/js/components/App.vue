@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <UserNavBar v-if="loggedIn" :user="user"/>
-    <NavBar v-else/>
+    <NavBar v-else/>    
     <v-main>
       <RouterView />
     </v-main>
