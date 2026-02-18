@@ -31,6 +31,7 @@ export default {
         return {
             name: '',
             surname: '',
+            role: '',
             email: '',
             password: '',
             password_confirmation: '',

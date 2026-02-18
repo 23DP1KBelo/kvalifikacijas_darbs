@@ -33,6 +33,9 @@
           <v-list-item @click="$router.push('/profile')">
             <v-list-item-title>Profils</v-list-item-title>
           </v-list-item>
+          <v-list-item @click="$router.push('/dance-leader')">
+            <v-list-item-title>Kļūt par vadītāju</v-list-item-title>
+          </v-list-item>
           <v-list-item @click="logout">
             <v-list-item-title>Iziet</v-list-item-title>
           </v-list-item>
@@ -66,9 +69,22 @@
       <v-list-item class="bg-secondary mt-8">
         <v-list-item-title>Vadītāja lapas</v-list-item-title>
       </v-list-item>
-      <v-list-item link v-for="(link, index) in leaderLinks" :key="link" @click="goTo(leaderRoutes[index])">
-        <v-list-item-title>{{ link }}</v-list-item-title>
+      <v-list-item link @click="goTo('/danceForm')">
+        <v-list-item-title>Kolektīva izveide</v-list-item-title>
       </v-list-item>
+      <v-list-item @click="showGroups = !showGroups" class="cursor-pointer">
+        <v-list-item-title>Dejotāju apstiprināšana</v-list-item-title>
+      </v-list-item>
+      <v-list v-if="showGroups">
+      <v-list-item
+            v-for="group in leaderGroups"
+            :key="group.id"
+            @click="$router.push(`/dancerApproval/${group.dance_group.id}`)"
+            class="ml-4 cursor-pointer"
+          >
+      <v-list-item-title>{{ group.dance_group.name || 'Nav kolektīvu' }}</v-list-item-title>
+    </v-list-item>
+      </v-list>
     </v-list>
     <v-list v-else>
       <v-list-item link @click="goTo(leaderRoutes[index])" v-for="(link, index) in links" :key="link">
@@ -91,7 +107,8 @@ export default {
   data() {
     return {
       menuMessage: false,  
-      menuProfile: false,  
+      menuProfile: false, 
+      showGroups: false, 
       drawer: false,
       isDark: false,
       isAdmin: false,
@@ -114,7 +131,7 @@ export default {
       ],
       leaderRoutes: [
         '/danceForm', 
-        '/',
+        '/dancerApproval',
       ],
       adminLinks: [
         'Admin Panelis',
@@ -123,6 +140,12 @@ export default {
         '/dashboard', 
       ]
     };
+  }, watch: {
+    showGroups(newVal) {
+      if (newVal && this.userGroups.length === 0) {
+        this.fetchUserGroups();
+      }
+    }
   },
   methods: {
     toggleDrawer() {
@@ -174,6 +197,10 @@ export default {
   computed: {
   isLeaderRole() {
     return this.userGroups.some(group => group.role === 'leader');
+  },
+  leaderGroups() {
+    // Atgriež tikai tās grupas, kurās lietotājs ir leader
+    return this.userGroups.filter(group => group.role === 'leader');
   }
 }
 

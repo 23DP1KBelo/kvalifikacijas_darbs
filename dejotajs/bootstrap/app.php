@@ -5,6 +5,7 @@ use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Middleware\HandleCors;
 use App\Http\Middleware\IsAdmin;
+use App\Http\Middleware\IsLeader;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -25,6 +26,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->alias([
         'admin' => IsAdmin::class,
+        'leader' => IsLeader::class
     ]);
     })
 

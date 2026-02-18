@@ -24,6 +24,7 @@ class AppUserRequest extends FormRequest
         return [
             'name' => 'required|max:50',
             'surname' => 'required|max:50',
+            'role' => 'required',
             'email' => 'required|email|unique:app_users,email',
             'password' => 'required|min:8|max:50',
             'phone_number' => 'required|max:20',

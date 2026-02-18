@@ -8,6 +8,8 @@ use App\Http\Controllers\Auth\RegistrationController;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Auth\ProfileController;
 use App\Http\Controllers\API\PostController;
+use App\Http\Controllers\API\DanceGroupMemberController;
+use App\Http\Controllers\API\DanceGroupController;
 
 Route::post('/login', Login::class);
 Route::post('/register',RegistrationController::class . '@register');
@@ -27,9 +29,10 @@ Route::middleware('auth')->group(function (){
         return response()->json(['message' => 'Logged out']);
     });
 
-    Route::get('api/profile', ProfileController::class);
-     
-    Route::get('/api/my-posts', [PostController::class, 'myPosts']);
+    Route::post('/api/danceGroups', [DanceGroupController::class, 'store']);
+    Route::get('/api/danceGroups', [DanceGroupController::class, 'groupList']);
+    Route::post('/api/members', [DanceGroupMemberController::class, 'leaderStore']);
+    Route::get('/api/profile', ProfileController::class);
     Route::get('/api/my-posts/{danceGroupId}', [PostController::class, 'myGroupPosts']);
 });
 
@@ -42,6 +45,14 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::post('/admin/danceGroups/approval', [AdminController::class, 'approveDanceGroup']);
 
     Route::post('/admin/danceGroups/decline', [AdminController::class, 'declineDanceGroup']);
+});
+
+Route::middleware(['auth', 'leader'])->group(function () {
+    Route::get('/dancers/{group}', [DanceGroupMemberController::class, 'showDancers']);
+
+    Route::post('/dancers/approval', [DanceGroupMemberController::class, 'approveDancer']);
+
+    Route::post('/dancers/decline', [DanceGroupMemberController::class, 'declineDancer']);
 });
 
 Route::get('/{any}', function () {

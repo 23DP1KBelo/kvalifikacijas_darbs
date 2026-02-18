@@ -7,6 +7,8 @@ use App\Http\Resources\DanceGroupResource;
 use App\Http\Requests\DanceGroupRequest;
 use Illuminate\Http\Request;
 use App\Models\DanceGroup;
+use Illuminate\Support\Facades\Auth;
+use App\Models\DanceGroupMember;
 
 class DanceGroupController extends Controller
 {
@@ -18,6 +20,22 @@ class DanceGroupController extends Controller
         $danceGroups = DanceGroup::all();
         $danceGroups->load('ageGroups', 'members');
         return DanceGroupResource::collection($danceGroups);
+    }
+
+    public function groupList(){
+
+        $userId = Auth::id();
+
+        $danceGroups = DanceGroup::leftJoin('dance_group_members', function ($join) use ($userId) {
+                $join->on('dance_groups.id', '=', 'dance_group_members.dance_group_id')
+                    ->where('dance_group_members.user_id', '=', $userId);
+            })
+            ->whereNull('dance_group_members.user_id') 
+            ->select('dance_groups.*')
+            ->get();
+
+        return DanceGroupResource::collection($danceGroups);
+
     }
 
     /**
@@ -36,6 +54,13 @@ class DanceGroupController extends Controller
         }
 
         $danceGroup = DanceGroup::create($validated);
+
+        DanceGroupMember::create([
+            'status' => 'approved',
+            'role' => 'leader',
+            'user_id' => Auth::id(),
+            'dance_group_id' => $danceGroup->id
+        ]);
 
         return (new DanceGroupResource($danceGroup))
             ->response()

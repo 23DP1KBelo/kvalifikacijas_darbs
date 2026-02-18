@@ -14,7 +14,7 @@
                   Pieslēgties
                 </v-btn>
                 <v-card-text class="mt-4">Neesi reģistrējies?</v-card-text>
-                <v-btn class="mb-4" color="primary" @click="this.$router.push('/register')">
+                <v-btn class="mb-4" color="primary" @click="$router.push('/register')">
                   Reģistrēties
                 </v-btn>
               </div>
