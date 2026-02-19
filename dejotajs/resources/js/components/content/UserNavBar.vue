@@ -73,7 +73,20 @@
         <v-list-item-title>Kolektīva izveide</v-list-item-title>
       </v-list-item>
       <v-list-item @click="showGroups = !showGroups" class="cursor-pointer">
-        <v-list-item-title>Dejotāju apstiprināšana</v-list-item-title>
+        <v-list-item-title>Vadītāju apstiprināšana</v-list-item-title>
+      </v-list-item>
+       <v-list v-if="showGroups">
+      <v-list-item
+            v-for="group in leaderGroups"
+            :key="group.id"
+            @click="$router.push(`/leaderApproval/${group.dance_group.id}`)"
+            class="ml-4 cursor-pointer"
+          >
+        <v-list-item-title>{{ group.dance_group.name || 'Nav kolektīvu' }}</v-list-item-title>
+      </v-list-item>
+      </v-list>
+      <v-list-item @click="showGroups = !showGroups" class="cursor-pointer">
+        <v-list-item-title>Dalībnieku apstiprināšana</v-list-item-title>
       </v-list-item>
       <v-list v-if="showGroups">
       <v-list-item
@@ -82,8 +95,8 @@
             @click="$router.push(`/dancerApproval/${group.dance_group.id}`)"
             class="ml-4 cursor-pointer"
           >
-      <v-list-item-title>{{ group.dance_group.name || 'Nav kolektīvu' }}</v-list-item-title>
-    </v-list-item>
+        <v-list-item-title>{{ group.dance_group.name || 'Nav kolektīvu' }}</v-list-item-title>
+      </v-list-item>
       </v-list>
     </v-list>
     <v-list v-else>
@@ -140,12 +153,6 @@ export default {
         '/dashboard', 
       ]
     };
-  }, watch: {
-    showGroups(newVal) {
-      if (newVal && this.userGroups.length === 0) {
-        this.fetchUserGroups();
-      }
-    }
   },
   methods: {
     toggleDrawer() {
@@ -199,7 +206,6 @@ export default {
     return this.userGroups.some(group => group.role === 'leader');
   },
   leaderGroups() {
-    // Atgriež tikai tās grupas, kurās lietotājs ir leader
     return this.userGroups.filter(group => group.role === 'leader');
   }
 }

@@ -79,27 +79,58 @@ class DanceGroupMemberController extends Controller
         return DanceGroupMemberResource::collection($dancers);
     }
 
-    public function approveDancer(DancerRequest $request){
-        $memberId = $request->id;
+public function approveMember(DancerRequest $request)
+{
+    $memberId = $request->id;
+    $role = $request->role;
 
-        DanceGroupMember::where( 'id', $memberId)->where('role', 'dancer')->update([
+    if (!in_array($role, ['dancer', 'leader'])) {
+        return response()->json([
+            'message' => 'Invalid role'
+        ], 422);
+    }
+
+    DanceGroupMember::where('id', $memberId)
+        ->where('role', $role)
+        ->update([
             'status' => 'approved'
         ]);
 
+    return response()->json([
+        'message' => 'ok'
+    ]);
+}
+
+public function declineMember(DancerRequest $request)
+{
+    $memberId = $request->id;
+    $role = $request->role;
+
+    if (!in_array($role, ['dancer', 'leader'])) {
         return response()->json([
-            'message' => 'ok'
-        ]);
+            'message' => 'Invalid role'
+        ], 422);
     }
 
-    public function declineDancer(DancerRequest $request){
-        $memberId = $request->id;
-
-        DanceGroupMember::where( 'id', $memberId)->where('role', 'dancer')->update([
+    DanceGroupMember::where('id', $memberId)
+        ->where('role', $role)
+        ->update([
             'status' => 'declined'
         ]);
 
-        return response()->json([
-            'message' => 'ok'
-        ]);
+    return response()->json([
+        'message' => 'ok'
+    ]);
+}
+
+
+    public function showLeaders(DanceGroup $group)
+    {
+        $dancers = DanceGroupMember::where('status', 'waiting')
+            ->where('role', 'leader')
+            ->where('dance_group_id', $group->id)
+            ->get();
+
+        return DanceGroupMemberResource::collection($dancers);
     }
 }

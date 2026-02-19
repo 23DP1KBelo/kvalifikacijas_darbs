@@ -50,9 +50,15 @@ Route::middleware(['auth', 'admin'])->group(function () {
 Route::middleware(['auth', 'leader'])->group(function () {
     Route::get('/dancers/{group}', [DanceGroupMemberController::class, 'showDancers']);
 
-    Route::post('/dancers/approval', [DanceGroupMemberController::class, 'approveDancer']);
+    Route::post('/dancers/approval', [DanceGroupMemberController::class, 'approveMember']);
 
-    Route::post('/dancers/decline', [DanceGroupMemberController::class, 'declineDancer']);
+    Route::post('/dancers/decline', [DanceGroupMemberController::class, 'declineMember']);
+    
+    Route::get('/approval-leader/{group}', [DanceGroupMemberController::class, 'showLeaders']);
+
+    Route::post('/approval-leader', [DanceGroupMemberController::class, 'approveMember']);
+
+    Route::post('/decline-leader', [DanceGroupMemberController::class, 'declineMember']);
 });
 
 Route::get('/{any}', function () {

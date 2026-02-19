@@ -11,6 +11,7 @@ import NoAccess from '../components/errors/NoAccess.vue';
 import DancerApproval from '../components/pages/DancerApproval.vue';
 import LeaderForm from '../components/pages/LeaderForm.vue';
 import DanceGroupList from '../components/pages/DanceGroupList.vue';
+import LeaderApproval from '../components/pages/LeaderApproval.vue';
 
 const routes = [
     { path: '/', component: Home },
@@ -23,7 +24,8 @@ const routes = [
     { path: '/no-access', component: NoAccess },
     { path: '/dancerApproval/:id', component: DancerApproval, meta: { requiresAuth: true, requiresLeader: true } },
     { path: '/dance-leader', component: LeaderForm, meta: { requiresAuth: true } },
-    { path: '/danceGroup-list', component: DanceGroupList, meta: {requiresAuth: true}}
+    { path: '/danceGroup-list', component: DanceGroupList, meta: {requiresAuth: true}},
+    { path: '/leaderApproval/:id', component: LeaderApproval, meta: {requiresAuth: true, requiresLeader:true}}
 ];
 
 const router = createRouter({

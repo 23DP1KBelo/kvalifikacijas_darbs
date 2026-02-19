@@ -51,7 +51,7 @@ export default {
     console.log(dancer)
     axios.post(url, {
         id: dancer.id,
-        role: dancer.role,
+        role: dancer.role,  
         user_id: dancer.user.id,
         age_group_id: dancer.age_group.id,
         dance_group_id: dancer.dance_group.id
