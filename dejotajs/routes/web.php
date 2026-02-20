@@ -13,6 +13,7 @@ use App\Http\Controllers\API\DanceGroupController;
 
 Route::post('/login', Login::class);
 Route::post('/register',RegistrationController::class . '@register');
+Route::get('/danceGroups-all', [DanceGroupController::class, 'getAllGroups']);
 
 Route::middleware('web')->get('/user', function () {
     return response()->json([
@@ -53,7 +54,7 @@ Route::middleware(['auth', 'leader'])->group(function () {
     Route::post('/dancers/approval', [DanceGroupMemberController::class, 'approveMember']);
 
     Route::post('/dancers/decline', [DanceGroupMemberController::class, 'declineMember']);
-    
+
     Route::get('/approval-leader/{group}', [DanceGroupMemberController::class, 'showLeaders']);
 
     Route::post('/approval-leader', [DanceGroupMemberController::class, 'approveMember']);

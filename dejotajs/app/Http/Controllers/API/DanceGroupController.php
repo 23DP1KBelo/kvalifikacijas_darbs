@@ -22,20 +22,26 @@ class DanceGroupController extends Controller
         return DanceGroupResource::collection($danceGroups);
     }
 
-    public function groupList(){
+    public function getAllGroups(){
+        $danceGroups = DanceGroup::where('status', 'approved') ->get();
+        $danceGroups->load('ageGroups', 'members');
+        return DanceGroupResource::collection($danceGroups);
+    }
 
+    public function groupList()
+    {
         $userId = Auth::id();
 
         $danceGroups = DanceGroup::leftJoin('dance_group_members', function ($join) use ($userId) {
                 $join->on('dance_groups.id', '=', 'dance_group_members.dance_group_id')
                     ->where('dance_group_members.user_id', '=', $userId);
             })
-            ->whereNull('dance_group_members.user_id') 
+            ->where('dance_groups.status', 'approved') 
+            ->whereNull('dance_group_members.user_id')
             ->select('dance_groups.*')
             ->get();
 
         return DanceGroupResource::collection($danceGroups);
-
     }
 
     /**

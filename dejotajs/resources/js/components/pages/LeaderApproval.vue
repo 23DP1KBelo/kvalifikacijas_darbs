@@ -1,5 +1,5 @@
 <template>
-    <h1 class="text-center mt-8">Dejotāju apstiprināšana</h1>
+    <h1 class="text-center mt-8">Vadītāju apstiprināšana</h1>
     <v-container class="d-flex flex-column">
         <div class="bg-primary px-6 py-6">
             <v-card-title>Kolektīva nosaukums:</v-card-title>

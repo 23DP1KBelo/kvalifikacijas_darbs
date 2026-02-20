@@ -14,17 +14,9 @@
         </v-btn>
     </v-app-bar>
 
-  <v-navigation-drawer      
-    v-model="drawer"
-    :location="$vuetify.display.mobile ? 'bottom' : undefined"
-    temporary>
+  <v-navigation-drawer v-model="drawer" :location="$vuetify.display.mobile ? 'bottom' : undefined" temporary>
     <v-list>
-      <v-list-item
-        v-for="link in links"
-        :key="link"
-        link
-        @click="handleClick(link)"
-      >
+      <v-list-item link @click="goTo(linkRoutes[index])" v-for="(link, index) in links" :key="link">
         <v-list-item-title>{{ link }}</v-list-item-title>
       </v-list-item>
     </v-list>
@@ -38,10 +30,16 @@ export default {
       drawer: false,
       isDark: false,
       links: [
-        'Sākums',
-        'Deju grupas',
-        'Kalendārs',
+        'Sākums', 
+        'Kolektīvi', 
+        'Kalendārs', 
         'Uzņemšana',
+      ],
+      linkRoutes: [
+        '/', 
+        '/dance-groups', 
+        '/', 
+        '/'
       ],
     }
   },
@@ -55,7 +53,11 @@ export default {
     toggleTheme() {
       this.isDark = !this.isDark
       this.$vuetify.theme.global.name = this.isDark ? 'dark' : 'light'
-    }
+    },
+    goTo(route) {
+      this.drawer = false;
+      this.$router.push(route);
+    },
   }
 }
 </script>

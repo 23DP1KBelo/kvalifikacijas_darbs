@@ -51,10 +51,10 @@
   </v-app-bar>
 
   <v-navigation-drawer v-model="drawer" :location="$vuetify.display.mobile ? 'bottom' : undefined" temporary>
-    <v-list v-if="isAdmin">
-      <v-list-item link @click="goTo(leaderRoutes[index])" v-for="(link, index) in links" :key="link">
+    <v-list-item link @click="goTo(linkRoutes[index])" v-for="(link, index) in links" :key="link">
         <v-list-item-title>{{ link }}</v-list-item-title>
       </v-list-item>
+    <v-list v-if="isAdmin">
       <v-list-item class="bg-secondary mt-8">
         <v-list-item-title>Administratora lapas</v-list-item-title>
       </v-list-item>
@@ -63,9 +63,6 @@
       </v-list-item>
     </v-list>
     <v-list v-else-if="isLeaderRole">
-      <v-list-item link @click="goTo(leaderRoutes[index])" v-for="(link, index) in links" :key="link">
-        <v-list-item-title>{{ link }}</v-list-item-title>
-      </v-list-item>
       <v-list-item class="bg-secondary mt-8">
         <v-list-item-title>Vadītāja lapas</v-list-item-title>
       </v-list-item>
@@ -128,13 +125,13 @@ export default {
       userGroups: [],
       links: [
         'Sākums', 
-        'Deju grupas', 
+        'Kolektīvi', 
         'Kalendārs', 
-        'Uzņemšana'
+        'Uzņemšana',
       ],
       linkRoutes: [
         '/', 
-        '/', 
+        '/dance-groups', 
         '/', 
         '/'
       ],

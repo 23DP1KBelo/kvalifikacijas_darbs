@@ -1,7 +1,7 @@
 <template>
     <v-footer app class="d-flex align-center justify-center flex-wrap " color="primary" :style="{overflowY: 'auto'}" height="100px">
       <div v-if="!$vuetify.display.mobile" >
-        <v-btn variant="text" v-for="link in links" :key="link" text rounded>{{ link }}</v-btn>
+        <v-btn variant="text" @click="goTo(linkRoutes[index])" v-for="(link, index) in links" :key="link" rounded>{{ link }}</v-btn>
       </div>
       <div class="flex-1-0-100 text-center d-flex justify-center ga-sm-4">
         {{ new Date().getFullYear() }} <strong>Dejotajs</strong>
@@ -12,17 +12,27 @@
 <script>
 
 export default {
-  name: 'Footer',
-  setup() {
-    const links = [
-      'Sākums',
-      'Deju grupas',
-      'Kalendārs',
-      'Uzņemšana',
-    ]
+   data() {
     return {
-      links,
+      links: [
+        'Sākums', 
+        'Kolektīvi', 
+        'Kalendārs', 
+        'Uzņemšana',
+      ],
+      linkRoutes: [
+        '/', 
+        '/dance-groups', 
+        '/', 
+        '/'
+      ],
     }
+  },
+  methods: {
+    goTo(route) {
+      this.drawer = false;
+      this.$router.push(route);
+    },
   }
 }
 
