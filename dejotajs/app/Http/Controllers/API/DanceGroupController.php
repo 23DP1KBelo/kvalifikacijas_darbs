@@ -44,7 +44,7 @@ class DanceGroupController extends Controller
         return DanceGroupResource::collection($danceGroups);
     }
 
-        public function groupListLeaderApproved()
+        public function groupListApprovedMember()
         {
             $userId = Auth::id();
 

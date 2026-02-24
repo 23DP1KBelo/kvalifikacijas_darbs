@@ -35,7 +35,7 @@ Route::middleware('auth')->group(function (){
     Route::post('/api/members', [DanceGroupMemberController::class, 'leaderStore']);
     Route::get('/api/profile', ProfileController::class);
     Route::get('/api/my-posts/{danceGroupId}', [PostController::class, 'myGroupPosts']);
-    Route::get('/api/groupListLeader', [DanceGroupController::class, 'groupListLeaderApproved']);
+    Route::get('/api/groupListApproved', [DanceGroupController::class, 'groupListApprovedMember']);
 });
 
 Route::middleware(['auth', 'admin'])->group(function () {
