@@ -96,7 +96,7 @@ class DanceGroupController extends Controller
      */
     public function show(DanceGroup $danceGroup)
     {
-        $danceGroup->load('ageGroups', 'members');
+        $danceGroup->load('members', 'ageGroups');
 
         return new DanceGroupResource($danceGroup);
     }

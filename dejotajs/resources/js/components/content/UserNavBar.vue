@@ -143,7 +143,9 @@ export default {
       this.isDark = !this.isDark;
       this.$vuetify.theme.global.name = this.isDark ? 'dark' : 'light';
     },
-    goTo(route) { this.drawer = false; this.$router.push(route); },
+    goTo(route) { 
+      this.drawer = false; this.$router.push(route); 
+    },
     async logout() {
       try {
         await fetch('/logout', {
@@ -181,10 +183,6 @@ export default {
 
       // Nosaka, vai lietotājs ir admins
       if (this.localUser.role === 'admin') this.isAdmin = true;
-
-      console.log('Local User:', this.localUser);
-      console.log('Leader groups:', this.leaderGroups);
-      console.log('Dancer groups:', this.dancerGroups);
 
     } catch (err) {
       console.error('Neizdevās ielādēt kolektīvus', err);

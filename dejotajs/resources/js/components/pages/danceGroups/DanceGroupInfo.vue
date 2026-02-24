@@ -1,0 +1,115 @@
+<template>
+  <v-container fluid class="pa-0">
+    <v-row justify="center" align="center" class="fill-height">
+      <v-col cols="10" md="8" lg="6" v-if="group">
+        <v-card elevation="2">
+            <v-card-title class="headline text-center">{{ group?.name }}</v-card-title>
+          <v-img
+            v-if="group?.picture_url"
+            :src="group.picture_url"
+            height="300"
+            class="white--text align-end"
+            gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)"
+          >
+          </v-img>
+
+          <v-card-subtitle class="mt-8">{{ group?.city }}, {{ group?.address }}</v-card-subtitle>
+
+          <v-card-text>
+            <v-divider class="my-4"></v-divider>
+            <p><strong>Dalībnieku skaits:</strong> {{ group?.members?.length || 0 }}</p>
+            <p>
+                <strong>Vadītāji:</strong>
+                {{ group?.leaders?.map(l => `${l.user.name} ${l.user.surname}`).join(', ') || 'Nav vadītāju' }}
+            </p>
+            <v-divider class="my-4"></v-divider>
+            
+            <p><strong>Žanrs:</strong> {{ translatedGenre || 'Nav norādīts' }}</p>
+            <p><strong>Apraksts:</strong> {{ group?.description || 'Nav apraksta' }}</p>
+
+            <v-divider class="my-4"></v-divider>
+
+            <p><strong>Vecuma grupas:</strong></p>
+            <ul>
+              <li v-for="ageGroup in group?.age_groups || []" :key="ageGroup.id">
+                {{ ageGroup.name }} ({{ ageGroup.age_group || 'Nav informācijas' }})
+              </li>
+              <li v-if="!(group?.age_groups?.length)">Nav vecuma grupu</li>
+            </ul>
+
+            <v-divider class="my-4"></v-divider>
+          </v-card-text>
+
+          <v-card-actions>
+            <v-btn class="bg-primary my-2 mx-2" @click="$router.back()">Atpakaļ</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-col>
+
+      <!-- Loading / fallback -->
+      <v-col cols="12" class="text-center" v-else>
+        <v-progress-circular indeterminate color="primary" size="64"></v-progress-circular>
+        <p>Ielādē kolektīva datus...</p>
+      </v-col>
+    </v-row>
+  </v-container>
+</template>
+
+<script>
+import axios from "axios";
+
+const genreMap = {
+    'lyrical dance': 'Liriskā deja',
+    'contemporary dance': 'Mūsdienīgās dejas',
+    'ballet': 'Balets',
+    'hip hop': 'Hip-hops',
+    'folk dance': 'Tautas dejas',
+    'other': 'Cits'
+};
+
+export default {
+  data() {
+    return {
+      group: null,
+    };
+  },
+  computed: {
+    translatedGenre() {
+      return this.group?.gener ? (genreMap[this.group.gener] || this.group.gener) : 'Nav norādīts';
+    }
+  },
+  mounted() {
+    this.fetchGroupInfo();
+  },
+  methods: {
+    fetchGroupInfo() {
+      const groupId = this.$route.params.id;
+      if (!groupId) return;
+
+      axios
+        .get(`/api/dance-group-info/${groupId}`)
+        .then((res) => {
+          this.group = res.data.data;
+          console.log("Loaded group:", this.group);
+        })
+        .catch((err) => console.error(err));
+    },
+  },
+};
+</script>
+
+<style scoped>
+.fill-height {
+  min-height: 100vh;
+}
+.v-card-title.headline {
+  font-size: 2rem;
+  font-weight: bold;
+}
+.v-card-text p {
+  margin-bottom: 0.5rem;
+}
+ul {
+  padding-left: 1.2rem;
+}
+</style>

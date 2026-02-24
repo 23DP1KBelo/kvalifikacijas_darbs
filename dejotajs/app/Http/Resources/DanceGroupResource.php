@@ -14,6 +14,9 @@ class DanceGroupResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        $members = $this->whenLoaded('members', function () {
+            return $this->members; 
+        });
         return [
             'id' => $this->id,
             'name' => $this->name,
@@ -29,8 +32,11 @@ class DanceGroupResource extends JsonResource
             'age_groups' => AgeGroupResource::collection(
                 $this->whenLoaded('ageGroups')
             ),
-            'members' => DanceGroupMemberResource::collection(
-                $this->whenLoaded('members')
+            'members' => DanceGroupMemberResource::collection($members),
+            'leaders' => DanceGroupMemberResource::collection(
+            $members instanceof \Illuminate\Support\Collection 
+                ? $members->filter(fn($member) => $member->role === 'leader') 
+                : collect()
             ),
         ];
     }

@@ -13,6 +13,7 @@ import LeaderForm from '../components/pages/LeaderForm.vue';
 import DanceGroupList from '../components/pages/danceGroups/DanceGroupList.vue';
 import LeaderApproval from '../components/pages/LeaderApproval.vue';
 import DanceGroupDashboard from '../components/pages/danceGroups/DanceGroupDashboard.vue';
+import DanceGroupInfo from '../components/pages/danceGroups/DanceGroupInfo.vue';
 
 const routes = [
     { path: '/', component: Home },
@@ -27,7 +28,8 @@ const routes = [
     { path: '/dance-leader', component: LeaderForm, meta: { requiresAuth: true } },
     { path: '/danceGroup-list', component: DanceGroupList, meta: {requiresAuth: true}},
     { path: '/leaderApproval/:id', component: LeaderApproval, meta: {requiresAuth: true, requiresLeader:true}},
-    { path: '/dance-groups', component: DanceGroupDashboard}
+    { path: '/dance-groups', component: DanceGroupDashboard},
+    { path: '/group-info/:id', component: DanceGroupInfo},
 ];
 
 const router = createRouter({
