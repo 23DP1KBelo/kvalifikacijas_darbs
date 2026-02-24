@@ -15,8 +15,8 @@
         </template>
 
         <v-list>
-          <v-list-item v-for="group in userGroups" :key="group.id"  @click="$router.push(`/group/${group.dance_group.id}`)">
-            <v-list-item-title>{{ group.dance_group.name || 'Nav kolektīvu' }}</v-list-item-title>
+          <v-list-item v-for="group in userGroups" :key="group.id"  @click="$router.push(`/group/${group.id}`)">
+            <v-list-item-title>{{ group.name || 'Nav kolektīvu' }}</v-list-item-title>
           </v-list-item>
         </v-list>
       </v-menu>
@@ -76,23 +76,23 @@
       <v-list-item
             v-for="group in leaderGroups"
             :key="group.id"
-            @click="$router.push(`/leaderApproval/${group.dance_group.id}`)"
+            @click="$router.push(`/leaderApproval/${group.id}`)"
             class="ml-4 cursor-pointer"
           >
-        <v-list-item-title>{{ group.dance_group.name || 'Nav kolektīvu' }}</v-list-item-title>
+        <v-list-item-title>{{ group.name || 'Nav kolektīvu' }}</v-list-item-title>
       </v-list-item>
       </v-list>
       <v-list-item @click="showGroups = !showGroups" class="cursor-pointer">
-        <v-list-item-title>Dalībnieku apstiprināšana</v-list-item-title>
+        <v-list-item-title>Dejotāju apstiprināšana</v-list-item-title>
       </v-list-item>
       <v-list v-if="showGroups">
       <v-list-item
             v-for="group in leaderGroups"
             :key="group.id"
-            @click="$router.push(`/dancerApproval/${group.dance_group.id}`)"
+            @click="$router.push(`/dancerApproval/${group.id}`)"
             class="ml-4 cursor-pointer"
           >
-        <v-list-item-title>{{ group.dance_group.name || 'Nav kolektīvu' }}</v-list-item-title>
+        <v-list-item-title>{{ group.name || 'Nav kolektīvu' }}</v-list-item-title>
       </v-list-item>
       </v-list>
     </v-list>
@@ -188,7 +188,14 @@ export default {
     try {
       const res = await axios.get('api/profile', { withCredentials: true });
       this.user.role = res.data.user.role;
-      this.userGroups = res.data.dance_group_members || []; 
+      // console.log('User role:', this.group.members.role);
+
+      const groupRes = await axios.get('/api/groupListLeader', { withCredentials: true });
+
+      this.userGroups = groupRes.data.data || [];
+
+      console.log('User groups:', this.userGroups);
+
 
       if (this.user.role === 'admin') {
         this.isAdmin = true;
@@ -199,11 +206,18 @@ export default {
     }
   },
   computed: {
+  // Pārbauda, vai lietotājs kādā no kolektīviem ir "leader" lomā
   isLeaderRole() {
-    return this.userGroups.some(group => group.role === 'leader');
+    return this.userGroups.some(group => 
+      group.members.some(member => member.role === 'leader')
+    );
   },
+
+  // Atgriež tikai tās grupas, kur lietotājs ir "leader"
   leaderGroups() {
-    return this.userGroups.filter(group => group.role === 'leader');
+    return this.userGroups.filter(group => 
+      group.members.some(member => member.role === 'leader')
+    );
   }
 }
 

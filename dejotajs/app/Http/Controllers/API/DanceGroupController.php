@@ -23,7 +23,7 @@ class DanceGroupController extends Controller
     }
 
     public function getAllGroups(){
-        $danceGroups = DanceGroup::where('status', 'approved') ->get();
+        $danceGroups = DanceGroup::where('status', 'approved')->get();
         $danceGroups->load('ageGroups', 'members');
         return DanceGroupResource::collection($danceGroups);
     }
@@ -44,6 +44,24 @@ class DanceGroupController extends Controller
         return DanceGroupResource::collection($danceGroups);
     }
 
+        public function groupListLeaderApproved()
+        {
+            $userId = Auth::id();
+
+            $danceGroups = DanceGroup::with(['members' => function($query) {
+                    $query->where('status', 'approved'); // tikai apstiprinātie dalībnieki
+                }])
+                ->join('dance_group_members', function ($join) use ($userId) {
+                    $join->on('dance_groups.id', '=', 'dance_group_members.dance_group_id')
+                        ->where('dance_group_members.user_id', '=', $userId);
+                })
+                ->where('dance_groups.status', 'approved') 
+                ->where('dance_group_members.status', 'approved')
+                ->select('dance_groups.*')
+                ->get();
+
+            return DanceGroupResource::collection($danceGroups);
+        }
     /**
      * Store a newly created resource in storage.
      */

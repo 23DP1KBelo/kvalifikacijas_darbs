@@ -5,14 +5,14 @@ import Login from '../components/pages/Login.vue';
 import Registration from '../components/pages/Registration.vue';
 import Profile from '../components/pages/Profile.vue';
 import AdminDashboard from '../components/pages/AdminDashboard.vue';
-import DanceGroupForm from '../components/pages/DanceGroupForm.vue';
-import DanceGroupPage from '../components/pages/DanceGroupPage.vue';
+import DanceGroupForm from '../components/pages/danceGroups/DanceGroupForm.vue';
+import DanceGroupPage from '../components/pages/danceGroups/DanceGroupPage.vue';
 import NoAccess from '../components/errors/NoAccess.vue';
 import DancerApproval from '../components/pages/DancerApproval.vue';
 import LeaderForm from '../components/pages/LeaderForm.vue';
-import DanceGroupList from '../components/pages/DanceGroupList.vue';
+import DanceGroupList from '../components/pages/danceGroups/DanceGroupList.vue';
 import LeaderApproval from '../components/pages/LeaderApproval.vue';
-import DanceGroupDashboard from '../components/pages/DanceGroupDashboard.vue';
+import DanceGroupDashboard from '../components/pages/danceGroups/DanceGroupDashboard.vue';
 
 const routes = [
     { path: '/', component: Home },
