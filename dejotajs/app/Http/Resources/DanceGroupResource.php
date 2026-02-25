@@ -15,8 +15,9 @@ class DanceGroupResource extends JsonResource
     public function toArray(Request $request): array
     {
         $members = $this->whenLoaded('members', function () {
-            return $this->members; 
+            return $this->members->load('appUser'); // ielādē saistīto lietotāju
         });
+
         return [
             'id' => $this->id,
             'name' => $this->name,
@@ -34,9 +35,9 @@ class DanceGroupResource extends JsonResource
             ),
             'members' => DanceGroupMemberResource::collection($members),
             'leaders' => DanceGroupMemberResource::collection(
-            $members instanceof \Illuminate\Support\Collection 
-                ? $members->filter(fn($member) => $member->role === 'leader') 
-                : collect()
+                $members instanceof \Illuminate\Support\Collection 
+                    ? $members->filter(fn($member) => $member->role === 'leader')
+                    : collect()
             ),
         ];
     }

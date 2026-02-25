@@ -61,7 +61,6 @@
       </v-list-item>
     </v-list>
 
-    <!-- Admin section -->
     <v-list v-if="isAdmin">
       <v-list-item class="bg-secondary mt-8">
         <v-list-item-title>Administratora lapas</v-list-item-title>
@@ -70,53 +69,52 @@
         <v-list-item-title>{{ link }}</v-list-item-title>
       </v-list-item>
     </v-list>
-<!-- Leader section -->
-<v-list v-if="leaderGroups.length > 0">
-  <v-list-item class="bg-secondary mt-8">
-    <v-list-item-title>Vadītāja lapas</v-list-item-title>
-  </v-list-item>
 
-  <v-list-item link @click="goTo('/danceForm')">
-    <v-list-item-title>Kolektīva izveide</v-list-item-title>
-  </v-list-item>
-
-  <v-list-item @click="showGroups = !showGroups" class="cursor-pointer">
-    <v-list-item-title>Vadītāju apstiprināšana</v-list-item-title>
-  </v-list-item>
-  <v-list v-if="showGroups">
-    <v-list-item v-for="group in leaderGroups" :key="group.id" @click="$router.push(`/leaderApproval/${group.id}`)" class="ml-4 cursor-pointer">
-      <v-list-item-title>{{ group.name || 'Nav kolektīvu' }}</v-list-item-title>
-    </v-list-item>
-  </v-list>
-
-  <v-list-item @click="showDancerGroups = !showDancerGroups" class="cursor-pointer">
-    <v-list-item-title>Dejotāju apstiprināšana</v-list-item-title>
-  </v-list-item>
-  <v-list v-if="showDancerGroups">
-    <v-list-item v-for="group in leaderGroups" :key="group.id" @click="$router.push(`/dancerApproval/${group.id}`)" class="ml-4 cursor-pointer">
-      <v-list-item-title>{{ group.name || 'Nav kolektīvu' }}</v-list-item-title>
-    </v-list-item>
-  </v-list>
-</v-list>
-
-<!-- Dancer section -->
-<v-list v-if="dancerGroups.length > 0">
+  <v-list v-if="leaderGroups.length > 0">
     <v-list-item class="bg-secondary mt-8">
-    <v-list-item-title>Dejotāja kolektīvi</v-list-item-title>
-  </v-list-item>
-  <v-list-item v-for="group in dancerGroups" :key="group.id" @click="$router.push(`/group/${group.id}`)">
-    <v-list-item-title>{{ group.name || 'Nav kolektīvu' }}</v-list-item-title>
-  </v-list-item>
-</v-list>
-  </v-navigation-drawer>
-</template>
+      <v-list-item-title>Vadītāja lapas</v-list-item-title>
+    </v-list-item>
+
+    <v-list-item link @click="goTo('/danceForm')">
+      <v-list-item-title>Kolektīva izveide</v-list-item-title>
+    </v-list-item>
+
+    <v-list-item @click="showGroups = !showGroups" class="cursor-pointer">
+      <v-list-item-title>Vadītāju apstiprināšana</v-list-item-title>
+    </v-list-item>
+    <v-list v-if="showGroups">
+      <v-list-item v-for="group in leaderGroups" :key="group.id" @click="$router.push(`/leaderApproval/${group.id}`)" class="ml-4 cursor-pointer">
+        <v-list-item-title>{{ group.name || 'Nav kolektīvu' }}</v-list-item-title>
+      </v-list-item>
+    </v-list>
+
+    <v-list-item @click="showDancerGroups = !showDancerGroups" class="cursor-pointer">
+      <v-list-item-title>Dejotāju apstiprināšana</v-list-item-title>
+    </v-list-item>
+    <v-list v-if="showDancerGroups">
+      <v-list-item v-for="group in leaderGroups" :key="group.id" @click="$router.push(`/dancerApproval/${group.id}`)" class="ml-4 cursor-pointer">
+        <v-list-item-title>{{ group.name || 'Nav kolektīvu' }}</v-list-item-title>
+      </v-list-item>
+    </v-list>
+  </v-list>
+
+  <v-list v-if="dancerGroups.length > 0">
+      <v-list-item class="bg-secondary mt-8">
+      <v-list-item-title>Dejotāja kolektīvi</v-list-item-title>
+    </v-list-item>
+    <v-list-item v-for="group in dancerGroups" :key="group.id" @click="$router.push(`/group/${group.id}`)">
+      <v-list-item-title>{{ group.name || 'Nav kolektīvu' }}</v-list-item-title>
+    </v-list-item>
+  </v-list>
+    </v-navigation-drawer>
+  </template>
 
 <script>
 import axios from 'axios';
 
 export default {
   props: { 
-    user: { type: Object, required: true } // props paliek nemainīgs
+    user: { type: Object, required: true } 
   },
   data() {
     return {
@@ -127,10 +125,10 @@ export default {
       drawer: false,
       isDark: false,
       isAdmin: false,
-      userGroups: [],    // visi apstiprinātie kolektīvi
-      leaderGroups: [],  // grupas, kur lietotājs ir leader
-      dancerGroups: [],  // grupas, kur lietotājs ir dejotājs
-      localUser: {},     // lokāla kopija props, ar kuru strādāsim
+      userGroups: [], 
+      leaderGroups: [],  
+      dancerGroups: [],  
+      localUser: {},     
       links: ['Sākums', 'Kolektīvi', 'Kalendārs', 'Uzņemšana'],
       linkRoutes: ['/', '/dance-groups', '/', '/'],
       adminLinks: ['Admin Panelis'],

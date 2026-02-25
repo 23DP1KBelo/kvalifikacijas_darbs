@@ -22,6 +22,7 @@ return new class extends Migration
             $table->enum('status', ['approved', 'declined', 'waiting'])->default('waiting');
             $table->enum('gener', ['lyrical dance', 'ballet', 'contemporary dance', 'folk dance', ' hip hop', 'other'])->default('other');
             $table->timestamps();
+            $table->timestamp('deleted_at')->nullable();
         });
     }
 

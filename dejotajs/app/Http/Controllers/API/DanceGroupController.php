@@ -122,4 +122,24 @@ class DanceGroupController extends Controller
 
         return new DanceGroupResource($danceGroup);
     }
+    public function search(Request $request)
+    {
+        $queryText = $request->input('q');
+
+        $danceGroups = DanceGroup::query()
+            ->when($queryText, function ($query) use ($queryText) {
+                $query->where('name', 'like', $queryText . '%')
+                    ->orWhereHas('members', fn($memberQuery) => $memberQuery
+                            ->where('role', 'leader')
+                            ->whereHas('appUser', fn($userQuery) => $userQuery
+                                ->where('name', 'like', $queryText . '%')
+                                ->orWhere('surname', 'like', $queryText . '%')
+                            )
+                    );
+            })
+            ->with(['members' => fn($q) => $q->where('role', 'leader')->with('appUser')])
+            ->get();
+
+        return DanceGroupResource::collection($danceGroups);
+    }
 }

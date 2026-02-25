@@ -12,9 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('dance_groups_in_events', function (Blueprint $table) {
-            $table->foreignId('dance_group_id')->constrained('dance_groups')->cascadeOnDelete();
-            $table->foreignId('event_id')->constrained('events')->cascadeOnDelete();
+            $table->foreignId('dance_group_id')->references('id')->on('dance_groups');
+            $table->foreignId('event_id')->references('id')->on('events');
             $table->timestamps();
+            $table->timestamp('deleted_at')->nullable();
         });
     }
 

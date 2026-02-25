@@ -16,8 +16,9 @@ return new class extends Migration
             $table->string('name');
             $table->text('age_group');
             $table->boolean('status_admission')->default(false);
-            $table->foreignId('dance_group_id')->constrained('dance_groups')->cascadeOnDelete();
+            $table->foreignId('dance_group_id')->references('id')->on('dance_groups');
             $table->timestamps();
+            $table->timestamp('deleted_at')->nullable();
         });
     }
 

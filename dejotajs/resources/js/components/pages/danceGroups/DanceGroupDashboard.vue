@@ -9,27 +9,44 @@
             clearable
             dense
             outlined
+            @input="searchGroups"
         ></v-text-field>
         </v-col>
     </v-container>
     <v-container fluid>
     <v-row dense>
-        <v-col v-for="group in groups" :key="group.id" cols="12" sm="4">
-        <v-card class="mx-8 my-4 bg-secondary" height="250px">
-            <v-card-title @click="goTo(`/group-info/${group.id}`)" style="cursor: pointer;" class="clickable-title">
-            {{ group.name }}
-            </v-card-title>
-            <v-card-subtitle>{{ group.city }}, {{ group.address }}</v-card-subtitle>
-            <v-img
-            v-if="group.picture_url"
-            :src="group.picture_url"
-            height="150px"
-            width="100%"
-            class="mb-2 mt-2"
-            contain
-            ></v-img>
-        </v-card>
-        </v-col>
+       <v-col v-for="group in groups" :key="group.id" cols="12" sm="4">
+  <v-card class="mx-8 my-4 bg-secondary" height="250px">
+
+    <v-card-title
+      @click="goTo(`/group-info/${group.id}`)"
+      style="cursor: pointer;"
+      class="clickable-title"
+    >
+      {{ group.name }}
+    </v-card-title>
+
+    <v-card-text>
+    {{ group.leaders?.length
+        ? group.leaders.map(l => `${l.user?.name || ''} ${l.user?.surname || ''}`).join(', ')
+        : 'Nav vadītāju' }}
+    </v-card-text>
+
+    <v-card-subtitle>
+      {{ group.city }}, {{ group.address }}
+    </v-card-subtitle>
+
+    <v-img
+      v-if="group.picture_url"
+      :src="group.picture_url"
+      height="150px"
+      width="100%"
+      class="mb-2 mt-2"
+      contain
+    />
+
+  </v-card>
+</v-col>
     </v-row>
     </v-container>
 </template>
@@ -54,6 +71,15 @@ export default{
         },
         goTo(route) { 
             this.$router.push(route); 
+        },
+        searchGroups() {
+            axios.get('/search-dance-groups', {
+                params: { q: this.searchQuery }
+            })
+            .then(res => {
+                this.groups = Array.isArray(res.data.data) ? res.data.data : [];
+            })
+            .catch(err => console.error(err));
         }
     },
     mounted(){

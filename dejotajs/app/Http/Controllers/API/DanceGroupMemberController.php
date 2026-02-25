@@ -9,7 +9,7 @@ use App\Http\Requests\DanceGroupMemberRequest;
 use App\Models\DanceGroup;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\DancerRequest;
-
+use Illuminate\Http\Request;
 class DanceGroupMemberController extends Controller
 {
     /**

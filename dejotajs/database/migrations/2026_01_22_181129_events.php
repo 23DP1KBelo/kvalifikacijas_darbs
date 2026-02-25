@@ -17,8 +17,9 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->string('location');
             $table->dateTime('date');
-            $table->foreignId('dance_group_member_id')->constrained('dance_group_members')->cascadeOnDelete();
+            $table->foreignId('dance_group_member_id')->references('id')->on('dance_group_members');
             $table->timestamps();
+            $table->timestamp('deleted_at')->nullable();
         });
     }
 

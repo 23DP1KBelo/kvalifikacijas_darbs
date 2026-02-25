@@ -15,6 +15,7 @@ Route::post('/login', Login::class);
 Route::post('/register',RegistrationController::class . '@register');
 Route::get('/danceGroups-all', [DanceGroupController::class, 'getAllGroups']);
 Route::get('/api/dance-group-info/{danceGroup}', [DanceGroupController::class, 'show']);
+Route::get('/search-dance-groups', [DanceGroupController::class, 'search']);
 
 Route::middleware('web')->get('/user', function () {
     return response()->json([

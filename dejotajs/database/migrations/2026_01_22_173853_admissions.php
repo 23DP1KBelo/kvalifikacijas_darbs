@@ -16,8 +16,9 @@ return new class extends Migration
             $table->string('name');
             $table->date('start_date');
             $table->date('end_date');
-            $table->foreignId('age_group_id')->constrained('age_groups')->cascadeOnDelete();
+            $table->foreignId('age_group_id')->references('id')->on('age_groups');
             $table->timestamps();
+            $table->timestamp('deleted_at')->nullable();
         });
     }
 

@@ -15,12 +15,11 @@ return new class extends Migration
             $table->id();
             $table->enum('status', ['approved', 'declined', 'waiting'])->default('waiting');
             $table->enum('role', ['dancer', 'leader'])->default('dancer');
-            $table->foreignId('user_id')->constrained('app_users')->cascadeOnDelete();
-            $table->foreignId('age_group_id')->nullable()->constrained('age_groups');
-                $table->foreignId('dance_group_id')
-          ->constrained('dance_groups')
-          ->onDelete('cascade');
+            $table->foreignId('user_id')->references('id')->on('app_users');
+            $table->foreignId('age_group_id')->nullable()->references('id')->on('age_groups');
+            $table->foreignId('dance_group_id')->references('id')->on('dance_groups');
             $table->timestamps();
+            $table->timestamp('deleted_at')->nullable();
         });
     }
 
