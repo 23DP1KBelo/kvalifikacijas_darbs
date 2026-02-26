@@ -75,7 +75,7 @@ export default {
   },
   computed: {
     translatedGenre() {
-      return this.group?.gener ? (genreMap[this.group.gener] || this.group.gener) : 'Nav norādīts';
+      return this.group?.genre ? (genreMap[this.group.genre] || this.group.genre) : 'Nav norādīts';
     }
   },
   mounted() {

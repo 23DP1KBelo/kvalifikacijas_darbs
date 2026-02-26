@@ -3,9 +3,11 @@
 namespace App\Models;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class AppUser extends Authenticatable
 {
+    use SoftDeletes;
     protected $table = 'app_users';
 
     protected $fillable = [

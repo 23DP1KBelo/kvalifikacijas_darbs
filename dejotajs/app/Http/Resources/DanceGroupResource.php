@@ -27,7 +27,7 @@ class DanceGroupResource extends JsonResource
             'picture_url' => $this->picture ? asset('storage/' . $this->picture) : null,
             'approval_url' => $this->approval ? asset('storage/' . $this->approval) : null,
             'status' => $this->status,
-            'gener' => $this->gener,
+            'genre' => $this->genre,
             'created_at' => $this->created_at,
 
             'age_groups' => AgeGroupResource::collection(

@@ -15,7 +15,7 @@ return new class extends Migration
             $table->foreignId('dance_group_id')->references('id')->on('dance_groups');
             $table->foreignId('event_id')->references('id')->on('events');
             $table->timestamps();
-            $table->timestamp('deleted_at')->nullable();
+            $table->softDeletes();
         });
     }
 

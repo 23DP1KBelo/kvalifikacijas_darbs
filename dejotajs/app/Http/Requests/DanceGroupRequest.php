@@ -26,7 +26,7 @@ class DanceGroupRequest extends FormRequest
             'description' => 'required|string|max:500',
             'city' => 'required|string|max:255',
             'address' => 'required|string|max:255',
-            'gener' => 'required|string|max:255',
+            'genre' => 'required|string|max:255',
             'picture' => 'nullable|file|mimes:jpg,jpeg,png|max:2048',     // max 2MB
             'approval' => 'required|file|mimes:pdf,doc,docx,jpg,jpeg,png|max:5120',   // max 5MB
         ];
@@ -42,7 +42,7 @@ class DanceGroupRequest extends FormRequest
             'city.max' => 'Pilsētas lauks nevar būt garāks par 255 rakstzīmēm.',
             'address.required' => 'Lūdzu, norādiet kolektīva adresi.',
             'adress.max' => 'Adreses lauks nevar būt garāks par 255 rakstzīmēm.',
-            'gener.required' => 'Lūdzu, norādiet kolektīva žanru.',
+            'genre.required' => 'Lūdzu, norādiet kolektīva žanru.',
             'picture.mimes' => 'Attēla failam ir jābūt šādos formātos jpg, jpeg, png.',
             'approval.required' => 'Lūdzu pievienojiet dokomentu, kas apliecina, ka kolektīvs pastāv.',
             'approval.mimes' => 'Apstiprinājuma failam ir jābūt kādā no šiem formātiem: pdf, doc, docx, jpg, jpeg, png.'

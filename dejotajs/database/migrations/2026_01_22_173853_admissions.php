@@ -18,7 +18,7 @@ return new class extends Migration
             $table->date('end_date');
             $table->foreignId('age_group_id')->references('id')->on('age_groups');
             $table->timestamps();
-            $table->timestamp('deleted_at')->nullable();
+            $table->softDeletes();
         });
     }
 

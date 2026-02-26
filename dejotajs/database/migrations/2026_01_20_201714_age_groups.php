@@ -18,7 +18,7 @@ return new class extends Migration
             $table->boolean('status_admission')->default(false);
             $table->foreignId('dance_group_id')->references('id')->on('dance_groups');
             $table->timestamps();
-            $table->timestamp('deleted_at')->nullable();
+            $table->softDeletes();
         });
     }
 

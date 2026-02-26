@@ -20,9 +20,9 @@ return new class extends Migration
             $table->string('picture')->nullable();
             $table->string('approval');
             $table->enum('status', ['approved', 'declined', 'waiting'])->default('waiting');
-            $table->enum('gener', ['lyrical dance', 'ballet', 'contemporary dance', 'folk dance', ' hip hop', 'other'])->default('other');
+            $table->enum('genre', ['lyrical dance', 'ballet', 'contemporary dance', 'folk dance', 'hip hop', 'other'])->default('other');
             $table->timestamps();
-            $table->timestamp('deleted_at')->nullable();
+            $table->softDeletes();
         });
     }
 

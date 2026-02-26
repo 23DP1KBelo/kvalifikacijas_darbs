@@ -19,7 +19,7 @@ return new class extends Migration
             $table->foreignId('age_group_id')->nullable()->references('id')->on('age_groups');
             $table->foreignId('dance_group_id')->references('id')->on('dance_groups');
             $table->timestamps();
-            $table->timestamp('deleted_at')->nullable();
+            $table->softDeletes();
         });
     }
 
