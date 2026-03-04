@@ -1,8 +1,8 @@
 <template>
   <h1 class="text-center mt-8">Deju kolektīvi</h1>
 
-  <v-container class="d-flex justify-center mb-4">
-    <v-col cols="12" sm="6" md="4">
+  <v-container class="mb-4" style="position: relative;">
+    <v-col cols="12" md="6" class="mx-auto">
       <v-text-field
         v-model="searchQuery"
         label="Meklēt kolektīvu"
@@ -10,9 +10,20 @@
         clearable
         dense
         outlined
+        class="text-center"
         @input="searchGroups"
       ></v-text-field>
     </v-col>
+
+    <v-btn
+      icon
+      color="primary"
+      @click="sortGroups"
+      :title="sortOrder === 'asc' ? 'Kārtot augošā secībā' : 'Kārtot dilstošā secībā'"
+      style="position: absolute; right: 0; top: 50%; transform: translateY(-50%);"
+    >
+      <v-icon small >{{ sortOrder === 'asc' ? 'mdi-arrow-up' : 'mdi-arrow-down' }}</v-icon>
+    </v-btn>
   </v-container>
 
   <v-container fluid>
@@ -46,7 +57,8 @@ export default {
   data() {
     return {
       groups: [],
-      searchQuery: ''
+      searchQuery: '',
+      sortOrder: 'asc' 
     }
   },
   methods: {
@@ -64,6 +76,20 @@ export default {
     searchGroups() {
       axios
         .get('/search-dance-groups', { params: { q: this.searchQuery } })
+        .then(res => {
+          this.groups = Array.isArray(res.data.data) ? res.data.data : []
+        })
+        .catch(err => console.error(err))
+    },
+    sortGroups() {
+      if (this.sortOrder === 'asc') {
+        this.sortOrder = 'desc'
+      } else {
+        this.sortOrder = 'asc'
+      }
+      
+      axios
+        .get(`/sort-dance-groups/${this.sortOrder}`)
         .then(res => {
           this.groups = Array.isArray(res.data.data) ? res.data.data : []
         })

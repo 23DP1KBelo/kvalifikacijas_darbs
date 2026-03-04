@@ -44,7 +44,14 @@ class DanceGroupController extends Controller
         return DanceGroupResource::collection($danceGroups);
     }
 
+    public function groupSorting($sort){
+        $danceGroups = DanceGroup::where('status', 'approved')
+            ->orderBy('name', $sort)
+            ->get();
 
+        $danceGroups->load('ageGroups', 'members');
+        return DanceGroupResource::collection($danceGroups);
+    }
 
     public function groupListApprovedMember()
     {
