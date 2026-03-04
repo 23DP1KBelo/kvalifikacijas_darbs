@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->text('description')->nullable();
+            $table->string('picture')->nullable();
             $table->boolean('private')->default(true);
             $table->foreignId('dance_group_member_id')->references('id')->on('dance_group_members');
             $table->timestamps();

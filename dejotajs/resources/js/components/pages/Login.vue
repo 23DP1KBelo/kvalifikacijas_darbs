@@ -1,6 +1,6 @@
 <template>
   <v-container class="d-flex justify-center align-center mt-8">
-        <v-card class=" bg-secondary" elevation="16" width="450px">
+        <v-card class=" bg-softblue" elevation="16" width="450px">
           <v-card-title class="text-h5 text-center py-4">Pieslēgšanās</v-card-title>
           <v-card-text>
             <v-form ref="form" v-model="valid" class="mt-4">
@@ -14,7 +14,7 @@
                   Pieslēgties
                 </v-btn>
                 <v-card-text class="mt-4">Neesi reģistrējies?</v-card-text>
-                <v-btn class="mb-4" color="primary" @click="$router.push('/register')">
+                <v-btn class="mb-4" color="secondary" @click="$router.push('/register')">
                   Reģistrēties
                 </v-btn>
               </div>

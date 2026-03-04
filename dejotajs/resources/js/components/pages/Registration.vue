@@ -1,6 +1,6 @@
 <template>
      <v-container class="d-flex justify-center align-center mt-8">
-        <v-card class=" bg-secondary" elevation="16" width="500px">
+        <v-card class=" bg-softblue" elevation="16" width="500px">
             <v-card-title class="text-center mb-4 mt-4">Reģistrēšanās</v-card-title>
             <v-card-text>
                 <v-form>
@@ -53,7 +53,8 @@ export default {
                     password: this.password,
                     phone_number: this.phone_number,
                 });
-                console.log(response.data);
+                this.$router.push('/login');
+                alert('Reģistrācija veiksmīga! Tagad varat pieslēgties.');
             }  catch (err) {
                 if (err.response && err.response.data && err.response.data.errors) {
                     this.error = Object.values(err.response.data.errors)

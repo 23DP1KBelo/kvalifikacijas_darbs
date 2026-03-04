@@ -29,6 +29,7 @@ class DanceGroupMemberController extends Controller
     public function store(DanceGroupMemberRequest $request)
     {
         $validated = $request->validated();
+        $validated['user_id'] = Auth::id(); 
 
         $member = DanceGroupMember::create($validated);
 
@@ -90,11 +91,17 @@ public function approveMember(DancerRequest $request)
         ], 422);
     }
 
+    $updateData = [
+        'status' => 'approved',
+    ];
+
+    if ($role !== 'leader') {
+        $updateData['age_group_id'] = $request->age_group_id;
+    }
+
     DanceGroupMember::where('id', $memberId)
         ->where('role', $role)
-        ->update([
-            'status' => 'approved'
-        ]);
+        ->update($updateData);
 
     return response()->json([
         'message' => 'ok'

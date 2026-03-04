@@ -14,6 +14,9 @@ import DanceGroupList from '../components/pages/danceGroups/DanceGroupList.vue';
 import LeaderApproval from '../components/pages/LeaderApproval.vue';
 import DanceGroupDashboard from '../components/pages/danceGroups/DanceGroupDashboard.vue';
 import DanceGroupInfo from '../components/pages/danceGroups/DanceGroupInfo.vue';
+import PostCreate from '../components/pages/PostCreate.vue';
+import PostsShow from '../components/pages/PostsShow.vue';
+import AgeGroupForm from '../components/pages/AgeGroupForm.vue';
 
 const routes = [
     { path: '/', component: Home },
@@ -30,6 +33,9 @@ const routes = [
     { path: '/leaderApproval/:id', component: LeaderApproval, meta: {requiresAuth: true, requiresLeader:true}},
     { path: '/dance-groups', component: DanceGroupDashboard},
     { path: '/group-info/:id', component: DanceGroupInfo},
+    { path: '/create-post/:id', component: PostCreate, meta: { requiresAuth: true }},
+    { path: '/posts', component: PostsShow },
+    { path: '/age-group-form/:id', component: AgeGroupForm, meta: { requiresAuth: true, requiresLeader: true }},
 ];
 
 const router = createRouter({

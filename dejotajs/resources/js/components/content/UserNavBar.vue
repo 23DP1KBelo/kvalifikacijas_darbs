@@ -1,120 +1,168 @@
 <template>
-  <v-app-bar :elevation="2" class="bg-primary">
-    <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
-    <v-app-bar-title class="app-bar-title text-center" @click="$router.push('/')" style="cursor: pointer;">
+  <v-app-bar elevation="2" class="bg-primary text-white d-flex justify-space-between">
+    <!-- Hamburger / Drawer toggle -->
+    <v-app-bar-nav-icon @click.stop="drawer = !drawer" class="text-white"></v-app-bar-nav-icon>
+
+    <!-- Title -->
+    <v-app-bar-title
+      class="app-bar-title text-h4 text-center clickable"
+      @click="$router.push('/')"
+    >
       Dejotājs
     </v-app-bar-title>
 
+    <!-- Right icons -->
     <div class="d-flex align-center">
       <!-- Group menu -->
-      <v-menu v-model="menuMessage" offset-y class="ms-3 p-0 m-0">
+      <v-menu v-model="menuMessage" offset-y class="ms-3">
         <template #activator="{ props, attrs }">
-          <v-btn icon v-bind="{ ...props, ...attrs }">
+          <v-btn icon v-bind="{ ...props, ...attrs }" class="text-white">
             <v-icon>mdi-message</v-icon>
           </v-btn>
         </template>
 
-        <v-list v-if="userGroups.length > 0">
-          <v-list-item v-for="group in userGroups" :key="group.id" @click="$router.push(`/group/${group.id}`)">
+        <v-list class="bg-surface rounded-lg">
+          <v-list-item
+            v-for="group in userGroups"
+            :key="group.id"
+            @click="$router.push(`/group/${group.id}`)"
+            class="hover-bg-softblue rounded-lg my-1"
+          >
             <v-list-item-title>{{ group.name || 'Nav kolektīvu' }}</v-list-item-title>
           </v-list-item>
-        </v-list>
 
-        <v-list v-else>
-          <v-list-item>
+          <v-list-item v-if="userGroups.length === 0" class="rounded-lg my-1">
             <v-list-item-title>Nav pievienotu kolektīvu</v-list-item-title>
           </v-list-item>
         </v-list>
       </v-menu>
 
       <!-- Profile menu -->
-      <v-menu v-model="menuProfile" offset-y class="ms-3 p-0 m-0">
+      <v-menu v-model="menuProfile" offset-y class="ms-3">
         <template #activator="{ props, attrs }">
-          <v-btn icon v-bind="{ ...props, ...attrs }">
+          <v-btn icon v-bind="{ ...props, ...attrs }" class="text-white">
             <v-icon>mdi-account-circle</v-icon>
           </v-btn>
         </template>
 
-        <v-list>
-          <v-list-item @click="$router.push('/profile')">
+        <v-list class="bg-surface rounded-lg">
+          <v-list-item @click="$router.push('/profile')" class="hover-bg-softblue rounded-lg my-1">
             <v-list-item-title>Profils</v-list-item-title>
           </v-list-item>
-          <v-list-item @click="$router.push('/dance-leader')">
+          <v-list-item @click="$router.push('/dance-leader')" class="hover-bg-softblue rounded-lg my-1">
             <v-list-item-title>Kļūt par vadītāju</v-list-item-title>
           </v-list-item>
-          <v-list-item @click="logout">
+          <v-list-item @click="logout" class="hover-bg-softblue rounded-lg my-1">
             <v-list-item-title>Iziet</v-list-item-title>
           </v-list-item>
         </v-list>
       </v-menu>
 
-      <v-btn icon @click="toggleTheme" class="me-3">
+      <!-- Theme toggle -->
+      <v-btn icon class="ms-3 text-white" @click="toggleTheme">
         <v-icon>{{ isDark ? 'mdi-white-balance-sunny' : 'mdi-weather-night' }}</v-icon>
       </v-btn>
     </div>
   </v-app-bar>
 
-  <v-navigation-drawer v-model="drawer" :location="$vuetify.display.mobile ? 'bottom' : undefined" temporary>
+  <!-- Navigation Drawer -->
+  <v-navigation-drawer
+    v-model="drawer"
+    :location="$vuetify.display.mobile ? 'bottom' : undefined"
+    temporary
+    class="bg-surface"
+  >
+    <!-- Main Links -->
     <v-list>
-      <v-list-item link v-for="(link, index) in links" :key="link" @click="goTo(linkRoutes[index])">
+      <v-list-item
+        link
+        v-for="(link, index) in links"
+        :key="link"
+        @click="goTo(linkRoutes[index])"
+        class="hover-bg-softblue rounded-lg my-1"
+      >
         <v-list-item-title>{{ link }}</v-list-item-title>
       </v-list-item>
     </v-list>
 
-    <v-list v-if="isAdmin">
-      <v-list-item class="bg-secondary mt-8">
+    <!-- Admin Links -->
+    <v-list v-if="isAdmin" class="mt-6">
+      <v-list-item class="bg-secondary rounded-lg px-2 py-1">
         <v-list-item-title>Administratora lapas</v-list-item-title>
       </v-list-item>
-      <v-list-item link v-for="(link, index) in adminLinks" :key="link" @click="goTo(adminRoutes[index])">
+      <v-list-item
+        link
+        v-for="(link, index) in adminLinks"
+        :key="link"
+        @click="goTo(adminRoutes[index])"
+        class="hover-bg-softblue rounded-lg my-1"
+      >
         <v-list-item-title>{{ link }}</v-list-item-title>
       </v-list-item>
     </v-list>
 
-  <v-list v-if="leaderGroups.length > 0">
-    <v-list-item class="bg-secondary mt-8">
-      <v-list-item-title>Vadītāja lapas</v-list-item-title>
-    </v-list-item>
+    <!-- Leader Links -->
+    <v-list v-if="leaderGroups.length > 0" class="mt-6">
+      <v-list-item class="bg-secondary rounded-lg px-2 py-1">
+        <v-list-item-title>Vadītāja lapas</v-list-item-title>
+      </v-list-item>
 
-    <v-list-item link @click="goTo('/danceForm')">
-      <v-list-item-title>Kolektīva izveide</v-list-item-title>
-    </v-list-item>
+      <v-list-item link @click="goTo('/danceForm')" class="hover-bg-softblue rounded-lg my-1">
+        <v-list-item-title>Kolektīva izveide</v-list-item-title>
+      </v-list-item>
 
-    <v-list-item @click="showGroups = !showGroups" class="cursor-pointer">
-      <v-list-item-title>Vadītāju apstiprināšana</v-list-item-title>
-    </v-list-item>
-    <v-list v-if="showGroups">
-      <v-list-item v-for="group in leaderGroups" :key="group.id" @click="$router.push(`/leaderApproval/${group.id}`)" class="ml-4 cursor-pointer">
+      <v-list-item @click="showGroups = !showGroups" class="cursor-pointer hover-bg-softblue">
+        <v-list-item-title>Vadītāju apstiprināšana</v-list-item-title>
+      </v-list-item>
+      <v-list v-if="showGroups">
+        <v-list-item
+          v-for="group in leaderGroups"
+          :key="group.id"
+          @click="$router.push(`/leaderApproval/${group.id}`)"
+          class="ml-4 hover-bg-softblue rounded-lg my-1"
+        >
+          <v-list-item-title>{{ group.name || 'Nav kolektīvu' }}</v-list-item-title>
+        </v-list-item>
+      </v-list>
+
+      <v-list-item @click="showDancerGroups = !showDancerGroups" class="cursor-pointer hover-bg-softblue rounded-lg my-1">
+        <v-list-item-title>Dejotāju apstiprināšana</v-list-item-title>
+      </v-list-item>
+      <v-list v-if="showDancerGroups">
+        <v-list-item
+          v-for="group in leaderGroups"
+          :key="group.id"
+          @click="$router.push(`/dancerApproval/${group.id}`)"
+          class="ml-4 hover-bg-softblue rounded-lg my-1"
+        >
+          <v-list-item-title>{{ group.name || 'Nav kolektīvu' }}</v-list-item-title>
+        </v-list-item>
+      </v-list>
+    </v-list>
+
+    <!-- Dancer Links -->
+    <v-list v-if="dancerGroups.length > 0" class="mt-6">
+      <v-list-item class="bg-secondary rounded-lg px-2 py-1">
+        <v-list-item-title>Dejotāja kolektīvi</v-list-item-title>
+      </v-list-item>
+      <v-list-item
+        v-for="group in dancerGroups"
+        :key="group.id"
+        @click="$router.push(`/group/${group.id}`)"
+        class="hover-bg-softblue rounded-lg my-1"
+      >
         <v-list-item-title>{{ group.name || 'Nav kolektīvu' }}</v-list-item-title>
       </v-list-item>
     </v-list>
-
-    <v-list-item @click="showDancerGroups = !showDancerGroups" class="cursor-pointer">
-      <v-list-item-title>Dejotāju apstiprināšana</v-list-item-title>
-    </v-list-item>
-    <v-list v-if="showDancerGroups">
-      <v-list-item v-for="group in leaderGroups" :key="group.id" @click="$router.push(`/dancerApproval/${group.id}`)" class="ml-4 cursor-pointer">
-        <v-list-item-title>{{ group.name || 'Nav kolektīvu' }}</v-list-item-title>
-      </v-list-item>
-    </v-list>
-  </v-list>
-
-  <v-list v-if="dancerGroups.length > 0">
-      <v-list-item class="bg-secondary mt-8">
-      <v-list-item-title>Dejotāja kolektīvi</v-list-item-title>
-    </v-list-item>
-    <v-list-item v-for="group in dancerGroups" :key="group.id" @click="$router.push(`/group/${group.id}`)">
-      <v-list-item-title>{{ group.name || 'Nav kolektīvu' }}</v-list-item-title>
-    </v-list-item>
-  </v-list>
-    </v-navigation-drawer>
-  </template>
+  </v-navigation-drawer>
+</template>
 
 <script>
 import axios from 'axios';
 
 export default {
-  props: { 
-    user: { type: Object, required: true } 
+  props: {
+    user: { type: Object, required: true },
   },
   data() {
     return {
@@ -125,71 +173,76 @@ export default {
       drawer: false,
       isDark: false,
       isAdmin: false,
-      userGroups: [], 
-      leaderGroups: [],  
-      dancerGroups: [],  
-      localUser: {},     
-      links: ['Sākums', 'Kolektīvi', 'Kalendārs', 'Uzņemšana'],
-      linkRoutes: ['/', '/dance-groups', '/', '/'],
+      userGroups: [],
+      leaderGroups: [],
+      dancerGroups: [],
+      localUser: {},
+      links: ['Sākums','Aktualitātes', 'Kolektīvi', 'Kalendārs', 'Uzņemšana'],
+      linkRoutes: ['/', '/posts','/dance-groups', '/', '/'],
       adminLinks: ['Admin Panelis'],
-      adminRoutes: ['/dashboard']
+      adminRoutes: ['/dashboard'],
     };
   },
   methods: {
-    toggleDrawer() { this.drawer = !this.drawer; },
     toggleTheme() {
       this.isDark = !this.isDark;
       this.$vuetify.theme.global.name = this.isDark ? 'dark' : 'light';
     },
-    goTo(route) { 
-      this.drawer = false; this.$router.push(route); 
+    goTo(route) {
+      this.drawer = false;
+      this.$router.push(route);
     },
     async logout() {
       try {
         await fetch('/logout', {
           method: 'POST',
           credentials: 'include',
-          headers: { 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content') }
+          headers: {
+            'X-CSRF-TOKEN': document
+              .querySelector('meta[name="csrf-token"]')
+              .getAttribute('content'),
+          },
         });
         this.$root.loggedIn = false;
         this.$root.user = null;
         this.$router.push('/login');
-      } catch (e) { console.error('Logout failed', e); }
-    }
+      } catch (e) {
+        console.error('Logout failed', e);
+      }
+    },
   },
   async mounted() {
     try {
-      // Iegūstam lietotāja profila datus no API
       const res = await axios.get('api/profile', { withCredentials: true });
-      this.localUser = res.data.user; // strādājam ar lokālo kopiju, nevis props
+      this.localUser = res.data.user;
 
-      // Ielādē visus apstiprinātos kolektīvus
       const groupRes = await axios.get('/api/groupListApproved', { withCredentials: true });
       const groups = groupRes.data.data || [];
 
       this.userGroups = groups;
-
-      // Filtrē vadītāja grupas
-      this.leaderGroups = groups.filter(g =>
-        g.members.some(m => m.user.id === this.localUser.id && m.role === 'leader')
+      this.leaderGroups = groups.filter((g) =>
+        g.members.some((m) => m.user.id === this.localUser.id && m.role === 'leader')
+      );
+      this.dancerGroups = groups.filter((g) =>
+        g.members.some((m) => m.user.id === this.localUser.id && m.role !== 'leader')
       );
 
-      // Filtrē dejotāja grupas (kas nav leader)
-      this.dancerGroups = groups.filter(g =>
-        g.members.some(m => m.user.id === this.localUser.id && m.role !== 'leader')
-      );
-
-      // Nosaka, vai lietotājs ir admins
       if (this.localUser.role === 'admin') this.isAdmin = true;
-
     } catch (err) {
       console.error('Neizdevās ielādēt kolektīvus', err);
     }
   },
-  computed: {
-    isLeaderRole() {
-      return this.leaderGroups.length > 0;
-    }
-  }
 };
 </script>
+
+<style>
+.clickable {
+  cursor: pointer;
+}
+.hover-bg-softblue:hover {
+  background-color: #B3CFE5 !important; /* tavu theme softblue */
+}
+.rounded-lg {
+  border-radius: 12px;
+}
+</style>

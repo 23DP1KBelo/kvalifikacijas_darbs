@@ -11,7 +11,7 @@ class AgeGroup extends Model
         'name',
         'age_group',
         'status_admission',
-        'dance_group_id'
+        'dance_group_id',
     ];
 
     public function danceGroup(){

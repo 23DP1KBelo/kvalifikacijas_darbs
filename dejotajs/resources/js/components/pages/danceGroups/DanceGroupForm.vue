@@ -1,6 +1,6 @@
 <template>
      <v-container class="d-flex justify-center align-center mt-8">
-        <v-card class=" bg-secondary" elevation="16" width="500px">
+        <v-card class=" bg-softblue" elevation="16" width="500px">
             <v-card-title class="text-center mb-4 mt-4">Kolektīva reģistrēšanāna</v-card-title>
             <v-card-text>
                 <v-form>
@@ -54,42 +54,43 @@ export default {
 
   methods: {
     async submitForm() {
-  try {
-    const formData = new FormData()
+      try {
+        const formData = new FormData()
 
-    formData.append('name', this.name)
-    formData.append('description', this.description)
-    formData.append('city', this.city)
-    formData.append('address', this.address)
-    formData.append('gener', this.selectedGenre)
+        formData.append('name', this.name)
+        formData.append('description', this.description)
+        formData.append('city', this.city)
+        formData.append('address', this.address)
+        formData.append('genre', this.selectedGenre)
 
-    if (this.picture) {
-    formData.append('picture', this.picture)
-    }
+        if (this.picture) {
+        formData.append('picture', this.picture)
+        }
 
-    if (this.approval) {
-    formData.append('approval', this.approval)
-    }
+        if (this.approval) {
+        formData.append('approval', this.approval)
+        }
 
 
-    const response = await axios.post(
-      'api/danceGroups',
-      formData,
-      { withCredentials: true }
-    )
+        const response = await axios.post(
+          'api/danceGroups',
+          formData,
+          { withCredentials: true }
+        )
 
-    alert("Kolektīvs veiksmīgi reģistrēts!")
+        alert("Kolektīvs veiksmīgi reģistrēts!")
+        this.$router.push('/')
 
-  } catch (err) {
-    if (err.response && err.response.data && err.response.data.errors) {
-      this.error = Object.values(err.response.data.errors).flat().join(' ');
-    } else if (err.response && err.response.data && err.response.data.message) {
-      this.error = err.response.data.message;
-    } else {
-      this.error = 'Nezināma kļūda. Mēģiniet vēlreiz.';
-    }
+      } catch (err) {
+        if (err.response && err.response.data && err.response.data.errors) {
+          this.error = Object.values(err.response.data.errors).flat().join(' ');
+        } else if (err.response && err.response.data && err.response.data.message) {
+          this.error = err.response.data.message;
+        } else {
+          this.error = 'Nezināma kļūda. Mēģiniet vēlreiz.';
+        }
+      }
   }
-}
 
 }
 }

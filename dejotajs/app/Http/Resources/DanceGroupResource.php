@@ -36,7 +36,12 @@ class DanceGroupResource extends JsonResource
             'members' => DanceGroupMemberResource::collection($members),
             'leaders' => DanceGroupMemberResource::collection(
                 $members instanceof \Illuminate\Support\Collection 
-                    ? $members->filter(fn($member) => $member->role === 'leader')
+                    ? $members->filter(fn($member) => $member->role === 'leader' && $member->status === 'approved')
+                    : collect()
+            ),
+            'dancers' => DanceGroupMemberResource::collection(
+                $members instanceof \Illuminate\Support\Collection 
+                    ? $members->filter(fn($member) => $member->role === 'dancer')
                     : collect()
             ),
         ];

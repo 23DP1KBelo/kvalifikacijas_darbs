@@ -15,6 +15,7 @@ class AgeGroupResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
+            'id' => $this->id,
             'name' => $this->name,
             'age_group' => $this->age_group,
             'status_admission' => $this->status_admission,

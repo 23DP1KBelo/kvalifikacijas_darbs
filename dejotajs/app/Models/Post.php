@@ -12,6 +12,8 @@ class Post extends Model
         'title', 
         'description',
         'dance_group_member_id',
+        'picture',
+        'private',
     ];
 
     public function danceGroupMember(){

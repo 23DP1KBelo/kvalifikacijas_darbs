@@ -44,25 +44,27 @@ class DanceGroupController extends Controller
         return DanceGroupResource::collection($danceGroups);
     }
 
-        public function groupListApprovedMember()
-        {
-            $userId = Auth::id();
 
-            $danceGroups = DanceGroup::with(['members' => function($query) {
-                    $query->where('status', 'approved'); // tikai apstiprinātie dalībnieki
-                }])
-                ->join('dance_group_members', function ($join) use ($userId) {
-                    $join->on('dance_groups.id', '=', 'dance_group_members.dance_group_id')
-                        ->where('dance_group_members.user_id', '=', $userId);
-                })
-                ->where('dance_groups.status', 'approved') 
-                ->where('dance_group_members.status', 'approved')
-                ->select('dance_groups.*')
-                ->get();
 
-            return DanceGroupResource::collection($danceGroups);
-        }
-    /**
+    public function groupListApprovedMember()
+    {
+        $userId = Auth::id();
+
+        $danceGroups = DanceGroup::with(['members' => function($query) {
+                $query->where('status', 'approved'); // tikai apstiprinātie dalībnieki
+            }])
+            ->join('dance_group_members', function ($join) use ($userId) {
+                $join->on('dance_groups.id', '=', 'dance_group_members.dance_group_id')
+                    ->where('dance_group_members.user_id', '=', $userId);
+            })
+            ->where('dance_groups.status', 'approved') 
+            ->where('dance_group_members.status', 'approved')
+            ->select('dance_groups.*')
+            ->get();
+
+        return DanceGroupResource::collection($danceGroups);
+    }
+/**
      * Store a newly created resource in storage.
      */
     public function store(DanceGroupRequest $request)
@@ -94,13 +96,18 @@ class DanceGroupController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(DanceGroup $danceGroup)
-    {
-        $danceGroup->load('members', 'ageGroups');
+public function show(DanceGroup $danceGroup)
+{
+    $danceGroup->load([
+        'members' => function ($query) {
+            $query->where('status', 'approved')
+                  ->with('appUser');
+        },
+        'ageGroups'
+    ]);
 
-        return new DanceGroupResource($danceGroup);
-    }
-
+    return new DanceGroupResource($danceGroup);
+}
     /**
      * Update the specified resource in storage.
      */

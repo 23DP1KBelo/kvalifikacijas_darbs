@@ -2,25 +2,38 @@
   <v-container fluid class="pa-0">
     <v-row justify="center" align="center" class="fill-height">
       <v-col cols="10" md="8" lg="6" v-if="group">
-        <v-card elevation="2">
-            <v-card-title class="headline text-center">{{ group?.name }}</v-card-title>
+        <v-card elevation="2" class="mt-8">
+
           <v-img
             v-if="group?.picture_url"
             :src="group.picture_url"
-            height="300"
-            class="white--text align-end"
-            gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)"
-          >
+            height="500"
+            class="card-full-image"
+            cover>
+
           </v-img>
+
+          <div v-if="canJoinGroup" class="d-flex justify-end mx-4">
+            <v-btn class="mt-4 bg-secondary" @click="joinGroup()">
+              Pievienoties kolektīvam
+            </v-btn>
+          </div>
+
+          <div v-if="!canJoinGroup" class="d-flex justify-end mx-4 mt-4">
+            <p>Kolektīvam nav iespējams pievienoties</p>
+          </div>
+
+
+          <v-divider class="my-4"></v-divider>
 
           <v-card-subtitle class="mt-8">{{ group?.city }}, {{ group?.address }}</v-card-subtitle>
 
           <v-card-text>
             <v-divider class="my-4"></v-divider>
-            <p><strong>Dalībnieku skaits:</strong> {{ group?.members?.length || 0 }}</p>
+            <p><strong>Dalībnieku skaits:</strong> {{ group?.dancers?.length || 0 }}</p>
             <p>
-                <strong>Vadītāji:</strong>
-                {{ group?.leaders?.map(l => `${l.user.name} ${l.user.surname}`).join(', ') || 'Nav vadītāju' }}
+              <strong>Vadītāji:</strong>
+              {{ group?.leaders?.map(l => `${l.user.name} ${l.user.surname}`).join(', ') || 'Nav vadītāju' }}
             </p>
             <v-divider class="my-4"></v-divider>
             
@@ -59,24 +72,53 @@
 import axios from "axios";
 
 const genreMap = {
-    'lyrical dance': 'Liriskā deja',
-    'contemporary dance': 'Mūsdienīgās dejas',
-    'ballet': 'Balets',
-    'hip hop': 'Hip-hops',
-    'folk dance': 'Tautas dejas',
-    'other': 'Cits'
+  'lyrical dance': 'Liriskā deja',
+  'contemporary dance': 'Mūsdienīgās dejas',
+  'ballet': 'Balets',
+  'hip hop': 'Hip-hops',
+  'folk dance': 'Tautas dejas',
+  'other': 'Cits'
 };
 
 export default {
   data() {
     return {
       group: null,
+      ageGroups: [],
     };
   },
   computed: {
     translatedGenre() {
       return this.group?.genre ? (genreMap[this.group.genre] || this.group.genre) : 'Nav norādīts';
-    }
+    },
+     canJoinGroup() {
+      if (!this.ageGroups || this.ageGroups.length === 0) return false;
+
+      const userId = this.$root.user?.id;
+      if (!userId) return false;
+
+      return !this.group.leaders?.some(leader => leader.user.id === userId);
+    },
+    joinGroup() {
+    const groupId = this.$route.params.id;
+    if (!groupId) return;
+
+    const userId = this.$root.user?.id;
+
+    axios.post('/api/members/join', {
+        user_id: userId,
+        dance_group_id: groupId
+      }, 
+      { withCredentials: true }
+    )
+    .then(res => {
+      alert('Vadītājs saņems paziņojumu un apstiprinās Jūsu dalību.');
+    })
+    .catch(err => {
+      console.error(err.response?.data); 
+      alert(err.response?.data?.message || 'Neizdevās pievienoties.');
+    });
+  }
   },
   mounted() {
     this.fetchGroupInfo();
@@ -85,16 +127,18 @@ export default {
     fetchGroupInfo() {
       const groupId = this.$route.params.id;
       if (!groupId) return;
-
       axios
         .get(`/api/dance-group-info/${groupId}`)
         .then((res) => {
           this.group = res.data.data;
-          console.log("Loaded group:", this.group);
+          if(this.group.age_groups) {
+            this.ageGroups = this.group.age_groups;
+            console.log(this.ageGroups);
+          }
         })
         .catch((err) => console.error(err));
     },
-  },
+  }
 };
 </script>
 
@@ -112,4 +156,10 @@ export default {
 ul {
   padding-left: 1.2rem;
 }
+
+.card-full-image {
+  width: 100%;
+  object-fit: cover;
+}
+
 </style>

@@ -4,10 +4,10 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Models\AgeGroup;
-use Illuminate\Http\Request;
 use App\Http\Resources\AgeGroupResource;
 use App\Http\Requests\AgeGroupRequest;
-
+use App\Models\DanceGroupMember;
+use Illuminate\Support\Facades\Auth;
 
 class AgeGroupController extends Controller
 {
@@ -26,11 +26,14 @@ class AgeGroupController extends Controller
      */
     public function store(AgeGroupRequest $request)
     {
+        // Validēt pārējos laukus (name, age_group)
         $validated = $request->validated();
 
         $ageGroup = AgeGroup::create($validated);
 
-        return (new AgeGroupResource($ageGroup))->response()->setStatusCode(201);
+        return (new AgeGroupResource($ageGroup))
+            ->response()
+            ->setStatusCode(201);
     }
     
 

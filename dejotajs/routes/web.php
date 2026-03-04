@@ -10,6 +10,7 @@ use App\Http\Controllers\Auth\ProfileController;
 use App\Http\Controllers\API\PostController;
 use App\Http\Controllers\API\DanceGroupMemberController;
 use App\Http\Controllers\API\DanceGroupController;
+use App\Http\Controllers\API\AgeGroupController;
 
 Route::post('/login', Login::class);
 Route::post('/register',RegistrationController::class . '@register');
@@ -38,6 +39,7 @@ Route::middleware('auth')->group(function (){
     Route::get('/api/profile', ProfileController::class);
     Route::get('/api/my-posts/{danceGroupId}', [PostController::class, 'myGroupPosts']);
     Route::get('/api/groupListApproved', [DanceGroupController::class, 'groupListApprovedMember']);
+    Route::post('/api/members/join', [DanceGroupMemberController::class, 'store']);
 });
 
 Route::middleware(['auth', 'admin'])->group(function () {
@@ -63,6 +65,10 @@ Route::middleware(['auth', 'leader'])->group(function () {
     Route::post('/approval-leader', [DanceGroupMemberController::class, 'approveMember']);
 
     Route::post('/decline-leader', [DanceGroupMemberController::class, 'declineMember']);
+
+    Route::post('/posts', [PostController::class, 'store']);
+
+    Route::post('/api/ageGroups/create', [AgeGroupController::class, 'store']);
 });
 
 Route::get('/{any}', function () {

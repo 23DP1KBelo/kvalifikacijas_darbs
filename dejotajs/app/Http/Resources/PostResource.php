@@ -18,8 +18,9 @@ class PostResource extends JsonResource
             'id' => $this->id,
             'title' => $this->title,
             'description' => $this->description,
+            'private' => $this->private === 1 ? 'Privāts' : 'publisks',
+            'picture' => $this->picture ? asset('storage/' . $this->picture) : null,
             'created_at' => $this->created_at,
-
             'dance_group_member' => [
                 'user' => [
                     'name' => $this->danceGroupMember->appUser?->name,

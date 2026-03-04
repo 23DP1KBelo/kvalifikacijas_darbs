@@ -24,7 +24,6 @@ class DancerRequest extends FormRequest
         return [
             'role' => 'required',
             'user_id' => 'required|integer|exists:app_users,id',
-            'age_group_id' => 'required_unless:role,leader|integer|exists:age_groups,id',
             'dance_group_id' => 'required|integer|exists:dance_groups,id',
         ];
     }

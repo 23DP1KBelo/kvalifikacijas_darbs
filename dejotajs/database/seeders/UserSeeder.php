@@ -19,23 +19,13 @@ class UserSeeder extends Seeder
         $faker = Faker::create('lv_LV');
 
         AppUser::create([
-            'name' => 'Ambera',
-            'surname' => 'Gausiņa',
-            'email' => 'ambis@gmail.com',
+            'name' => 'Admin',
+            'surname' => '1',
+            'email' => 'admin@dejotajs.com',
             'password' => Hash::make('Menestins,1'),
             'phone_number' => '+37129292924',
             'role' => 'admin',
         ]);
 
-         for ($i = 1; $i <= 10; $i++) {
-            AppUser::create([
-                'name' => $faker->firstName,
-                'surname' => $faker->lastName,
-                'email' => strtolower($faker->firstName.'.'.$faker->lastName.$i.'@test.lv'),
-                'password' => $password,
-                'phone_number' => $faker->phoneNumber(),
-                'role' => 'user'
-            ]);
-        }
     }
 }

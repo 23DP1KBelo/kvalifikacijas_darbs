@@ -20,9 +20,5 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->call(UserSeeder::class);
-        $this->call(DanceGroupSeeder::class);
-        $this->call(AgeGroupSeeder::class);
-        $this->call(DanceGroupMemberSeeder::class);
-
     }
 }

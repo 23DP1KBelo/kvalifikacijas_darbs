@@ -16,13 +16,15 @@ export default {
     return {
       links: [
         'Sākums', 
-        'Kolektīvi', 
+        'Kolektīvi',
+        'Aktualitātes', 
         'Kalendārs', 
         'Uzņemšana',
       ],
       linkRoutes: [
         '/', 
         '/dance-groups', 
+        '/posts',
         '/', 
         '/'
       ],

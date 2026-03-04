@@ -1,16 +1,48 @@
 <template>
-    <v-container>
-        <h1 class="text-center mt-8">Lietotāja profils</h1>
-        <v-card class="mx-auto my-8 pb-7" color="primary" elevation="16" max-width="600">
-            <v-card-title :location="$vuetify.display.mobile ? 'text-h5' : 'text-h4'" >Lietotājs: {{ user.name }} {{ user.surname }}</v-card-title>
-            <v-card-text>E-pasts: {{ user.email }}</v-card-text>
-            <div v-for="group in user.dance_groups" :key="group.id">
-                <v-card-text class="text-center"> Kolektīvs: {{ group.name }}</v-card-text>
-                <v-card-subtitle v-if="group.role === 'dancer'"  class="text-center">Dejotājs, Vecuma grupa: {{ group.age_group }}</v-card-subtitle>
-                <v-card-subtitle v-else-if="group.role === 'leader'" class="text-center">Vadītājs</v-card-subtitle>
-            </div>
+  <v-container class="py-8">
+    <h1 class="text-center mb-8 text-primary">Lietotāja profils</h1>
+
+    <v-row justify="center">
+      <v-col cols="12" md="8">
+        <v-card color="primary" elevation="16" class="mx-auto mb-6 pa-6">
+          <v-card-title class="text-center text-h4 text-white">
+            {{ user.name }} {{ user.surname }}
+          </v-card-title>
+          <v-card-text class="text-center text-white mb-4">
+            E-pasts: {{ user.email }}
+          </v-card-text>
+
+          <v-divider class="my-4" />
+
+          <div v-if="approvedGroups.length === 0" class="text-center text-white">
+            Šobrīd nav apstiprinātu kolektīvu.
+          </div>
+
+          <v-row v-else>
+            <v-col
+              v-for="group in approvedGroups"
+              :key="group.id"
+              cols="12"
+              sm="6"
+              class="d-flex justify-center"
+            >
+              <v-card class="pa-4 w-100" elevation="8">
+                <v-card-title class="text-h6 text-center">{{ group.name }}</v-card-title>
+                <v-card-subtitle class="text-center">
+                  <template v-if="group.role === 'leader'">
+                    Vadītājs
+                  </template>
+                  <template v-else>
+                    Dejotājs, Vecuma grupa: {{ group.age_group || 'Nav norādīta' }}
+                  </template>
+                </v-card-subtitle>
+              </v-card>
+            </v-col>
+          </v-row>
         </v-card>
-    </v-container>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <script>
@@ -28,6 +60,12 @@ export default {
       error: ''
     }
   },
+  computed: {
+    approvedGroups() {
+      // Filtrē tikai tos kolektīvus, kur member.status === 'approved'
+      return this.user.dance_groups.filter(g => g.status === 'approved');
+    }
+  },
   async mounted() {
     try {
       const res = await axios.get('api/profile', { withCredentials: true });
@@ -35,19 +73,22 @@ export default {
       this.user.name = res.data.user.name;
       this.user.surname = res.data.user.surname;
       this.user.email = res.data.user.email;
-      this.user.role = res.data.user.role;
 
+      // Pārveidojam tikai apstiprinātās dalības
       this.user.dance_groups = res.data.dance_group_members.map(member => ({
         id: member.dance_group.id,
         name: member.dance_group.name,
         role: member.role,
-        age_group: member.age_group?.age_group || null
+        age_group: member.age_group?.age_group || null,
+        status: member.status // saglabājam statusu, lai filtrētu
       }));
 
-    }  catch (err) {
+    } catch (err) {
       this.error = 'Neizdevās ielādēt profilu';
       console.error(err);
     }
   }
 }
 </script>
+
+
