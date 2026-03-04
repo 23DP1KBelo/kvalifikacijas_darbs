@@ -16,7 +16,7 @@ class DanceGroup extends Model
         'picture',
         'approval',
         'status',
-        'gener',
+        'genre',
         'created_at',
     ];
 

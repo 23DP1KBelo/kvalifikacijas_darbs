@@ -18,6 +18,8 @@ Route::get('/danceGroups-all', [DanceGroupController::class, 'getAllGroups']);
 Route::get('/api/dance-group-info/{danceGroup}', [DanceGroupController::class, 'show']);
 Route::get('/search-dance-groups', [DanceGroupController::class, 'search']);
 Route::get('/sort-dance-groups/{sort}', [DanceGroupController::class, 'groupSorting']);
+Route::get('/filter-dance-groups', [DanceGroupController::class, 'filterGroups']);
+Route::get('/filter-options', [DanceGroupController::class, 'filterOptions']);
 
 Route::middleware('web')->get('/user', function () {
     return response()->json([

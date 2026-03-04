@@ -1,29 +1,82 @@
 <template>
   <h1 class="text-center mt-8">Deju kolektīvi</h1>
 
-  <v-container class="mb-4" style="position: relative;">
-    <v-col cols="12" md="6" class="mx-auto">
-      <v-text-field
-        v-model="searchQuery"
-        label="Meklēt kolektīvu"
-        prepend-inner-icon="mdi-magnify"
-        clearable
-        dense
-        outlined
-        class="text-center"
-        @input="searchGroups"
-      ></v-text-field>
-    </v-col>
+  <v-container class="mb-4">
+    <v-row align="center" justify="space-between" class="mx-auto" style="max-width: 700px;">
+      <!-- Meklēšanas lauks kreisajā pusē -->
+      <v-col cols="12" md="6">
+        <v-text-field
+          v-model="searchQuery"
+          label="Meklēt kolektīvu"
+          prepend-inner-icon="mdi-magnify"
+          clearable
+          dense
+          outlined
+          @input="searchGroups"
+        ></v-text-field>
+      </v-col>
 
-    <v-btn
-      icon
-      color="primary"
-      @click="sortGroups"
-      :title="sortOrder === 'asc' ? 'Kārtot augošā secībā' : 'Kārtot dilstošā secībā'"
-      style="position: absolute; right: 0; top: 50%; transform: translateY(-50%);"
-    >
-      <v-icon small >{{ sortOrder === 'asc' ? 'mdi-arrow-up' : 'mdi-arrow-down' }}</v-icon>
-    </v-btn>
+      <!-- Sortēšanas un filtrēšanas pogu grupa labajā pusē -->
+      <v-col cols="12" md="6" class="d-flex justify-end">
+        <!-- Sortēšana -->
+        <v-btn
+          icon
+          color="primary"
+          @click="sortGroups"
+          :title="sortOrder === 'asc' ? 'Kārtot augošā secībā' : 'Kārtot dilstošā secībā'"
+          class="me-2"
+        >
+          <v-icon small>{{ sortOrder === 'asc' ? 'mdi-arrow-up' : 'mdi-arrow-down' }}</v-icon>
+        </v-btn>
+
+        <!-- Filtrēšana -->
+        <v-menu v-model="filterMenu" transition="scale-transition" offset-y :close-on-content-click="false">
+          <template #activator="{ props }">
+            <v-btn icon color="primary" v-bind="props">
+              <v-icon small>mdi-filter-variant</v-icon>
+            </v-btn>
+          </template>
+
+          <v-card style="min-width: 250px; max-width: 350px;">
+            <v-card-title>Filtrēt kolektīvus</v-card-title>
+            <v-card-text>
+              <v-select
+                v-model="selectedCity"
+                :items="cities"
+                label="Pilsēta"
+                clearable
+                dense
+                outlined
+              ></v-select>
+
+              <v-select
+                v-model="selectedAgeGroup"
+                :items="ageGroups"
+                label="Vecuma grupa"
+                clearable
+                dense
+                outlined
+                class="mt-2"
+              ></v-select>
+
+              <v-select
+                v-model="selectedGenre"
+                :items="genres"
+                label="Žanrs"
+                clearable
+                dense
+                outlined
+                class="mt-2"
+              ></v-select>
+            </v-card-text>
+            <v-card-actions>
+              <v-btn color="primary" text @click="applyFilters">Filtrēt</v-btn>
+              <v-btn color="secondary" text @click="resetFilters">Atcelt</v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-menu>
+      </v-col>
+    </v-row>
   </v-container>
 
   <v-container fluid>
@@ -57,11 +110,24 @@ export default {
   data() {
     return {
       groups: [],
+      cities: [],
+      ageGroups: [],
+      genres: [],
+      selectedCity: null,
+      selectedAgeGroup: null,
+      selectedGenre: null,
       searchQuery: '',
-      sortOrder: 'asc' 
+      sortOrder: 'asc',
+      filterMenu: false,
     }
   },
   methods: {
+    async fetchFilterOptions() {
+      const res = await axios.get('/filter-options')
+      this.cities = res.data.cities || []
+      this.ageGroups = res.data.age_groups || []
+      this.genres = res.data.genres || []
+    },
     fetchDanceGroups() {
       axios
         .get('/danceGroups-all')
@@ -81,22 +147,47 @@ export default {
         })
         .catch(err => console.error(err))
     },
+    async fetchGroups() {
+      const res = await axios.get('/filter-dance-groups', {
+        params: {
+          city: this.selectedCity,
+          age_group: this.selectedAgeGroup,
+          genre: this.selectedGenre,
+          q: this.searchQuery,
+          sort: this.sortOrder
+        }
+      })
+
+      this.groups = res.data.data || []
+    },
+    applyFilters() {
+      this.fetchGroups()
+      this.filterMenu = false
+    },
     sortGroups() {
       if (this.sortOrder === 'asc') {
         this.sortOrder = 'desc'
       } else {
         this.sortOrder = 'asc'
       }
-      
+
       axios
         .get(`/sort-dance-groups/${this.sortOrder}`)
         .then(res => {
           this.groups = Array.isArray(res.data.data) ? res.data.data : []
         })
         .catch(err => console.error(err))
+    },
+    resetFilters() {
+      this.selectedCity = null
+      this.selectedAgeGroup = null
+      this.selectedGenre = null
+      this.fetchGroups()
+      this.filterMenu = false
     }
   },
   mounted() {
+    this.fetchFilterOptions(),
     this.fetchDanceGroups()
   }
 }

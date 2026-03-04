@@ -53,6 +53,54 @@ class DanceGroupController extends Controller
         return DanceGroupResource::collection($danceGroups);
     }
 
+    public function filterOptions() {
+        $cities = DanceGroup::where('status', 'approved')
+            ->select('city')
+            ->distinct()
+            ->pluck('city');
+
+        $genres = DanceGroup::where('status', 'approved')
+            ->select('genre')
+            ->distinct()
+            ->pluck('genre');
+
+        $ageGroups = DanceGroup::where('status', 'approved')
+            ->join('age_groups', 'dance_groups.id', '=', 'age_groups.dance_group_id')
+            ->whereNotNull('age_groups.age_group')
+            ->select('age_groups.age_group')
+            ->distinct()
+            ->pluck('age_group');
+
+        return response()->json([
+            'cities' => $cities,
+            'genres' => $genres,
+            'age_groups' => $ageGroups,
+        ]);
+    }
+
+    public function filterGroups () {
+        $query = DanceGroup::query();
+
+        If(request()->filled('city')) {
+            $query->where('city', request('city'));
+        }
+
+        If(request()->filled('age_group')) {
+            $query->whereHas('ageGroups', function($q) {
+                $q->where('age_group', request('age_group'));
+            });
+        }
+
+        If(request()->filled('genre')) {
+            $query->where('genre', request('genre'));
+        }
+
+        $danceGroups = $query->where('status', 'approved')->get();
+        $danceGroups->load('ageGroups', 'members');
+        return DanceGroupResource::collection($danceGroups);
+    }
+
+
     public function groupListApprovedMember()
     {
         $userId = Auth::id();
@@ -141,6 +189,7 @@ public function show(DanceGroup $danceGroup)
         $queryText = $request->input('q');
 
         $danceGroups = DanceGroup::query()
+            ->where('status', 'approved')
             ->when($queryText, function ($query) use ($queryText) {
                 $query->where('name', 'like', $queryText . '%')
                     ->orWhereHas('members', fn($memberQuery) => $memberQuery
