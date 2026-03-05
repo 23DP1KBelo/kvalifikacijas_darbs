@@ -28,6 +28,7 @@ class DanceGroupMemberResource extends JsonResource
             'dance_group' => [
                 'id' => $this->danceGroup->id,
                 'name' => $this->danceGroup->name,
+                'status' => $this->danceGroup->status,
             ],
 
             'age_group' => [

@@ -42,7 +42,7 @@
         @click="goTo(linkRoutes[index])"
         class="hover-bg-softblue rounded-lg my-1"
       >
-        <v-list-item-title class="text-primary">{{ link }}</v-list-item-title>
+        <v-list-item-title class="text-text">{{ link }}</v-list-item-title>
       </v-list-item>
     </v-list>
   </v-navigation-drawer>

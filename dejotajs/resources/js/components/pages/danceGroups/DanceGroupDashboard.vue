@@ -50,16 +50,6 @@
               ></v-select>
 
               <v-select
-                v-model="selectedAgeGroup"
-                :items="ageGroups"
-                label="Vecuma grupa"
-                clearable
-                dense
-                outlined
-                class="mt-2"
-              ></v-select>
-
-              <v-select
                 v-model="selectedGenre"
                 :items="genres"
                 label="Žanrs"
@@ -111,10 +101,8 @@ export default {
     return {
       groups: [],
       cities: [],
-      ageGroups: [],
       genres: [],
       selectedCity: null,
-      selectedAgeGroup: null,
       selectedGenre: null,
       searchQuery: '',
       sortOrder: 'asc',
@@ -180,7 +168,6 @@ export default {
     },
     resetFilters() {
       this.selectedCity = null
-      this.selectedAgeGroup = null
       this.selectedGenre = null
       this.fetchGroups()
       this.filterMenu = false

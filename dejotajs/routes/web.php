@@ -72,6 +72,11 @@ Route::middleware(['auth', 'leader'])->group(function () {
     Route::post('/posts', [PostController::class, 'store']);
 
     Route::post('/api/ageGroups/create', [AgeGroupController::class, 'store']);
+
+    Route::delete('/posts/{id}', [PostController::class, 'destroy']);
+
+    Route::delete('/danceGroups/{id}', [DanceGroupController::class, 'destroy']);
+
 });
 
 Route::get('/{any}', function () {

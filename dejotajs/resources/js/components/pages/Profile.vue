@@ -62,7 +62,6 @@ export default {
   },
   computed: {
     approvedGroups() {
-      // Filtrē tikai tos kolektīvus, kur member.status === 'approved'
       return this.user.dance_groups.filter(g => g.status === 'approved');
     }
   },
@@ -74,14 +73,14 @@ export default {
       this.user.surname = res.data.user.surname;
       this.user.email = res.data.user.email;
 
-      // Pārveidojam tikai apstiprinātās dalības
       this.user.dance_groups = res.data.dance_group_members.map(member => ({
         id: member.dance_group.id,
         name: member.dance_group.name,
         role: member.role,
         age_group: member.age_group?.age_group || null,
-        status: member.status // saglabājam statusu, lai filtrētu
+        status: member.status 
       }));
+      console.log(this.user.dance_groups)
 
     } catch (err) {
       this.error = 'Neizdevās ielādēt profilu';

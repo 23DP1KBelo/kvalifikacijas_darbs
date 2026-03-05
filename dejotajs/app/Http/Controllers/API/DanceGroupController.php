@@ -85,12 +85,6 @@ class DanceGroupController extends Controller
             $query->where('city', request('city'));
         }
 
-        If(request()->filled('age_group')) {
-            $query->whereHas('ageGroups', function($q) {
-                $q->where('age_group', request('age_group'));
-            });
-        }
-
         If(request()->filled('genre')) {
             $query->where('genre', request('genre'));
         }
@@ -178,12 +172,16 @@ public function show(DanceGroup $danceGroup)
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(DanceGroup $danceGroup)
+    public function destroy($id)
     {
+        $danceGroup = DanceGroup::findOrFail($id);
+        $danceGroup->members()->delete(); // Dzēš visus saistītos dalībniekus
         $danceGroup->delete();
 
-        return new DanceGroupResource($danceGroup);
+        return response()->json(['message' => 'Kolektīvs veiksmīgi dzēsts'], 200);
     }
+
+
     public function search(Request $request)
     {
         $queryText = $request->input('q');
