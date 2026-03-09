@@ -206,6 +206,20 @@ export default {
           alert('Neizdevās atjaunināt ierakstu')
         }
       },
+      async deleteDanceGroup() {
+      if (!confirm('Vai tiešām vēlaties dzēst šo kolektīvu? Šī darbība ir neatgriezeniska.')) {
+        return
+      }
+      try {
+        const id = this.route.params.id
+        await axios.delete(`/api/danceGroups/${id}`, { withCredentials: true })
+          alert('Kolektīvs veiksmīgi dzēsts')
+          this.$router.push('/')
+      } catch (err) {
+        console.error('Kļūda dzēšot kolektīvu:', err)
+        this.$router.push('/')
+      }
+    },
     formatDate(date) {
       return new Date(date).toLocaleDateString()
     }

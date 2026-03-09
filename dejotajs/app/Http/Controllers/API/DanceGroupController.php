@@ -181,7 +181,14 @@ class DanceGroupController extends Controller
     public function destroy($id)
     {
         $danceGroup = DanceGroup::findOrFail($id);
-        $danceGroup->members()->delete(); // Dzēš visus saistītos dalībniekus
+        $members = $danceGroup->members()->with('posts')->get();
+
+        foreach ($members as $member) {
+        // Dzēšam visus postus, kas pieder šim dalībniekam
+        $member->posts()->delete();
+        }
+
+        $danceGroup->members()->delete();
         $danceGroup->delete();
 
         return response()->json(['message' => 'Kolektīvs veiksmīgi dzēsts'], 200);
