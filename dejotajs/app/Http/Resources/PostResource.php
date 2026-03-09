@@ -22,6 +22,7 @@ class PostResource extends JsonResource
             'picture' => $this->picture ? asset('storage/' . $this->picture) : null,
             'created_at' => $this->created_at,
             'dance_group_member' => [
+                'dance_group_member_id' => $this->dance_group_member_id,
                 'user' => [
                     'name' => $this->danceGroupMember->appUser?->name,
                 ],

@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use App\Models\DanceGroup;
 use Illuminate\Support\Facades\Auth;
 use App\Models\DanceGroupMember;
+use App\Http\Requests\DanceGroupUpdateRequest;
 
 class DanceGroupController extends Controller
 {
@@ -145,26 +146,31 @@ class DanceGroupController extends Controller
     /**
      * Display the specified resource.
      */
-public function show(DanceGroup $danceGroup)
-{
-    $danceGroup->load([
-        'members' => function ($query) {
-            $query->where('status', 'approved')
-                  ->with('appUser');
-        },
-        'ageGroups'
-    ]);
+    public function show(DanceGroup $danceGroup)
+    {
+        $danceGroup->load([
+            'members' => function ($query) {
+                $query->where('status', 'approved')
+                    ->with('appUser');
+            },
+            'ageGroups'
+        ]);
 
-    return new DanceGroupResource($danceGroup);
-}
+        return new DanceGroupResource($danceGroup);
+    }
     /**
      * Update the specified resource in storage.
      */
-    public function update(DanceGroupRequest $request, DanceGroup $danceGroup)
+    public function update(DanceGroupUpdateRequest $request, DanceGroup $danceGroup)
     {
         $validated = $request->validated();
 
-        $danceGroup->update($validated);
+        $danceGroup->update([
+            'name' => $validated['name'],
+            'description' => $validated['description'],
+            'city' => $validated['city'],
+            'address' => $validated['address'],
+        ]);
 
         return new DanceGroupResource($danceGroup);
     }

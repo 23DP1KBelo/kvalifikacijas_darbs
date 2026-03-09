@@ -5,7 +5,7 @@
             <v-card-text>
                 <v-form>
                     <v-text-field label="Kolektīva nosaukums" v-model="name" required></v-text-field>
-                    <v-text-field label="Apraksts" v-model="description" required></v-text-field>
+                    <v-textarea label="Apraksts" v-model="description" required></v-textarea>
                     <v-text-field label="Pilsēta" v-model="city" required></v-text-field>
                     <v-text-field label="Adrese" v-model="address" required></v-text-field>
                     <v-select label="Žanrs" :items="genres" item-title="title" item-value="value" v-model="selectedGenre" variant="outlined"/>

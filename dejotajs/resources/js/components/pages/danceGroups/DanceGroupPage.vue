@@ -4,7 +4,7 @@
     <v-row no-gutters class="d-flex justify-center align-center py-6">
       <v-col cols="12" md="8" class="d-flex flex-column align-center">
         <div class="d-flex ">
-          <h1 class="text-h4 font-weight-bold text-primary mb-2 text-center">
+          <h1 class="text-h4 font-weight-bold text-primary mb-2 text-center cursor-pointer" @click="$router.push(`/group-profile/${group.id}`)">
           {{ group.name }}
           </h1>
           <v-btn v-if="isLeader" icon="mdi-delete" variant="text" color="red" class="pb-2" @click="deleteDanceGroup()"></v-btn>
@@ -52,7 +52,7 @@
           v-if="post.picture"
           class="d-flex justify-end"
         >
-          <v-btn  v-if="isLeader" icon="mdi-pencil" variant="text" @click="editPost(post)"></v-btn>
+          <v-btn  v-if="isLeader" icon="mdi-pencil" variant="text" @click="openEditDialog(post)"></v-btn>
           <v-btn  v-if="isLeader" icon="mdi-delete" variant="text" color="red" @click="deletePost(post.id)"></v-btn>
         </v-card-actions>
 
@@ -67,7 +67,7 @@
             {{ post.title }}
           </div>
 
-          <div class="text-body-1 mb-4">
+          <div class="text-body-1 mb-4 text-break">
             {{ post.description }}
           </div>
 
@@ -82,6 +82,21 @@
       <span class="text-secondary text-h5">Šim kolektīvam nav ierakstu</span>
     </div>
   </v-container>
+  <v-dialog v-model="editDialog" max-width="500px">
+    <v-card>
+      <v-card-title class="text-h5">Rediģēt ierakstu</v-card-title>
+      <v-card-text>
+        <v-form ref="editForm">
+          <v-text-field label="Virsraksts" v-model="editPostData.title" required></v-text-field>
+          <v-textarea label="Apraksts" v-model="editPostData.description" required></v-textarea>
+        </v-form>
+      </v-card-text>
+      <v-card-actions>
+        <v-btn text @click="editDialog = false">Atcelt</v-btn>
+        <v-btn color="primary" @click="submitEdit">Saglabāt</v-btn>
+      </v-card-actions>
+    </v-card>
+    </v-dialog>
 </template>
 
 <script>
@@ -93,7 +108,13 @@ export default {
   data() {
     return {
       group: {},
-      posts: []
+      posts: [],
+      editDialog: false,
+      editPostData: {
+        id: null,
+        title: '',
+        description: ''
+      }
     }
   },
   setup() {
@@ -135,20 +156,56 @@ export default {
       }
     },
 
-    async deleteDanceGroup() {
-      if (!confirm('Vai tiešām vēlaties dzēst šo kolektīvu? Šī darbība ir neatgriezeniska.')) {
-        return
-      }
+    async editPost(post) {
       try {
-        const id = this.route.params.id
-        await axios.delete(`/api/danceGroups/${id}`, { withCredentials: true })
-          alert('Kolektīvs veiksmīgi dzēsts')
-          this.$router.push('/')
+        const postId = post.id
+        await axios.put(`/api/posts/${postId}`, post, { withCredentials: true })
+        alert('Ieraksts veiksmīgi atjaunināts')
+        this.fetchPosts()
       } catch (err) {
-        console.error('Kļūda dzēšot kolektīvu:', err)
-        alert('Neizdevās dzēst kolektīvu')
+        console.error('Kļūda atjauninot ierakstu:', err)
+        alert('Neizdevās atjaunināt ierakstu')
       }
     },
+
+      openEditDialog(post) {
+        this.editPostData = {
+          id: post.id,
+          title: post.title,
+          description: post.description,
+          private: post.private,                  
+          dance_group_member_id: post.dance_group_member_id,
+          picture: post.picture
+        }
+
+        // Atver dialogu
+        this.editDialog = true
+      },
+      async submitEdit() {
+        try {
+          const payload = {
+            title: this.editPostData.title,
+            description: this.editPostData.description,
+            private: this.editPostData.private === 'Privāts',
+          }
+
+          if (this.editPostData.picture instanceof File) {
+            payload.picture = this.editPostData.picture
+          }
+
+          const res = await axios.put(`/api/posts/${this.editPostData.id}`, payload, { withCredentials: true })
+
+          const index = this.posts.findIndex(p => p.id === this.editPostData.id)
+          if (index !== -1) this.posts[index] = res.data
+
+          this.editDialog = false
+          alert('Ieraksts veiksmīgi atjaunināts')
+          this.fetchPosts() 
+        } catch (err) {
+          console.error('Kļūda atjauninot ierakstu:', err.response?.data || err)
+          alert('Neizdevās atjaunināt ierakstu')
+        }
+      },
     formatDate(date) {
       return new Date(date).toLocaleDateString()
     }

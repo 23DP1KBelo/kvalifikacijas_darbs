@@ -101,13 +101,18 @@ class PostController extends Controller
      */
     public function update(PostRequest $request, Post $post)
     {
-        $validated = $request->validated();
+        $validated = $request->validated(); // Šeit validē visi nepieciešamie lauki
 
-        $post->update($validated);
+        $post->update([
+            'title' => $validated['title'],
+            'description' => $validated['description'],
+            'private' => $validated['private'] ?? $post->private,
+            'dance_group_member_id' => $validated['dance_group_member_id'] ?? $post->dance_group_member_id,
+            'picture' => $validated['picture'] ?? $post->picture
+        ]);
 
-        return new PostResource($post);
+        return new PostResource($post->load('danceGroupMember.appUser', 'danceGroupMember.danceGroup'));
     }
-
     /**
      * Remove the specified resource from storage.
      */

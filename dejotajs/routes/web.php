@@ -75,8 +75,11 @@ Route::middleware(['auth', 'leader'])->group(function () {
 
     Route::delete('/posts/{id}', [PostController::class, 'destroy']);
 
+    Route::put('/posts/{id}', [PostController::class, 'update']);
+
     Route::delete('/danceGroups/{id}', [DanceGroupController::class, 'destroy']);
 
+    Route::put('/danceGroups/{id}', [DanceGroupController::class, 'update']);
 });
 
 Route::get('/{any}', function () {
