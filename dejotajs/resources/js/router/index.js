@@ -18,7 +18,8 @@ import PostCreate from '../components/pages/PostCreate.vue';
 import PostsShow from '../components/pages/PostsShow.vue';
 import AgeGroupForm from '../components/pages/AgeGroupForm.vue';
 import DanceGroupProfile from '../components/pages/danceGroups/DanceGroupProfile.vue';
-
+import AdmissonForm from '../components/pages/AdmissonForm.vue';
+import AdmissonDashboard from '../components/pages/AdmissonDashboard.vue';
 const routes = [
     { path: '/', component: Home },
     { path: '/login', component: Login },
@@ -37,7 +38,9 @@ const routes = [
     { path: '/create-post/:id', component: PostCreate, meta: { requiresAuth: true }},
     { path: '/posts', component: PostsShow },
     { path: '/age-group-form/:id', component: AgeGroupForm, meta: { requiresAuth: true, requiresLeader: true }},
-    { path: '/group-profile/:id', component: DanceGroupProfile, meta: { requiresAuth: true, requiresLeader: true }},    
+    { path: '/group-profile/:id', component: DanceGroupProfile, meta: { requiresAuth: true, requiresLeader: true }},
+    { path: '/admisson/:id', component: AdmissonForm, meta: { requiresAuth: true, requiresLeader: true }},
+    { path: '/admisson', component: AdmissonDashboard}
 ];
 
 const router = createRouter({

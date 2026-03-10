@@ -22,7 +22,7 @@ class AgeGroup extends Model
         return $this->hasMany(DanceGroupMember::class, 'age_group_id', 'id');
     }
 
-    public function admission(){
+    public function admissions(){
         return $this->hasmany(Admission::class, 'age_group_id', 'id');
     }
 }

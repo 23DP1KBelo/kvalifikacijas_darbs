@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\API\AdmissionController;
 use App\Http\Controllers\API\AppUserController;
 use App\Http\Controllers\Auth\AdminController;
 use Illuminate\Support\Facades\Route;
@@ -12,6 +13,7 @@ use App\Http\Controllers\API\DanceGroupMemberController;
 use App\Http\Controllers\API\DanceGroupController;
 use App\Http\Controllers\API\AgeGroupController;
 
+
 Route::post('/login', Login::class);
 Route::post('/register',RegistrationController::class . '@register');
 Route::get('/danceGroups-all', [DanceGroupController::class, 'getAllGroups']);
@@ -20,6 +22,7 @@ Route::get('/search-dance-groups', [DanceGroupController::class, 'search']);
 Route::get('/sort-dance-groups/{sort}', [DanceGroupController::class, 'groupSorting']);
 Route::get('/filter-dance-groups', [DanceGroupController::class, 'filterGroups']);
 Route::get('/filter-options', [DanceGroupController::class, 'filterOptions']);
+Route::get('/admission-age-groups', [AgeGroupController::class, 'getAdmissonAgeGroups']);
 
 Route::middleware('web')->get('/user', function () {
     return response()->json([
@@ -80,6 +83,8 @@ Route::middleware(['auth', 'leader'])->group(function () {
     Route::delete('/danceGroups/{id}', [DanceGroupController::class, 'destroy']);
 
     Route::put('/danceGroups/{id}', [DanceGroupController::class, 'update']);
+
+    Route::post('/api/admission/create', [AdmissionController::class, 'store']);
 });
 
 Route::get('/{any}', function () {

@@ -14,9 +14,6 @@
             <v-btn  class="bg-primary text-white" rounded elevation="4" @click="$router.push(`/create-post/${group.id}`)">
               Pievienot ierakstu
             </v-btn>
-            <v-btn class="bg-accent text-white ml-4" rounded elevation="4" @click="$router.push(`/age-group-form/${group.id}`)">
-              Pievienot grupu
-            </v-btn>
           </div>
         </div>
       </v-col>

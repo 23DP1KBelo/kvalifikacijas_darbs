@@ -35,7 +35,26 @@ class AgeGroupController extends Controller
             ->response()
             ->setStatusCode(201);
     }
-    
+
+    public function getAdmissonAgeGroups()
+    {
+        $ageGroups = AgeGroup::with(['admissions' => function($query) {
+                $query->whereDate('end_date', '>=', now());
+            }])
+            ->where('status_admission', true)
+            ->get();
+
+        foreach ($ageGroups as $ageGroup) {
+
+            if ($ageGroup->admissions->isEmpty()) {
+                $ageGroup->status_admission = false;
+                $ageGroup->save();
+            }
+
+        }
+
+        return AgeGroupResource::collection($ageGroups);
+    }
 
     /**
      * Display the specified resource.

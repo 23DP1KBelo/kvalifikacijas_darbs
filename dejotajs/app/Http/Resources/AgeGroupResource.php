@@ -22,10 +22,19 @@ class AgeGroupResource extends JsonResource
             'dance_group_id' => $this->dance_group_id,
             'created_at' => $this->created_at,
 
-            'dance_group' => [
+            'dance_group' => $this->danceGroup ? [
                 'id' => $this->danceGroup->id,
                 'name' => $this->danceGroup->name,
-            ],
+            ] : null,
+
+            'admissions' => AdmissionResource::collection($this->whenLoaded('admissions')),
+
+            'leaders' => $this->danceGroup
+                ? \App\Http\Resources\DanceGroupMemberResource::collection(
+                    $this->danceGroup->members
+                        ->filter(fn($member) => $member->role === 'leader' && $member->status === 'approved')
+                )
+                : collect(),
         ];
     }
 }

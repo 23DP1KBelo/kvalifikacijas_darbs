@@ -178,7 +178,7 @@ export default {
       dancerGroups: [],
       localUser: {},
       links: ['Sākums','Aktualitātes', 'Kolektīvi', 'Kalendārs', 'Uzņemšana'],
-      linkRoutes: ['/', '/posts','/dance-groups', '/', '/'],
+      linkRoutes: ['/', '/posts','/dance-groups', '/', '/admisson'],
       adminLinks: ['Admin Panelis'],
       adminRoutes: ['/dashboard'],
     };

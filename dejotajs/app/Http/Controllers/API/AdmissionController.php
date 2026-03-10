@@ -27,7 +27,16 @@ class AdmissionController extends Controller
     public function store(AdmissionRequest $request)
     {
         $validated = $request->validated();
-        $admission = Admission::create($validated);
+        $admission = Admission::create([
+            'name' => $validated['name'],
+            'start_date' => $validated['start_date'],
+            'end_date' => $validated['end_date'],
+            'age_group_id' => $validated['age_group_id']
+        ]);
+
+        $admission->ageGroup()->update([
+            'status_admission' => true
+        ]);
 
         return (new AdmissionResource($admission))->response()->setStatusCode(201);
     }

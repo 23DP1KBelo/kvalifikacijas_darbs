@@ -20,6 +20,7 @@ class AdmissionResource extends JsonResource
             "end_date" => $this->end_date,
             
             "age_group" => [
+                "id" => $this->ageGroup->id,
                 "name" => $this->ageGroup->name,
                 "age_group" => $this->ageGroup->age_group
             ]
