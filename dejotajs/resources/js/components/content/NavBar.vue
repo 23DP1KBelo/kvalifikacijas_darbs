@@ -55,7 +55,7 @@ export default {
       drawer: false,
       isDark: false,
       links: ['Sākums', 'Aktualitātes','Kolektīvi', 'Kalendārs', 'Uzņemšana'],
-      linkRoutes: ['/', '/posts', '/dance-groups', '/', '/admisson'],
+      linkRoutes: ['/', '/posts', '/dance-groups', '/calender', '/admisson'],
     }
   },
   methods: {

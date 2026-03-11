@@ -153,7 +153,12 @@ class DanceGroupController extends Controller
                 $query->where('status', 'approved')
                     ->with('appUser');
             },
-            'ageGroups'
+            'ageGroups' => function ($query) {
+            $query->with(['admissions' => function ($query) {
+                $query->whereDate('start_date', '<=', now())
+                      ->whereDate('end_date', '>=', now());
+            }]);
+        }
         ]);
 
         return new DanceGroupResource($danceGroup);

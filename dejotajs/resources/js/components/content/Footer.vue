@@ -25,7 +25,7 @@ export default {
         '/', 
         '/dance-groups', 
         '/posts',
-        '/', 
+        '/calender', 
         '/admisson'
       ],
     }

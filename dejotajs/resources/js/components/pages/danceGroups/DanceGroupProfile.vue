@@ -53,7 +53,7 @@
           <v-img
             v-if="group.picture_url"
             :src="group.picture_url"
-            height="320"
+            height="450"
             cover
             class="group-image"
           />
@@ -117,18 +117,106 @@
               >
                 Nav pievienotu vecuma grupu
               </v-alert>
-
             </v-list>
-
           </v-card-text>
-
         </v-card>
+        <v-row class="mt-8" dense>
 
+          <!-- DANCERS -->
+          <v-col cols="12" md="6">
+
+            <v-card class="h-100">
+
+              <v-card-title>
+                Kolektīva dejotāji
+              </v-card-title>
+
+              <v-divider></v-divider>
+
+              <div
+                v-for="dancer in group.dancers"
+                :key="dancer.id"
+                class="mb-4"
+              >
+                <v-card-text>
+                  {{ dancer.user.name }} {{ dancer.user.surname }}
+                </v-card-text>
+
+                <v-card-subtitle>
+                  {{ dancer.age_group.name }}
+                  ({{ dancer.age_group.age_group }})
+                </v-card-subtitle>
+              </div>
+
+              <v-alert
+                v-if="!group.dancers?.length"
+                type="info"
+                variant="tonal"
+                class="ma-4"
+              >
+                Nav dejotāju
+              </v-alert>
+
+            </v-card>
+
+          </v-col>
+
+          <!-- ADMISSIONS -->
+          <v-col cols="12" md="6">
+          <v-card class="h-100">
+            <v-card-title class="text-h6">
+              Aktīvās uzņemšanas
+            </v-card-title>
+
+            <v-divider></v-divider>
+
+            <v-card-text>
+              <div
+                v-for="ageGroup in group.age_groups"
+                :key="ageGroup.id"
+                class="mb-6"
+              >
+                <div
+                  v-for="admission in ageGroup.admissions"
+                  :key="admission.id"
+                  class="mb-4"
+                >
+                  <v-chip
+                    color="primary"
+                    variant="tonal"
+                    class="py-6 px-4 text-wrap"
+                    style="font-weight: 500; font-size: 0.95rem;"
+                  >
+                    {{ admission.name }}
+                    <br>
+                    <span style="font-size: 0.85rem; font-weight: 400; color: rgba(0,0,0,0.6);">
+                      ({{ admission.age_group.name }} {{ admission.age_group.age_group }})
+                    </span>
+                  </v-chip>
+
+                  <v-card-subtitle
+                    class="text-text text-medium-emphasis mt-2 mb-0"
+                    style="line-height: 1.2;"
+                  >
+                    no <strong>{{ admission.start_date }}</strong> līdz <strong>{{ admission.end_date }}</strong>
+                  </v-card-subtitle>
+                </div>
+              </div>
+
+              <v-alert
+                v-if="!group.age_groups?.some(g => g.admissions?.length)"
+                type="info"
+                variant="tonal"
+                class="mt-4"
+              >
+                Nav aktīvu uzņemšanu
+              </v-alert>
+            </v-card-text>
+</v-card>
+          </v-col>
+        </v-row>
       </v-col>
     </v-row>
-
-
-    <!-- EDIT DIALOG -->
     <v-dialog v-model="editDialog" max-width="520">
 
       <v-card class="edit-dialog">
