@@ -80,8 +80,6 @@ export default {
         age_group: member.age_group?.age_group || null,
         status: member.status 
       }));
-      console.log(this.user.dance_groups)
-
     } catch (err) {
       this.error = 'Neizdevās ielādēt profilu';
       console.error(err);

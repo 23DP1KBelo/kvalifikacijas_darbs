@@ -28,8 +28,20 @@ class EventRequest extends FormRequest
             'date_start' => 'required',
             'date_end' => 'required',
             'dance_group_member_id' => 'required|exists:dance_group_members,id',
-            'age_group_ids' => 'required|array',
+            'age_group_ids' => 'array',
             'age_group_ids.*' => 'exists:age_groups,id',
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'name.required' => 'Pasākuma nosaukums lauks ir obligāts.',
+            'name.max' => 'Pasākuma nosaukumam jābūt līdz 255 simboliem.',
+            'description.max' => 'Aprakstam jabūt līdz 500 simboliem.',
+            'date_start.required' => 'Norādiet sākuma datumu un laiku,',
+            'date_end.required' => 'Norādiet beigu datumu un laiku',
+            'dance_group_member_id' => 'Nav norādīts veidotājs',
         ];
     }
 }

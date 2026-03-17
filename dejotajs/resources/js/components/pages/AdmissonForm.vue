@@ -111,7 +111,7 @@ export default {
         }
     },
     methods: {
-         formatDate(date) {
+        formatDate(date) {
             if (!date) return null;
             const d = new Date(date);
             const month = (d.getMonth() + 1).toString().padStart(2, '0');
@@ -121,42 +121,37 @@ export default {
         },
 
         async submitForm() {
-    // reset error
-    this.error = '';
+            this.error = '';
+            if (!this.name || !this.startDate || !this.endDate || !this.selectedAgeGroup) {
+                this.error = 'Lūdzu aizpildiet visus laukus un izvēlieties vecuma grupu.';
+                return;
+            }
+            const payload = {
+                name: this.name,
+                start_date: this.formatDate(this.startDate),
+                end_date: this.formatDate(this.endDate),
+                age_group_id: Number(this.selectedAgeGroup),
+                dance_group_id: this.group.id
+            };
 
-    // 1️⃣ Check all required fields on front-end
-    if (!this.name || !this.startDate || !this.endDate || !this.selectedAgeGroup) {
-        this.error = 'Lūdzu aizpildiet visus laukus un izvēlieties vecuma grupu.';
-        return;
-    }
+            console.log('Submitting:', payload);
 
-    // 2️⃣ Prepare payload
-    const payload = {
-        name: this.name,
-        start_date: this.formatDate(this.startDate),
-        end_date: this.formatDate(this.endDate),
-        age_group_id: Number(this.selectedAgeGroup),
-        dance_group_id: this.group.id
-    };
+            try {
+                const response = await axios.post('/api/admission/create', payload, { withCredentials: true });
+                alert('Uzņemšana ir sākta!');
+                this.$router.push('/');
+            } catch (err) {
+                console.log(err.response?.data);
 
-    console.log('Submitting:', payload);
-
-    try {
-        const response = await axios.post('/api/admission/create', payload, { withCredentials: true });
-        alert('Uzņemšana ir sākta!');
-        this.$router.push('/');
-    } catch (err) {
-        console.log(err.response?.data);
-
-        if (err.response?.data?.errors) {
-            this.error = Object.values(err.response.data.errors).flat().join(' ');
-        } else if (err.response?.data?.message) {
-            this.error = err.response.data.message;
-        } else {
-            this.error = 'Nezināma kļūda. Mēģiniet vēlreiz.';
-        }
-    }
-},
+                if (err.response?.data?.errors) {
+                    this.error = Object.values(err.response.data.errors).flat().join(' ');
+                } else if (err.response?.data?.message) {
+                    this.error = err.response.data.message;
+                } else {
+                    this.error = 'Nezināma kļūda. Mēģiniet vēlreiz.';
+                }
+            }
+        },
         async fetchGroup() {
             try {
                 const res = await axios.get(`/api/dance-group-info/${this.$route.params.id}`, { withCredentials: true })

@@ -33,8 +33,23 @@ class EventController extends Controller
         $validated = $request->validated();
         $event = Event::create($validated);
 
-        $event->danceGroups()->attach($validated['dance_group_ids']);
-        return (new EventResource($event->load('danceGroups','member.danceGroup')))->response()->setStatusCode(201);
+        return (new EventResource($event->load('member.danceGroup')))->response()->setStatusCode(201);
+    }
+
+    public function attachAgeGroups(Request $request, Event $event)
+    {
+        $validated = $request->validate([
+            'age_group_ids' => 'required|array',
+            'age_group_ids.*' => 'exists:age_groups,id',
+        ]);
+        $event->ageGroups()->attach($validated['age_group_ids']);
+        $eventId = $event->id;
+
+        return response()->json([
+            'message' => 'Age groups attached successfully',
+            'event' => $event->load('ageGroups'),
+            'event_id' => $eventId
+        ]);
     }
 
     /**

@@ -21,6 +21,7 @@ import DanceGroupProfile from '../components/pages/danceGroups/DanceGroupProfile
 import AdmissonForm from '../components/pages/AdmissonForm.vue';
 import AdmissonDashboard from '../components/pages/AdmissonDashboard.vue';
 import CalenderDashboard from '../components/pages/calender/calenderDashboard.vue';
+import EventForm from '../components/pages/calender/EventForm.vue';
 const routes = [
     { path: '/', component: Home },
     { path: '/login', component: Login },
@@ -43,6 +44,7 @@ const routes = [
     { path: '/admisson/:id', component: AdmissonForm, meta: { requiresAuth: true, requiresLeader: true }},
     { path: '/admisson', component: AdmissonDashboard},
     { path: '/calender', component: CalenderDashboard},
+    { path: '/calender/event', component: EventForm, meta: {requiresAuth: true, requiresLeader: true}},
 ];
 
 const router = createRouter({

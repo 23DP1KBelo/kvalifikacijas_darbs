@@ -47,6 +47,9 @@ Route::middleware('auth')->group(function (){
     Route::get('/api/my-posts/{danceGroupId}', [PostController::class, 'myGroupPosts']);
     Route::get('/api/groupListApproved', [DanceGroupController::class, 'groupListApprovedMember']);
     Route::post('/api/members/join', [DanceGroupMemberController::class, 'store']);
+    Route::get('/api/ageGroups', [AgeGroupController::class, 'index']);
+    Route::post('/api/events/create', [EventController::class, 'store']);
+    Route::post('/api/{event}/attach', [EventController::class, 'attachAgeGroups']);
 });
 
 Route::middleware(['auth', 'admin'])->group(function () {

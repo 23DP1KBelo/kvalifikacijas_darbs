@@ -1,20 +1,20 @@
 <template>
   <v-container class="pa-4">
     <h1 class="text-center mt-8 mb-8">Pasākumu kalendārs</h1>
-
+    <div class="mb-2 d-flex flex-row justify-end">
+      <v-btn color="secondary" rounded="xl" prepend-icon="mdi-plus" @click="$router.push('/calender/event')">
+        Pievienot pasākumu
+      </v-btn>
+    </div>
     <v-card class="mx-auto calendar-card" max-width="1200">
       <v-card-title class="d-flex align-center justify-space-between">
         <v-btn icon="mdi-chevron-left" variant="text" @click="prev" />
-
         <div class="text-h6 font-weight-medium">
           {{ monthTitle }}
         </div>
-
         <v-btn icon="mdi-chevron-right" variant="text" @click="next" />
       </v-card-title>
-
       <v-divider />
-
       <v-card-text>
       <v-calendar
         ref="calendar"
@@ -25,11 +25,11 @@
         class="modern-calendar bg-surface"
         :events="calendarEvents"
       >
-       <template #event="{ event }">
-        <div class="calendar-event mx-2" @click="showEvent(event)">
-          {{ event.title }}
-        </div>
-      </template>
+        <template #event="{ event }">
+          <div class="calendar-event mx-2" @click="showEvent(event)">
+            {{ event.title }}
+          </div>
+        </template>
       </v-calendar>
       </v-card-text>
     </v-card>
@@ -80,16 +80,12 @@
               <strong class="mr-2">{{ group.dance_group.name }}:</strong>{{ group.name }} ({{ group.age_group }})
             </v-chip>
           </div>
-          <v-alert
-                v-else
-                type="info"
-                variant="tonal"
-              >
-                Neviena grupa nepiedalās šajā pasākumā
+          <v-alert v-else type="info" variant="tonal">
+            Neviena grupa nepiedalās šajā pasākumā
           </v-alert>
         </v-card-text>
         <v-card-actions class="px-4 pb-4">
-          <v-spacer />
+          <v-spacer/>
           <v-btn color="primary" variant="tonal" @click="dialog = false">
             Aizvērt
           </v-btn>
@@ -101,7 +97,6 @@
 
 <script>
 import axios from 'axios'
-
 export default {
   data() {
     return {
@@ -111,7 +106,6 @@ export default {
       selectedEvent: null,
     }
   },
-
   computed: {
     monthTitle() {
       return new Intl.DateTimeFormat("lv-LV", {
@@ -131,7 +125,6 @@ export default {
         }))
       }
   },
-
   methods: {
     prev() {
       this.$refs.calendar.prev()
@@ -146,13 +139,11 @@ export default {
       this.selectedEvent = event
       this.dialog = true
     },
-
     fetchEvents() {
         axios
         .get('/events')
             .then(res => {
-            this.events = Array.isArray(res.data.data) ? res.data.data : []
-            console.log(this.events[0].dance_groups);
+              this.events = Array.isArray(res.data.data) ? res.data.data : []
             })
             .catch(err => console.log(err))
     },
