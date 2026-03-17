@@ -1,7 +1,7 @@
 <template>
   <v-app-bar elevation="2" class="bg-primary text-white d-flex justify-space-between">
     <!-- Hamburger / Drawer toggle -->
-    <v-app-bar-nav-icon @click.stop="drawer = !drawer" class="text-white"></v-app-bar-nav-icon>
+    <v-app-bar-nav-icon @click.stop="drawer = !drawer" class="text-white" aria-label="Navigācija"></v-app-bar-nav-icon>
 
     <!-- Title -->
     <v-app-bar-title
@@ -16,7 +16,7 @@
       <!-- Group menu -->
       <v-menu v-model="menuMessage" offset-y class="ms-3">
         <template #activator="{ props, attrs }">
-          <v-btn icon v-bind="{ ...props, ...attrs }" class="text-white">
+          <v-btn icon v-bind="{ ...props, ...attrs }" class="text-white" aria-label="kolektīvi">
             <v-icon>mdi-message</v-icon>
           </v-btn>
         </template>
@@ -40,7 +40,7 @@
       <!-- Profile menu -->
       <v-menu v-model="menuProfile" offset-y class="ms-3">
         <template #activator="{ props, attrs }">
-          <v-btn icon v-bind="{ ...props, ...attrs }" class="text-white">
+          <v-btn icon v-bind="{ ...props, ...attrs }" class="text-white" aria-label="Profils">
             <v-icon>mdi-account-circle</v-icon>
           </v-btn>
         </template>
@@ -59,7 +59,7 @@
       </v-menu>
 
       <!-- Theme toggle -->
-      <v-btn icon class="ms-3 text-white" @click="toggleTheme">
+      <v-btn icon class="ms-3 text-white" @click="toggleTheme" aria-label="Fona maiņa">
         <v-icon>{{ isDark ? 'mdi-white-balance-sunny' : 'mdi-weather-night' }}</v-icon>
       </v-btn>
     </div>

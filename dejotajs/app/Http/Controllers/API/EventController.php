@@ -15,7 +15,11 @@ class EventController extends Controller
      */
     public function index()
     {
-        $events = Event::with('member.danceGroup')->get();
+        $events = Event::with([
+            'member.danceGroup',
+            'ageGroups.danceGroup', 
+            'ageGroups.admissions'
+        ])->get();
 
         return EventResource::collection($events);
 

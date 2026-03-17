@@ -98,6 +98,7 @@
             :src="group.picture_url"
             height="200"
             cover
+            alt="img_kolektīvs"
           />
           <v-card-title class="group-title">
             {{ group.name }}

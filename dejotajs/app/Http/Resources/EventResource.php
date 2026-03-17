@@ -18,11 +18,13 @@ class EventResource extends JsonResource
             "name" => $this->name,
             "description" => $this->description,
             "location" => $this->location,
-            "date" => $this->date,
+            "date_start" => $this->date_start,
+            "date_end" => $this->date_end,
             "created_at" => $this->created_at,
             "dance_group_member" => [
                 "name" => $this->member?->danceGroup?->name
-            ]
+            ],
+            "dance_groups" => AgeGroupResource::collection($this->whenLoaded('ageGroups')),
         ];
     }
 }

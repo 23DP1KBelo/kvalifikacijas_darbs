@@ -3,11 +3,11 @@
     elevation="2"
     class="bg-primary text-white d-flex justify-space-between"
   >
-    <v-app-bar-nav-icon @click.stop="drawer = !drawer" class="text-white"></v-app-bar-nav-icon>
+    <v-app-bar-nav-icon @click.stop="drawer = !drawer" class="text-white" aria-label="Navigācija"></v-app-bar-nav-icon>
 
     <!-- Title -->
     <v-app-bar-title
-      class="app-bar-title text-h4 text-center  clickable "
+      class="app-bar-title text-h4 text-center clickable "
       @click="$router.push('/')"
     >
       Dejotājs
@@ -17,11 +17,11 @@
     <div class="d-flex align-center">
       <!-- Login -->
       <v-btn icon class="text-white" @click="$router.push('/login')">
-        <v-icon>mdi-account</v-icon>
+        <v-icon aria-label="Pieslēgties">mdi-account</v-icon>
       </v-btn>
 
       <!-- Theme toggle -->
-      <v-btn icon class="text-white" @click="toggleTheme">
+      <v-btn icon class="text-white" @click="toggleTheme" aria-label="Fona maiņa">
         <v-icon>{{ isDark ? 'mdi-white-balance-sunny' : 'mdi-weather-night' }}</v-icon>
       </v-btn>
     </div>

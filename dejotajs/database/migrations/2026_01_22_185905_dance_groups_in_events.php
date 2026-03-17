@@ -12,7 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('dance_groups_in_events', function (Blueprint $table) {
-            $table->foreignId('dance_group_id')->references('id')->on('dance_groups');
+            $table->id();
+            $table->foreignId('age_group_id')->references('id')->on('age_groups');
             $table->foreignId('event_id')->references('id')->on('events');
             $table->timestamps();
             $table->softDeletes();

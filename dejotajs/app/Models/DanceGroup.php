@@ -28,7 +28,4 @@ class DanceGroup extends Model
         return $this->hasMany(DanceGroupMember::class, 'dance_group_id', 'id');
     }
 
-    public function events() {
-        return $this->belongsToMany(Event::class, 'dance_groups_in_events', 'dance_group_id', 'event_id');
-    }
 }

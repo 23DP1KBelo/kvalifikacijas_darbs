@@ -16,7 +16,8 @@ return new class extends Migration
             $table->string('name');
             $table->text('description')->nullable();
             $table->string('location');
-            $table->dateTime('date');
+            $table->dateTime('date_start');
+            $table->dateTime('date_end');
             $table->foreignId('dance_group_member_id')->references('id')->on('dance_group_members');
             $table->timestamps();
             $table->softDeletes();

@@ -3,7 +3,7 @@
     <v-container>
         <v-card v-for="group in groups" :key="group.id" class="mb-8">
             <v-card-title>{{ group.name }}</v-card-title>
-            <v-card-text>{{ group.city }} {{ group.address }}</v-card-text>
+            <v-card-text>{{ group.city }}, {{ group.address }}</v-card-text>
             <div class="d-flex justify-end">
                 <v-btn color="primary" size="small" class="mb-4 mr-6"  @click="joinGroup(group.id)">Pievienoties</v-btn>
             </div>

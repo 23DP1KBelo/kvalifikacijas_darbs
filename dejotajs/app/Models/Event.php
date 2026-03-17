@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Models\AgeGroup;
 
 class Event extends Model
 {
@@ -12,7 +13,8 @@ class Event extends Model
         'name',
         'description',
         'location',
-        'date',
+        'date_start',
+        'date_end',
         'dance_group_member_id',
     ];
 
@@ -20,7 +22,7 @@ class Event extends Model
         return $this->belongsTo(DanceGroupMember::class, 'dance_group_member_id', 'id');
     }
 
-    public function danceGroups(){
-        return $this->belongsToMany(DanceGroup::class, 'dance_groups_in_events', 'event_id', 'dance_group_id');
+    public function ageGroups(){
+        return $this->belongsToMany(AgeGroup::class, 'dance_groups_in_events', 'event_id', 'age_group_id');
     }
 }

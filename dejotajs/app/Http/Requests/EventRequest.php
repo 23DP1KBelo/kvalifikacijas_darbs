@@ -25,10 +25,11 @@ class EventRequest extends FormRequest
             'name' => 'required|max:255',
             'description' => 'max:500',
             'location' => 'required',
-            'date' => 'required',
+            'date_start' => 'required',
+            'date_end' => 'required',
             'dance_group_member_id' => 'required|exists:dance_group_members,id',
-            'dance_group_ids' => 'required|array',
-            'dance_group_ids.*' => 'exists:dance_groups,id',
+            'age_group_ids' => 'required|array',
+            'age_group_ids.*' => 'exists:age_groups,id',
         ];
     }
 }

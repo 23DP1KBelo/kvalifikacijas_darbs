@@ -43,7 +43,7 @@
             >
               <v-card class="px-2 py-2" elevation="4" height="500">
                 <!-- Attēls -->
-                <v-img v-if="post.picture" :src="post.picture" height="200px" cover></v-img>
+                <v-img v-if="post.picture" :src="post.picture" height="200px" cover alt="img_kolektīvs"></v-img>
 
                 <!-- Teksts zem attēla -->
                 <v-card-subtitle class="mt-4 px-4 text-subtitle-2">

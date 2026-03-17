@@ -25,4 +25,8 @@ class AgeGroup extends Model
     public function admissions(){
         return $this->hasmany(Admission::class, 'age_group_id', 'id');
     }
+
+    public function events() {
+        return $this->belongsToMany(Event::class, 'dance_groups_in_events', 'age_group_id', 'event_id');
+    }
 }

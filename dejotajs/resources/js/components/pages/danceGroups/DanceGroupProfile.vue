@@ -56,6 +56,7 @@
             height="450"
             cover
             class="group-image"
+            alt="img_kolektīvs"
           />
           <v-card-text class="leader-section">
 
@@ -63,7 +64,6 @@
               <v-chip
                 v-for="leader in leaders"
                 :key="leader.id"
-                color="primary"
                 variant="tonal"
                 class="ma-1"
               >
@@ -182,15 +182,14 @@
                   class="mb-4"
                 >
                   <v-chip
-                    color="primary"
                     variant="tonal"
-                    class="py-6 px-4 text-wrap"
+                    class="py-6 px-4 text-wrap bg-softblue"
                     style="font-weight: 500; font-size: 0.95rem;"
                   >
-                    {{ admission.name }}
+                    {{ admission.name }} 
                     <br>
-                    <span style="font-size: 0.85rem; font-weight: 400; color: rgba(0,0,0,0.6);">
-                      ({{ admission.age_group.name }} {{ admission.age_group.age_group }})
+                    <span style="font-size: 0.85rem; font-weight: 400; color: rgba(0,0,0,0.6);" class="ml-2">
+                      ({{ admission.age_group.name }}{{ admission.age_group.age_group }})
                     </span>
                   </v-chip>
 

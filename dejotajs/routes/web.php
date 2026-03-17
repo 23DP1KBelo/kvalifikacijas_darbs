@@ -12,7 +12,7 @@ use App\Http\Controllers\API\PostController;
 use App\Http\Controllers\API\DanceGroupMemberController;
 use App\Http\Controllers\API\DanceGroupController;
 use App\Http\Controllers\API\AgeGroupController;
-
+use App\Http\Controllers\API\EventController;
 
 Route::post('/login', Login::class);
 Route::post('/register',RegistrationController::class . '@register');
@@ -23,6 +23,7 @@ Route::get('/sort-dance-groups/{sort}', [DanceGroupController::class, 'groupSort
 Route::get('/filter-dance-groups', [DanceGroupController::class, 'filterGroups']);
 Route::get('/filter-options', [DanceGroupController::class, 'filterOptions']);
 Route::get('/admission-age-groups', [AgeGroupController::class, 'getAdmissonAgeGroups']);
+Route::get('/events', [EventController::class, 'index']);
 
 Route::middleware('web')->get('/user', function () {
     return response()->json([

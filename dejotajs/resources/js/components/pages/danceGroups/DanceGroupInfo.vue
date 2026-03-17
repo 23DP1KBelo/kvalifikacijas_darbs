@@ -9,8 +9,8 @@
             :src="group.picture_url"
             height="500"
             class="card-full-image"
+            alt="img_kolektīvs"
             cover>
-
           </v-img>
 
           <div v-if="canJoinGroup" class="d-flex justify-end mx-4">
