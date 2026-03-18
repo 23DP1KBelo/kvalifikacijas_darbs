@@ -1,7 +1,7 @@
 <template>
   <v-container class="pa-4">
     <h1 class="text-center mt-8 mb-8">Pasākumu kalendārs</h1>
-    <div class="mb-2 d-flex flex-row justify-end">
+    <div class="mb-2 d-flex flex-row justify-end" v-if="danceGroups.length > 0" >
       <v-btn color="secondary" rounded="xl" prepend-icon="mdi-plus" @click="$router.push('/calender/event')">
         Pievienot pasākumu
       </v-btn>
@@ -104,6 +104,7 @@ export default {
       events: [],
       dialog: false,
       selectedEvent: null,
+      danceGroups: []
     }
   },
   computed: {
@@ -147,9 +148,25 @@ export default {
             })
             .catch(err => console.log(err))
     },
+    async fetchProfileInfo() { 
+      try { 
+        const res = await axios.get('/api/leader-groups', { withCredentials: true }); 
+        console.log("Leader groups response:", res.data); 
+        this.danceGroups = Array.isArray(res.data) ? res.data : []; 
+      } catch(err) { 
+          console.error('Neizdevās ielādēt leader grupas:', err);
+          this.danceGroups = [];
+      }
+    }
   },
   mounted() {
-    this.fetchEvents();
+    if (this.isLoggedIn) {
+      this.fetchEvents();
+      this.fetchProfileInfo();
+    } else {
+      this.fetchEvents();
+      this.danceGroups = [];
+    }
   }
 }
 </script>

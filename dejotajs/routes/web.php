@@ -43,13 +43,14 @@ Route::middleware('auth')->group(function (){
     Route::post('/api/danceGroups', [DanceGroupController::class, 'store']);
     Route::get('/api/danceGroups', [DanceGroupController::class, 'groupList']);
     Route::post('/api/members', [DanceGroupMemberController::class, 'leaderStore']);
-    Route::get('/api/profile', ProfileController::class);
+    Route::get('/api/profile', [ProfileController::class, 'index']);
     Route::get('/api/my-posts/{danceGroupId}', [PostController::class, 'myGroupPosts']);
     Route::get('/api/groupListApproved', [DanceGroupController::class, 'groupListApprovedMember']);
     Route::post('/api/members/join', [DanceGroupMemberController::class, 'store']);
     Route::get('/api/ageGroups', [AgeGroupController::class, 'index']);
     Route::post('/api/events/create', [EventController::class, 'store']);
     Route::post('/api/{event}/attach', [EventController::class, 'attachAgeGroups']);
+    Route::get('/api/leader-groups', [DanceGroupController::class, 'leaderGroups']);
 });
 
 Route::middleware(['auth', 'admin'])->group(function () {

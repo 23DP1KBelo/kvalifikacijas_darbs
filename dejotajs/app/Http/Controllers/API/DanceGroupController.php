@@ -221,4 +221,24 @@ class DanceGroupController extends Controller
 
         return DanceGroupResource::collection($danceGroups);
     }
+
+    public function leaderGroups(){
+
+        /** @var \App\Models\AppUser $user */
+        $user = Auth::user();
+
+        $groups = $user->danceGroupMembers()
+            ->where('role', 'leader')
+            ->with('danceGroup')
+            ->get()
+            ->map(function ($member) {
+                return [
+                    'member_id' => $member->id,
+                    'group_id' => $member->danceGroup->id,
+                    'name' => $member->danceGroup->name,
+                ];
+            });
+
+        return response()->json($groups);
+    }
 }

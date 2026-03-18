@@ -5,9 +5,10 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Resources\DanceGroupMemberResource;
 
+
 class ProfileController extends Controller
 {
-    public function __invoke()
+    public function index()
     {
         /** @var \App\Models\AppUser $user */
         $user = Auth::user();
@@ -23,6 +24,7 @@ class ProfileController extends Controller
             'dance_group_members' => DanceGroupMemberResource::collection($members)
         ]);
     }
+
 }
 
 
