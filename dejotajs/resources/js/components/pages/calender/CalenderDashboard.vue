@@ -12,7 +12,17 @@
         Pievienot pasākumu
       </v-btn>
     </div>
-
+    <v-card class="mx-auto my-4" max-width="1200" outlined>
+      <v-card-text>
+          <v-row dense>
+          <v-col v-for="(color, genre) in genreColorsLV" :key="genre" cols="auto">
+            <v-chip :style="{ backgroundColor: color, color: '#fff' }" small pill>
+              {{ genre }}
+            </v-chip>
+          </v-col>
+        </v-row>
+      </v-card-text>
+    </v-card>
     <v-card class="mx-auto calendar-card" max-width="1200">
       <v-card-title class="d-flex align-center justify-space-between">
         <v-btn icon="mdi-chevron-left" variant="text" @click="prev" />
@@ -28,8 +38,6 @@
         />
       </v-card-text>
     </v-card>
-
-    <!-- Event Detail Dialog -->
     <v-dialog v-model="dialog" max-width="520">
       <v-card v-if="selectedEvent" rounded="xl" elevation="6">
         <v-card-title class="text-h5 font-weight-bold d-flex align-center justify-space-between">
@@ -44,6 +52,9 @@
         </v-card-title>
         <v-divider />
         <v-card-text>
+        <v-card-text>
+          Izveidoja: {{ selectedEvent.extendedProps.dance_group_member.name }} ({{ genreLV(selectedEvent.extendedProps.dance_group_member.genre) }})
+        </v-card-text>
           <v-list density="comfortable">
             <v-list-item>
               <template #prepend>
@@ -143,6 +154,14 @@ export default {
         date_end: '',
         dance_groups: []
       },
+      genreColorsLV: {
+        'Liriskā deja': '#bf63b9',
+        'Balets': '#1e90ff',
+        'Mūsdienu deja': '#32cd32',
+        'Tautas deja': '#ffa500',
+        'Hip-hops': '#447574',
+        'Cits': '#4f2552'
+      },
       calendarOptions: {
         plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
         locale: lvLocale,
@@ -165,18 +184,33 @@ export default {
       try {
         const res = await axios.get('/events')
         this.events = res.data.data || []
-        this.calendarOptions.events = this.events.map(e => ({
-          id: e.id,
-          title: e.name,
-          start: e.date_start,
-          end: e.date_end || e.date_start,
-          extendedProps: {
-            location: e.location,
-            description: e.description,
-            dance_groups: e.dance_groups,
-            dance_group_member: e.dance_group_member
+
+      const genreColors = { 
+        'lyrical dance' : '#bf63b9', 
+        'ballet' : '#1e90ff', 
+        'contemporary dance' : '#32cd32', 
+        'folk dance' : '#ffa500', 
+        'hip hop': '#447574',
+        'other' : '#4f2552' 
+      }
+        this.calendarOptions.events = this.events.map(e => {
+          let genre = e.dance_group_member.genre
+          let color = genreColors[genre] || '#808080'
+          return {
+            id: e.id,
+            title: e.name,
+            start: e.date_start,
+            end: e.date_end || e.date_start,
+            backgroundColor: color,
+            borderColor: color,
+            extendedProps: {
+              location: e.location,
+              description: e.description,
+              dance_groups: e.dance_groups,
+              dance_group_member: e.dance_group_member
+            }
           }
-        }))
+        })
       } catch (err) { console.error(err) }
     },
     async fetchProfileInfo() {
@@ -190,6 +224,17 @@ export default {
       } finally {
         this.loadingProfile = false
       }
+    },
+    genreLV(genre) {
+      const map = {
+        'lyrical dance': 'Liriskā dejas',
+        'ballet': 'Balets',
+        'contemporary dance': 'Mūsdienīgās dejas',
+        'folk dance': 'Tautasdejas',
+        'hip hop': 'Hip-hops',
+        'other': 'Cits'
+      }
+      return map[genre] || genre
     },
     openEventDialog(event) {
       this.selectedEvent = event
