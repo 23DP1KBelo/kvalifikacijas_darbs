@@ -12,6 +12,7 @@
         Pievienot pasākumu
       </v-btn>
     </div>
+
     <v-card class="mx-auto calendar-card" max-width="1200">
       <v-card-title class="d-flex align-center justify-space-between">
         <v-btn icon="mdi-chevron-left" variant="text" @click="prev" />
@@ -27,6 +28,8 @@
         />
       </v-card-text>
     </v-card>
+
+    <!-- Event Detail Dialog -->
     <v-dialog v-model="dialog" max-width="520">
       <v-card v-if="selectedEvent" rounded="xl" elevation="6">
         <v-card-title class="text-h5 font-weight-bold d-flex align-center justify-space-between">
@@ -36,7 +39,7 @@
           </div>
           <div v-if="isEventCreator">
             <v-btn icon="mdi-pencil" variant="text" @click="editEvent()"/>
-            <v-btn icon="mdi-delete" variant="text" color="red" @click="deleteEvent(selectedEvent)"/>
+            <v-btn icon="mdi-delete" variant="text" color="red" @click="deleteEvent()"/>
           </div>
         </v-card-title>
         <v-divider />
@@ -49,9 +52,7 @@
               <v-list-item-title>
                 {{ selectedEvent.extendedProps.location }}
               </v-list-item-title>
-              <v-list-item-subtitle>
-                Norises vieta
-              </v-list-item-subtitle>
+              <v-list-item-subtitle>Norises vieta</v-list-item-subtitle>
             </v-list-item>
             <v-list-item>
               <template #prepend>
@@ -60,21 +61,13 @@
               <v-list-item-title>
                 {{ formatDate(selectedEvent.start) }} - {{ formatDate(selectedEvent.end) }}
               </v-list-item-title>
-              <v-list-item-subtitle>
-                Laiks
-              </v-list-item-subtitle>
+              <v-list-item-subtitle>Laiks</v-list-item-subtitle>
             </v-list-item>
           </v-list>
-          <v-divider class="my-4" />
-          <div class="text-body-1">
-            {{ selectedEvent.extendedProps.description }}
-          </div>
-        </v-card-text>
-        <v-divider />
-        <v-card-text>
-          <div class="text-subtitle-1 font-weight-medium mb-3">
-            Piedalās grupas
-          </div>
+          <v-divider class="my-4"/>
+          <div class="text-body-1">{{ selectedEvent.extendedProps.description }}</div>
+          <v-divider class="my-4"/>
+          <div class="text-subtitle-1 font-weight-medium mb-3">Piedalās grupas</div>
           <div v-if="selectedEvent.extendedProps.dance_groups?.length">
             <v-chip
               v-for="group in selectedEvent.extendedProps.dance_groups"
@@ -83,9 +76,7 @@
               color="primary"
               variant="tonal"
             >
-              <strong class="mr-2">
-                {{ group.dance_group.name }}:
-              </strong>
+              <strong class="mr-2">{{ group.dance_group.name }}:</strong>
               {{ group.name }} ({{ group.age_group }})
             </v-chip>
           </div>
@@ -93,15 +84,30 @@
             Neviena grupa nepiedalās šajā pasākumā
           </v-alert>
         </v-card-text>
+        <v-divider />
         <v-card-actions class="px-4 pb-4">
-          <v-spacer />
-          <v-btn
-            color="primary"
-            variant="tonal"
-            @click="dialog = false"
-          >
-            Aizvērt
-          </v-btn>
+          <v-spacer/>
+          <v-btn color="primary" variant="tonal" @click="dialog=false">Aizvērt</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+    <v-dialog v-model="editDialog" max-width="600">
+      <v-card rounded="xl">
+        <v-card-title class="text-h5 font-weight-bold">Rediģēt pasākumu</v-card-title>
+        <v-divider/>
+        <v-card-text>
+          <v-text-field v-model="editForm.name" label="Pasākuma nosaukums"/>
+          <v-text-field v-model="editForm.location" label="Vieta"/>
+          <v-textarea v-model="editForm.description" label="Apraksts"/>
+          <v-text-field v-model="editForm.date_start" label="Sākuma laiks" type="datetime-local"/>
+          <v-text-field v-model="editForm.date_end" label="Beigu laiks" type="datetime-local"/>
+        </v-card-text>
+        <v-divider/>
+        <v-card-actions>
+          <v-spacer/>
+          <v-btn variant="text" @click="editDialog=false">Atcelt</v-btn>
+          <v-btn color="primary" @click="submitEditEvent">Saglabāt</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -117,9 +123,7 @@ import lvLocale from '@fullcalendar/core/locales/lv'
 import axios from 'axios'
 
 export default {
-  components: {
-    FullCalendar
-  },
+  components: { FullCalendar },
   data() {
     return {
       events: [],
@@ -128,29 +132,25 @@ export default {
       loadingProfile: true,
       isEventCreator: false,
       dialog: false,
+      editDialog: false,
       selectedEvent: null,
+      editForm: {
+        id: null,
+        name: '',
+        location: '',
+        description: '',
+        date_start: '',
+        date_end: '',
+        dance_groups: []
+      },
       calendarOptions: {
-        plugins: [
-          dayGridPlugin,
-          timeGridPlugin,
-          interactionPlugin
-        ],
+        plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
         locale: lvLocale,
         initialView: 'dayGridMonth',
-        selectable: true,
-        headerToolbar: {
-          right: 'dayGridMonth,timeGridWeek,timeGridDay'
-        },
-        buttonText: {
-          today: 'Šodien',
-          month: 'Mēnesis',
-          week: 'Nedēļa',
-          day: 'Diena'
-        },
+        headerToolbar: { right: 'dayGridMonth,timeGridWeek,timeGridDay' },
+        buttonText: { today: 'Šodien', month: 'Mēnesis', week: 'Nedēļa', day: 'Diena' },
         events: [],
-        eventClick: (info) => {
-          this.openEventDialog(info.event)
-        }
+        eventClick: (info) => this.openEventDialog(info.event)
       }
     }
   },
@@ -164,7 +164,7 @@ export default {
     async fetchEvents() {
       try {
         const res = await axios.get('/events')
-        this.events = Array.isArray(res.data.data) ? res.data.data : []
+        this.events = res.data.data || []
         this.calendarOptions.events = this.events.map(e => ({
           id: e.id,
           title: e.name,
@@ -177,17 +177,12 @@ export default {
             dance_group_member: e.dance_group_member
           }
         }))
-      } catch (err) {
-        console.error(err)
-      }
+      } catch (err) { console.error(err) }
     },
     async fetchProfileInfo() {
       try {
-        const res = await axios.get(
-          '/api/leader-groups',
-          { withCredentials: true }
-        )
-        this.danceGroups = Array.isArray(res.data) ? res.data : []
+        const res = await axios.get('/api/leader-groups', { withCredentials: true })
+        this.danceGroups = res.data || []
         this.isLeader = this.danceGroups.length > 0
       } catch {
         this.danceGroups = []
@@ -199,40 +194,67 @@ export default {
     openEventDialog(event) {
       this.selectedEvent = event
       this.dialog = true
-
-      this.eventeditMember() 
+      this.eventeditMember()
     },
     formatDate(date) {
-      return new Date(date).toLocaleString(
-        'lv-LV',
-        { dateStyle: 'short', timeStyle: 'short' }
-      )
+      return new Date(date).toLocaleString('lv-LV', { dateStyle: 'short', timeStyle: 'short' })
     },
-    prev() {
-      this.$refs.fullCalendar.getApi().prev()
-    },
-    next() {
-      this.$refs.fullCalendar.getApi().next()
+    prev() { this.$refs.fullCalendar.getApi().prev() },
+    next() { this.$refs.fullCalendar.getApi().next() },
+    eventeditMember() {
+      const eventMemberId = this.selectedEvent.extendedProps.dance_group_member?.id
+      this.isEventCreator = this.danceGroups.some(group => group.member_id === eventMemberId)
     },
     editEvent() {
-      console.log("Edit event:", this.selectedEvent.id)
+      const e = this.selectedEvent
+      this.editForm = {
+        id: e.id,
+        name: e.title,
+        location: e.extendedProps.location,
+        description: e.extendedProps.description,
+        date_start: this.formatForInput(e.start),
+        date_end: this.formatForInput(e.end),
+      }
+      this.editDialog = true
+    },
+    formatForInput(date) {
+      if (!date) return ''
+      const d = new Date(date)
+      const pad = n => n.toString().padStart(2, '0')
+      return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`
+    },
+    formatForDB(date) {
+      if (!date) return null
+      const d = new Date(date)
+      const pad = n => n.toString().padStart(2, '0')
+      return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`
+    },
+    async submitEditEvent() {
+      try {
+        const payload = {
+          ...this.editForm,
+          date_start: this.formatForDB(this.editForm.date_start),
+          date_end: this.formatForDB(this.editForm.date_end)
+        }
+        await axios.put(`/event/${payload.id}`, payload, { withCredentials: true })
+        this.editDialog = false
+        this.dialog = false
+        this.fetchEvents()
+      } catch (err) {
+        console.error(err)
+        alert('Neizdevās atjaunināt pasākumu')
+      }
     },
     async deleteEvent() {
       const id = this.selectedEvent.id
       try {
         await axios.delete(`/event/${id}`, { withCredentials: true })
-        this.dialog =false,
+        this.dialog = false
         this.fetchEvents()
       } catch (err) {
-        console.error('Kļūda dzēšot ierakstu:', err)
+        console.error(err)
         alert('Neizdevās dzēst ierakstu')
       }
-    },
-    eventeditMember() {
-      const eventMemberId = this.selectedEvent.extendedProps.dance_group_member.id
-      this.isEventCreator = this.danceGroups.some(group => 
-        group.member_id === eventMemberId
-      )
     }
   },
   mounted() {
@@ -241,21 +263,10 @@ export default {
   }
 }
 </script>
+
 <style scoped>
-.calendar-card {
-  border-radius: 16px;
-}
-.modern-calendar {
-  min-height: 600px;
-}
-@media (max-width: 960px) {
-  .modern-calendar {
-    min-height: 500px;
-  }
-}
-@media (max-width: 600px) {
-  .modern-calendar {
-    min-height: 420px;
-  }
-}
+.calendar-card { border-radius: 16px; }
+.modern-calendar { min-height: 600px; }
+@media (max-width: 960px) { .modern-calendar { min-height: 500px; } }
+@media (max-width: 600px) { .modern-calendar { min-height: 420px; } }
 </style>

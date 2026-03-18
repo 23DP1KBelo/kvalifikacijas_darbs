@@ -4,155 +4,89 @@
       <v-card-title class="text-center mb-4 mt-4">Pasākumu izveidošana</v-card-title>
       <v-card-text>
         <v-form ref="form" v-model="valid">
-          
-          <!-- 1️⃣ Kolektīva izvēle -->
           <v-col cols="12">
-            <v-select
-              v-model="selectedGroup"
-              :items="groups"
-              item-title="name"
-              item-value="member_id"
-              label="Kuram kolektīvam veidots pasākums"
-              variant="outlined"
-              density="comfortable"
-              clearable
-              prepend-icon="mdi-dance-ballroom"
-            />
-          </v-col>
-
-          <!-- 2️⃣ Pasākuma informācija -->
-          <v-slide-y-transition>
-          <div v-if="selectedGroup && !save">
-            <v-col cols="12">
-              <v-text-field
-                v-model="name"
-                label="Pasākuma nosaukums"
-                variant="outlined"
-                density="comfortable"
-              />
-              <v-text-field
-                v-model="location"
-                label="Atrašanās vieta"
-                variant="outlined"
-                density="comfortable"
-              />
-              <v-textarea
-                v-model="description"
-                label="Pasākuma apraksts"
-                variant="outlined"
-                density="comfortable"
-              />
-            </v-col>
-
-            <!-- Datums un laiks -->
-            <v-row dense>
-              <v-col cols="12" md="6">
-                <v-menu
-                  v-model="menuStart"
-                  :close-on-content-click="false"
-                  transition="scale-transition"
-                  max-width="290"
-                  min-width="290"
-                >
-                  <template #activator="{ props }">
-                    <v-text-field
-                      v-model="startDateTime"
-                      label="Sākuma datums un laiks"
-                      prepend-icon="mdi-calendar-clock"
-                      readonly
-                      v-bind="props"
-                    />
-                  </template>
-                  <v-card>
-                    <v-date-picker
-                      v-model="startDate"
-                      @update:model-value="updateStartDateTime"
-                    />
-                    <v-time-picker
-                      v-model="startTime"
-                      format="24hr"
-                      @update:model-value="updateStartDateTime"
-                      show-seconds
-                    />
-                    <v-card-actions>
-                      <v-spacer></v-spacer>
-                      <v-btn text color="primary" @click="menuStart = false">OK</v-btn>
-                    </v-card-actions>
-                  </v-card>
-                </v-menu>
-              </v-col>
-
-              <v-col cols="12" md="6">
-                <v-menu
-                  v-model="menuEnd"
-                  :close-on-content-click="false"
-                  transition="scale-transition"
-                  max-width="290"
-                  min-width="290"
-                >
-                  <template #activator="{ props }">
-                    <v-text-field
-                      v-model="endDateTime"
-                      label="Beigu datums un laiks"
-                      prepend-icon="mdi-calendar-clock"
-                      readonly
-                      v-bind="props"
-                    />
-                  </template>
-                  <v-card>
-                    <v-date-picker
-                      v-model="endDate"
-                      @update:model-value="updateEndDateTime"
-                    />
-                    <v-time-picker
-                      v-model="endTime"
-                      format="24hr"
-                      @update:model-value="updateEndDateTime"
-                      show-seconds
-                    />
-                    <v-card-actions>
-                      <v-spacer></v-spacer>
-                      <v-btn text color="primary" @click="menuEnd = false">OK</v-btn>
-                    </v-card-actions>
-                  </v-card>
-                </v-menu>
-              </v-col>
-            </v-row>
-
-            <v-alert v-if="error" type="error" dense outlined class="mt-3">
-              {{ error }}
-            </v-alert>
-
-            <v-btn color="primary" class="mt-3" @click="submitEventForm">Saglabāt</v-btn>
-          </div>
-          </v-slide-y-transition>
-
-          <!-- 3️⃣ Age groups izvēle -->
-          <v-slide-y-transition>
-          <div v-if="save">
-            <v-col cols="12">
+            <div v-if="!selectedGroup">
               <v-select
-                v-model="selectedAgeGroups"
-                :items="ageGroups"
-                :item-title="ageGroup => `${ageGroup.name} (${ageGroup.age_group})`"
-                item-value="id"
-                label="Izvēlies deju grupas"
+                v-model="selectedGroup"
+                :items="groups"
+                item-title="name"
+                item-value="member_id"
+                label="Kuram kolektīvam veidots pasākums"
                 variant="outlined"
                 density="comfortable"
                 clearable
                 prepend-icon="mdi-dance-ballroom"
-                multiple
               />
-            </v-col>
-
-            <v-alert v-if="error" type="error" dense outlined class="mt-3">
-              {{ error }}
-            </v-alert>
-
-            <v-btn color="primary" class="mt-3" @click="attachAgeGroups">Saglabāt grupas</v-btn>
-          </div>
+            </div>
+          </v-col>
+          <v-slide-y-transition>
+            <div v-if="selectedGroup && !save">
+              <v-col cols="12">
+                <v-text-field
+                  v-model="name"
+                  label="Pasākuma nosaukums"
+                  variant="outlined"
+                  density="comfortable"
+                />
+                <v-text-field
+                  v-model="location"
+                  label="Atrašanās vieta"
+                  variant="outlined"
+                  density="comfortable"
+                />
+                <v-textarea
+                  v-model="description"
+                  label="Pasākuma apraksts"
+                  variant="outlined"
+                  density="comfortable"
+                />
+                <v-text-field
+                  v-model="startDateTime"
+                  label="Sākuma datums un laiks"
+                  type="datetime-local"
+                  variant="outlined"
+                  density="comfortable"
+                />
+                <v-text-field
+                  v-model="endDateTime"
+                  label="Beigu datums un laiks"
+                  type="datetime-local"
+                  variant="outlined"
+                  density="comfortable"
+                />
+              </v-col>
+              <v-alert v-if="error" type="error" dense outlined class="mt-3">
+                {{ error }}
+              </v-alert>
+              <v-btn color="primary" class="mt-3" @click="submitEventForm">Saglabāt</v-btn>
+            </div>
           </v-slide-y-transition>
+          <v-slide-y-transition>
+            <div v-if="save">
+              <v-col cols="12">
+                <v-select
+                  v-model="selectedAgeGroups"
+                  :items="ageGroups"
+                  :item-title="ageGroup => `${ageGroup.name} (${ageGroup.age_group})`"
+                  item-value="id"
+                  label="Izvēlies deju grupas"
+                  variant="outlined"
+                  density="comfortable"
+                  clearable
+                  prepend-icon="mdi-dance-ballroom"
+                  multiple
+                />
+              </v-col>
+              <v-alert type="info" >
+                Lūdzu izvēleities visas deju grupas, vēlāk mainīt grupas nebūs iespējams!
+              </v-alert>
+              <v-alert v-if="error" type="error" dense outlined class="mt-3">
+                {{ error }}
+              </v-alert>
 
+              <v-btn color="primary" class="mt-3" @click="attachAgeGroups">Saglabāt grupas</v-btn>
+            </div>
+          </v-slide-y-transition>
         </v-form>
       </v-card-text>
     </v-card>
@@ -167,16 +101,10 @@ export default {
     return {
       valid: false,
       name: '',
-      startDate: null,
-      startTime: null,
-      endDate: null,
-      endTime: null,
       location: '',
       description: '',
       startDateTime: '',
       endDateTime: '',
-      menuStart: false,
-      menuEnd: false,
       save: false,
       selectedAgeGroups: [],
       ageGroups: [],
@@ -187,26 +115,8 @@ export default {
     }
   },
   methods: {
-    formatDateTime(date, time) {
-      if (!date || !time) return ''
-      const d = new Date(date)
-      const year = d.getFullYear()
-      const month = String(d.getMonth() + 1).padStart(2, '0')
-      const day = String(d.getDate()).padStart(2, '0')
-      let [hours, minutes] = time.split(':')
-      return `${year}-${month}-${day} ${hours}:${minutes}:00`
-    },
-
-    updateStartDateTime() {
-      this.startDateTime = this.formatDateTime(this.startDate, this.startTime)
-    },
-
-    updateEndDateTime() {
-      this.endDateTime = this.formatDateTime(this.endDate, this.endTime)
-    },
-
     validateForm() {
-      if (!this.name || !this.startDate || !this.startTime || !this.endDate || !this.endTime || !this.location) {
+      if (!this.name || !this.startDateTime || !this.endDateTime || !this.location || !this.selectedGroup) {
         this.error = 'Lūdzu aizpildiet visus laukus.'
         return false
       }
@@ -250,22 +160,23 @@ export default {
         this.error = err.response?.data?.message || 'Neizdevās pievienot grupas'
       }
     },
-    async fetchGroups() { 
-      try { 
-        const res = await axios.get('/api/ageGroups', { withCredentials: true }) 
-        this.ageGroups = res.data.data 
-      } catch (err) { 
-        console.error('Kļūda ielādējot deju grupas:', err.response?.data || err.message) 
+
+    async fetchGroups() {
+      try {
+        const res = await axios.get('/api/ageGroups', { withCredentials: true })
+        this.ageGroups = res.data.data
+      } catch (err) {
+        console.error('Kļūda ielādējot deju grupas:', err.response?.data || err.message)
       }
-    }, 
-    async fetchProfileInfo() { 
-      try { 
-        const res = await axios.get('/api/leader-groups', { withCredentials: true }); 
-        console.log("Leader groups response:", res.data); 
-        this.groups = Array.isArray(res.data) ? res.data : []; 
-      } catch(err) { 
-        console.error(err); 
-        this.groups = []; 
+    },
+
+    async fetchProfileInfo() {
+      try {
+        const res = await axios.get('/api/leader-groups', { withCredentials: true })
+        this.groups = Array.isArray(res.data) ? res.data : []
+      } catch(err) {
+        console.error(err)
+        this.groups = []
       }
     }
   },

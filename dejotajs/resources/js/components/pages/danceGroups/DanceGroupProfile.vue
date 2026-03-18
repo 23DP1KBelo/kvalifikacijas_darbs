@@ -5,11 +5,7 @@
       <v-col cols="12" md="8">
 
         <div class="d-flex align-center justify-center flex-wrap">
-
-          <h1 class="group-title">
-            {{ group.name }}
-          </h1>
-
+          <h1 class="group-title">{{ group.name }}</h1>
           <v-btn
             icon
             variant="text"
@@ -18,14 +14,11 @@
           >
             <v-icon>mdi-pencil</v-icon>
           </v-btn>
-
         </div>
-
       </v-col>
     </v-row>
     <v-row justify="center">
       <v-col cols="12" md="8">
-
         <div class="mb-2 d-flex ">
           <v-btn
             color="primary"
@@ -37,7 +30,6 @@
             Pievienot vecuma grupu
           </v-btn>
         </div>
-        
         <div class="mb-2 d-flex ">
           <v-btn
             color="secondary"
@@ -59,7 +51,6 @@
             alt="img_kolektīvs"
           />
           <v-card-text class="leader-section">
-
             <div class="leader-chips">
               <v-chip
                 v-for="leader in leaders"
@@ -69,33 +60,24 @@
               >
                 {{ leader.user.name }} {{ leader.user.surname }}
               </v-chip>
-
               <span v-if="!leaders.length" class="text-medium-emphasis">
                 Nav vadītāju
               </span>
             </div>
-
           </v-card-text>
-
           <v-card-text class="description-text">
             {{ group.description }}
           </v-card-text>
-
           <v-card-subtitle class="location-text">
             <v-icon size="18" class="mr-1">mdi-map-marker</v-icon>
             {{ group.city }}, {{ group.address }}
           </v-card-subtitle>
-
           <v-divider class="my-4"></v-divider>
-
           <v-card-text>
-
             <div class="section-label mb-3">
               Vecuma grupas
             </div>
-
             <v-list density="comfortable">
-
               <v-list-item
                 v-for="ageGroup in group?.age_groups || []"
                 :key="ageGroup.id"
@@ -103,12 +85,10 @@
                 <v-list-item-title>
                   {{ ageGroup.name }}
                 </v-list-item-title>
-
                 <v-list-item-subtitle>
                   {{ ageGroup.age_group || 'Nav informācijas' }}
                 </v-list-item-subtitle>
               </v-list-item>
-
               <v-alert
                 v-if="!(group?.age_groups?.length)"
                 type="info"
@@ -121,18 +101,12 @@
           </v-card-text>
         </v-card>
         <v-row class="mt-8" dense>
-
-          <!-- DANCERS -->
           <v-col cols="12" md="6">
-
             <v-card class="h-100">
-
               <v-card-title>
                 Kolektīva dejotāji
               </v-card-title>
-
               <v-divider></v-divider>
-
               <div
                 v-for="dancer in group.dancers"
                 :key="dancer.id"
@@ -141,13 +115,11 @@
                 <v-card-text>
                   {{ dancer.user.name }} {{ dancer.user.surname }}
                 </v-card-text>
-
                 <v-card-subtitle>
                   {{ dancer.age_group.name }}
                   ({{ dancer.age_group.age_group }})
                 </v-card-subtitle>
               </div>
-
               <v-alert
                 v-if="!group.dancers?.length"
                 type="info"
@@ -156,20 +128,14 @@
               >
                 Nav dejotāju
               </v-alert>
-
             </v-card>
-
           </v-col>
-
-          <!-- ADMISSIONS -->
           <v-col cols="12" md="6">
           <v-card class="h-100">
             <v-card-title class="text-h6">
               Aktīvās uzņemšanas
             </v-card-title>
-
             <v-divider></v-divider>
-
             <v-card-text>
               <div
                 v-for="ageGroup in group.age_groups"
@@ -192,7 +158,6 @@
                       ({{ admission.age_group.name }}{{ admission.age_group.age_group }})
                     </span>
                   </v-chip>
-
                   <v-card-subtitle
                     class="text-text text-medium-emphasis mt-2 mb-0"
                     style="line-height: 1.2;"
@@ -201,7 +166,6 @@
                   </v-card-subtitle>
                 </div>
               </div>
-
               <v-alert
                 v-if="!group.age_groups?.some(g => g.admissions?.length)"
                 type="info"
@@ -211,23 +175,18 @@
                 Nav aktīvu uzņemšanu
               </v-alert>
             </v-card-text>
-</v-card>
+          </v-card>
           </v-col>
         </v-row>
       </v-col>
     </v-row>
     <v-dialog v-model="editDialog" max-width="520">
-
       <v-card class="edit-dialog">
-
         <v-card-title class="text-h6">
           Rediģēt kolektīvu
         </v-card-title>
-
         <v-card-text>
-
           <v-form ref="editForm">
-
             <v-text-field
               label="Nosaukums"
               v-model="editGroupData.name"
@@ -235,7 +194,6 @@
               density="comfortable"
               required
             />
-
             <v-textarea
               label="Apraksts"
               v-model="editGroupData.description"
@@ -244,7 +202,6 @@
               rows="3"
               required
             />
-
             <v-text-field
               label="Pilsēta"
               v-model="editGroupData.city"
@@ -252,7 +209,6 @@
               density="comfortable"
               required
             />
-
             <v-text-field
               label="Adrese"
               v-model="editGroupData.address"
@@ -260,28 +216,19 @@
               density="comfortable"
               required
             />
-
           </v-form>
-
         </v-card-text>
-
         <v-card-actions>
           <v-spacer />
-
           <v-btn variant="text" @click="editDialog = false">
             Atcelt
           </v-btn>
-
           <v-btn color="primary" @click="submitEdit">
             Saglabāt
           </v-btn>
-
         </v-card-actions>
-
       </v-card>
-
     </v-dialog>
-
   </v-container>
 </template>
 

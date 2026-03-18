@@ -64,10 +64,15 @@ class EventController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(EventRequest $request, Event $event)
+    public function update(Request $request, Event $event)
     {
-        $validated = $request->validated();
-        $event->update($validated);
+        $event->update([
+            'name' => $request->name,
+            'location' => $request->location,
+            'description' => $request->description,
+            'date_start' => $request->date_start,
+            'date_end' => $request->date_end,
+        ]);
 
         return new EventResource($event);
     }
