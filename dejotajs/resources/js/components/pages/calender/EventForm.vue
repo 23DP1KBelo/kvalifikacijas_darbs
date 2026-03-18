@@ -250,7 +250,7 @@ export default {
         this.error = err.response?.data?.message || 'Neizdevās pievienot grupas'
       }
     },
-    async fetchGroup() { 
+    async fetchGroups() { 
       try { 
         const res = await axios.get('/api/ageGroups', { withCredentials: true }) 
         this.ageGroups = res.data.data 
@@ -271,7 +271,7 @@ export default {
   },
   mounted() {
     this.fetchGroups()
-    this.fetchAgeGroups()
+    this.fetchProfileInfo()
   }
 }
 </script>

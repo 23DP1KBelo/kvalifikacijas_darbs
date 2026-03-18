@@ -164,20 +164,17 @@ export default {
         alert('Neizdevās atjaunināt ierakstu')
       }
     },
-
-      openEditDialog(post) {
-        this.editPostData = {
-          id: post.id,
-          title: post.title,
-          description: post.description,
-          private: post.private,                  
-          dance_group_member_id: post.dance_group_member_id,
-          picture: post.picture
-        }
-
-        // Atver dialogu
-        this.editDialog = true
-      },
+    openEditDialog(post) {
+      this.editPostData = {
+        id: post.id,
+        title: post.title,
+        description: post.description,
+        private: post.private,                  
+        dance_group_member_id: post.dance_group_member_id,
+        picture: post.picture
+      }
+      this.editDialog = true
+    },
       async submitEdit() {
         try {
           const payload = {

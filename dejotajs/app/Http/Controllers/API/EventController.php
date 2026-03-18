@@ -77,6 +77,7 @@ class EventController extends Controller
      */
     public function destroy(Event $event)
     {
+        $event->ageGroups()->detach();
         $event->delete();
 
         return new EventResource($event);

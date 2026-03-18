@@ -23,6 +23,7 @@ class EventResource extends JsonResource
             "date_end" => $this->date_end,
             "created_at" => $this->created_at,
             "dance_group_member" => [
+                "id" => $this->member?->id,
                 "name" => $this->member?->danceGroup?->name
             ],
             "dance_groups" => AgeGroupResource::collection($this->whenLoaded('ageGroups')),

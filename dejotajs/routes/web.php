@@ -51,6 +51,7 @@ Route::middleware('auth')->group(function (){
     Route::post('/api/events/create', [EventController::class, 'store']);
     Route::post('/api/{event}/attach', [EventController::class, 'attachAgeGroups']);
     Route::get('/api/leader-groups', [DanceGroupController::class, 'leaderGroups']);
+    Route::delete('/event/{event}', [EventController::class, 'destroy']);
 });
 
 Route::middleware(['auth', 'admin'])->group(function () {
