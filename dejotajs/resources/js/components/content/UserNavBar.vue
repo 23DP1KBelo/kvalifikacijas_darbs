@@ -193,6 +193,9 @@ export default {
               .getAttribute('content'),
           },
         });
+
+        localStorage.removeItem('user')
+        
         this.$root.loggedIn = false;
         this.$root.user = null;
         this.$router.push('/login');

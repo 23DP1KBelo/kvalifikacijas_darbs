@@ -68,7 +68,7 @@ export default {
     },
 
     isAdminCheck() {
-      if (this.localUser && this.localUser.role === 'admin') {
+      if (this.localUser?.role === 'admin') {
         this.isAdmin = true
       } else {
         this.isAdmin = false
