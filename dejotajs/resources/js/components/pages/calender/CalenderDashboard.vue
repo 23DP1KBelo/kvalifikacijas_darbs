@@ -47,7 +47,8 @@
           </div>
           <div>
             <v-btn v-if="isEventCreator" icon="mdi-pencil" variant="text" @click="editEvent()"/>
-            <v-btn v-if="isEventCreator || isAdmin" icon="mdi-delete" variant="text" color="red" @click="deleteEvent()"/>
+            <v-btn v-if="isEventCreator" icon="mdi-delete" variant="text" color="red" @click="deleteEvent()"/>
+            <v-btn v-if="isAdmin" icon="mdi-delete" variant="text" color="red" @click="deleteEventAdmin()"/>
           </div>
         </v-card-title>
         <v-divider />
@@ -143,7 +144,8 @@ export default {
       loadingProfile: true,
       isEventCreator: false,
       dialog: false,
-      isAdmin: true,
+      isAdmin: false,
+      localUser: null,
       editDialog: false,
       selectedEvent: null,
       editForm: {
@@ -226,6 +228,13 @@ export default {
         this.loadingProfile = false
       }
     },
+    isAdminCheck() {
+      if (this.localUser?.role === 'admin') {
+        this.isAdmin = true
+      } else {
+        this.isAdmin = false
+      }
+    },
     genreLV(genre) {
       const map = {
         'lyrical dance': 'Liriskā dejas',
@@ -295,6 +304,17 @@ export default {
       const id = this.selectedEvent.id
       try {
         await axios.delete(`/event/${id}`, { withCredentials: true })
+        this.dialog = false
+        this.fetchEvents()
+      } catch (err) {
+        console.error(err)
+        alert('Neizdevās dzēst ierakstu')
+      }
+    },
+     async deleteEventAdmin() {
+      const id = this.selectedEvent.id
+      try {
+        await axios.delete(`/event/admin/${id}`, { withCredentials: true })
         this.dialog = false
         this.fetchEvents()
       } catch (err) {

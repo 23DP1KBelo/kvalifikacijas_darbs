@@ -65,7 +65,9 @@ Route::middleware(['auth', 'admin'])->group(function () {
 
     Route::post('/admin/danceGroups/decline', [AdminController::class, 'declineDanceGroup']);
 
-    Route::delete('/posts/{id}', [PostController::class, 'destroy']);
+    Route::delete('/posts/admin/{id}', [PostController::class, 'destroy']);
+
+    Route::delete('/event/admin/{event}', [EventController::class, 'destroy']);
 });
 
 Route::middleware(['auth', 'leader'])->group(function () {
@@ -80,6 +82,8 @@ Route::middleware(['auth', 'leader'])->group(function () {
     Route::post('/approval-leader', [DanceGroupMemberController::class, 'approveMember']);
 
     Route::post('/decline-leader', [DanceGroupMemberController::class, 'declineMember']);
+
+    Route::delete('/posts/{id}', [PostController::class, 'destroy']);
 
     Route::post('/posts', [PostController::class, 'store']);
 

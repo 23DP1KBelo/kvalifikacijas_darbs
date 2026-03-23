@@ -58,7 +58,7 @@ export default {
 
     async deletePost(postId) {
       try {
-        await axios.delete(`/api/posts/${postId}`, { withCredentials: true })
+        await axios.delete(`/api/posts/admin/${postId}`, { withCredentials: true })
         this.posts = this.posts.filter(post => post.id !== postId)
         alert('Ieraksts veiksmīgi dzēsts')
       } catch (err) {
