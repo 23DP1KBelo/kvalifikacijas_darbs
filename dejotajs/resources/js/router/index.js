@@ -4,7 +4,7 @@ import Home from '../components/pages/Home.vue';
 import Login from '../components/pages/Login.vue';
 import Registration from '../components/pages/Registration.vue';
 import Profile from '../components/pages/Profile.vue';
-import AdminDashboard from '../components/pages/AdminDashboard.vue';
+import AdminDashboard from '../components/pages/admin/AdminDashboard.vue';
 import DanceGroupForm from '../components/pages/danceGroups/DanceGroupForm.vue';
 import DanceGroupPage from '../components/pages/danceGroups/DanceGroupPage.vue';
 import NoAccess from '../components/errors/NoAccess.vue';
@@ -22,6 +22,8 @@ import AdmissonForm from '../components/pages/AdmissonForm.vue';
 import AdmissonDashboard from '../components/pages/AdmissonDashboard.vue';
 import CalenderDashboard from '../components/pages/calender/calenderDashboard.vue';
 import EventForm from '../components/pages/calender/EventForm.vue';
+import AdminStats from '../components/pages/admin/AdminStats.vue';
+
 const routes = [
     { path: '/', component: Home },
     { path: '/login', component: Login },
@@ -45,6 +47,7 @@ const routes = [
     { path: '/admisson', component: AdmissonDashboard},
     { path: '/calender', component: CalenderDashboard},
     { path: '/calender/event', component: EventForm, meta: {requiresAuth: true, requiresLeader: true}},
+    { path: '/dashboard/stats', component: AdminStats, meta: { requiresAuth: true, requiresAdmin: true }},
 ];
 
 const router = createRouter({

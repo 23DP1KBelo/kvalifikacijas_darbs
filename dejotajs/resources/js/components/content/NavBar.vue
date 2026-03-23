@@ -4,30 +4,21 @@
     class="bg-primary text-white d-flex justify-space-between"
   >
     <v-app-bar-nav-icon @click.stop="drawer = !drawer" class="text-white" aria-label="Navigācija"></v-app-bar-nav-icon>
-
-    <!-- Title -->
     <v-app-bar-title
       class="app-bar-title text-h4 text-center clickable "
       @click="$router.push('/')"
     >
       Dejotājs
     </v-app-bar-title>
-
-    <!-- Right icons -->
     <div class="d-flex align-center">
-      <!-- Login -->
-      <v-btn icon class="text-white" @click="$router.push('/login')">
+      <v-btn icon class="text-white" @click="$router.push('/login')" aria-label="Pieslēgšanās">
         <v-icon aria-label="Pieslēgties">mdi-account</v-icon>
       </v-btn>
-
-      <!-- Theme toggle -->
       <v-btn icon class="text-white" @click="toggleTheme" aria-label="Fona maiņa">
         <v-icon>{{ isDark ? 'mdi-white-balance-sunny' : 'mdi-weather-night' }}</v-icon>
       </v-btn>
     </div>
   </v-app-bar>
-
-  <!-- Navigation Drawer -->
   <v-navigation-drawer
     v-model="drawer"
     :location="$vuetify.display.mobile ? 'bottom' : undefined"
@@ -76,7 +67,7 @@ export default {
   cursor: pointer;
 }
 .hover-bg-softblue:hover {
-  background-color: #B3CFE5 !important; /* tavu theme softblue */
+  background-color: #B3CFE5 !important;
 }
 .rounded-lg {
   border-radius: 12px;

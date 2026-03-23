@@ -11,13 +11,12 @@
       <v-row align="center" justify="space-between">
 
         <v-col cols="12" md="6">
-          <v-text-field v-model="searchQuery" label="Meklēt kolektīvu" prepend-inner-icon="mdi-magnify" learable variant="outlined" density="comfortable" hide-details @input="searchGroups"/>
+          <v-text-field v-model="searchQuery" label="Meklēt kolektīvu" prepend-inner-icon="mdi-magnify" learable variant="outlined" density="comfortable" hide-details @input="searchGroups" class="text-text"/>
         </v-col>
 
         <v-col cols="12" md="6" class="d-flex justify-end">
-
           <!-- kārtošana -->
-          <v-btn icon variant="tonal" color="text" @click="sortGroups" class="me-2">
+          <v-btn icon variant="tonal" color="text" @click="sortGroups" class="me-2" aria-label="Kārtot pēc nosaukuma">
             <v-icon>
               {{ sortOrder === 'asc' ? 'mdi-sort-alphabetical-ascending' : 'mdi-sort-alphabetical-descending' }}
             </v-icon>
@@ -25,7 +24,7 @@
           <!-- filtru menu -->
           <v-menu v-model="filterMenu" transition="scale-transition" offset-y :close-on-content-click="false">
             <template #activator="{ props }">
-              <v-btn icon variant="tonal" color="text" v-bind="props">
+              <v-btn icon variant="tonal" color="text" v-bind="props" aria-label="Filtri">
                 <v-icon>mdi-filter-variant</v-icon>
               </v-btn>
             </template>
@@ -55,10 +54,10 @@
               </v-card-text>
               <v-card-actions>
                 <v-spacer />
-                <v-btn variant="tonal" color="text" @click="applyFilters">
+                <v-btn variant="tonal" color="text" @click="applyFilters" aria-label="Meklēt pēc filtra">
                   Filtrēt
                 </v-btn>
-                <v-btn variant="secondary" @click="resetFilters">
+                <v-btn variant="secondary" @click="resetFilters" aria-label="Atcelt filtrus">
                   Atcelt
                 </v-btn>
               </v-card-actions>

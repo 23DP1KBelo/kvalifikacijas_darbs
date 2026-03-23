@@ -1,8 +1,6 @@
 <template>
   <v-app>
     <v-main>
-
-      <!-- HERO SECTION -->
       <v-container fluid class="hero-section">
         <v-container class="py-16">
           <v-row align="center">
@@ -10,7 +8,7 @@
               <h1 class="text-primary text-h2 font-weight-bold mb-4">
                 DEJOTĀJS
               </h1>
-              <p class="text-accent text-h6 mb-6">
+              <p class="text-text text-h6 mb-6">
                 Kustība. Ritms. Brīvība.
               </p>
             </v-col>
@@ -20,16 +18,11 @@
           </v-row>
         </v-container>
       </v-container>
-
-      
-      <!-- Citāts par dejotāju -->
       <v-container fluid class="py-12 text-center bg-secondary">
         <div  class="text-h3 font-italic">
           "Deja ir brīvība, kas izpaužas caur kustību"
         </div>
       </v-container>
-
-      <!-- Aktualitātes -->
       <v-container fluid class="py-16 bg-softblue">
         <v-container>
           <h2 class="text-center text-text mb-10 text-h3">Aktualitātes</h2>
@@ -42,14 +35,11 @@
               md="4"
             >
               <v-card class="px-2 py-2" elevation="4" height="500">
-                <!-- Attēls -->
                 <v-img v-if="post.picture" :src="post.picture" height="200px" cover alt="img_kolektīvs"></v-img>
-
-                <!-- Teksts zem attēla -->
                 <v-card-subtitle class="mt-4 px-4 text-subtitle-2">
                   {{ post.dance_group_member?.dance_group?.name || 'Nezināms kolektīvs' }}
                 </v-card-subtitle>
-                <v-card-title class="px-4 text-accent">{{ post.title }}</v-card-title>
+                <v-card-title class="px-4 text-secondary">{{ post.title }}</v-card-title>
                 <v-card-text class="px-4 pb-4 text-body-1">
                   {{ post.description || ' ' }}
                 </v-card-text>

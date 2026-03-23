@@ -1,26 +1,19 @@
 <template>
   <v-app-bar elevation="2" class="bg-primary text-white d-flex justify-space-between">
-    <!-- Hamburger / Drawer toggle -->
     <v-app-bar-nav-icon @click.stop="drawer = !drawer" class="text-white" aria-label="Navigācija"></v-app-bar-nav-icon>
-
-    <!-- Title -->
     <v-app-bar-title
       class="app-bar-title text-h4 text-center clickable"
       @click="$router.push('/')"
     >
       Dejotājs
     </v-app-bar-title>
-
-    <!-- Right icons -->
     <div class="d-flex align-center">
-      <!-- Group menu -->
       <v-menu v-model="menuMessage" offset-y class="ms-3">
         <template #activator="{ props, attrs }">
           <v-btn icon v-bind="{ ...props, ...attrs }" class="text-white" aria-label="kolektīvi">
             <v-icon>mdi-message</v-icon>
           </v-btn>
         </template>
-
         <v-list class="bg-surface rounded-lg">
           <v-list-item
             v-for="group in userGroups"
@@ -30,14 +23,11 @@
           >
             <v-list-item-title>{{ group.name || 'Nav kolektīvu' }}</v-list-item-title>
           </v-list-item>
-
           <v-list-item v-if="userGroups.length === 0" class="rounded-lg my-1">
             <v-list-item-title>Nav pievienotu kolektīvu</v-list-item-title>
           </v-list-item>
         </v-list>
       </v-menu>
-
-      <!-- Profile menu -->
       <v-menu v-model="menuProfile" offset-y class="ms-3">
         <template #activator="{ props, attrs }">
           <v-btn icon v-bind="{ ...props, ...attrs }" class="text-white" aria-label="Profils">
@@ -179,8 +169,8 @@ export default {
       localUser: {},
       links: ['Sākums','Aktualitātes', 'Kolektīvi', 'Kalendārs', 'Uzņemšana'],
       linkRoutes: ['/', '/posts','/dance-groups', '/calender', '/admisson'],
-      adminLinks: ['Admin Panelis'],
-      adminRoutes: ['/dashboard'],
+      adminLinks: ['Admin Panelis', 'Statistika'],
+      adminRoutes: ['/dashboard', '/dashboard/stats'],
     };
   },
   methods: {

@@ -26,7 +26,9 @@
         "@mdi/font": "^7.4.47",
         "@mdi/js": "^7.4.47",
         "@vitejs/plugin-vue": "^6.0.3",
+        "chart.js": "^4.5.1",
         "vue": "^3.5.27",
+        "vue-chartjs": "^3.1.1",
         "vue-router": "^4.6.4"
     }
 }

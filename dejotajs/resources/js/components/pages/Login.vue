@@ -51,6 +51,8 @@ export default {
 
         const user = userResponse.data.user;
 
+        localStorage.setItem('user', JSON.stringify(user))
+
         this.$root.user = user;
         this.$root.loggedIn = true;  
 

@@ -80,55 +80,54 @@ class DanceGroupMemberController extends Controller
         return DanceGroupMemberResource::collection($dancers);
     }
 
-public function approveMember(DancerRequest $request)
-{
-    $memberId = $request->id;
-    $role = $request->role;
 
-    if (!in_array($role, ['dancer', 'leader'])) {
+    public function approveMember(DancerRequest $request){
+        $memberId = $request->id;
+        $role = $request->role;
+
+        if (!in_array($role, ['dancer', 'leader'])) {
+            return response()->json([
+                'message' => 'Invalid role'
+            ], 422);
+        }
+
+        $updateData = [
+            'status' => 'approved',
+        ];
+
+        if ($role !== 'leader') {
+            $updateData['age_group_id'] = $request->age_group_id;
+        }
+
+        DanceGroupMember::where('id', $memberId)
+            ->where('role', $role)
+            ->update($updateData);
+
         return response()->json([
-            'message' => 'Invalid role'
-        ], 422);
-    }
-
-    $updateData = [
-        'status' => 'approved',
-    ];
-
-    if ($role !== 'leader') {
-        $updateData['age_group_id'] = $request->age_group_id;
-    }
-
-    DanceGroupMember::where('id', $memberId)
-        ->where('role', $role)
-        ->update($updateData);
-
-    return response()->json([
-        'message' => 'ok'
-    ]);
-}
-
-public function declineMember(DancerRequest $request)
-{
-    $memberId = $request->id;
-    $role = $request->role;
-
-    if (!in_array($role, ['dancer', 'leader'])) {
-        return response()->json([
-            'message' => 'Invalid role'
-        ], 422);
-    }
-
-    DanceGroupMember::where('id', $memberId)
-        ->where('role', $role)
-        ->update([
-            'status' => 'declined'
+            'message' => 'ok'
         ]);
+    }
 
-    return response()->json([
-        'message' => 'ok'
-    ]);
-}
+    public function declineMember(DancerRequest $request){
+        $memberId = $request->id;
+        $role = $request->role;
+
+        if (!in_array($role, ['dancer', 'leader'])) {
+            return response()->json([
+                'message' => 'Invalid role'
+            ], 422);
+        }
+
+        DanceGroupMember::where('id', $memberId)
+            ->where('role', $role)
+            ->update([
+                'status' => 'declined'
+            ]);
+
+        return response()->json([
+            'message' => 'ok'
+        ]);
+    }
 
 
     public function showLeaders(DanceGroup $group)
