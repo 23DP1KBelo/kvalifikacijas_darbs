@@ -68,6 +68,8 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::delete('/posts/admin/{id}', [PostController::class, 'destroy']);
 
     Route::delete('/event/admin/{event}', [EventController::class, 'destroy']);
+
+    Route::get('/admin/stats', [DanceGroupController::class, 'index']);
 });
 
 Route::middleware(['auth', 'leader'])->group(function () {

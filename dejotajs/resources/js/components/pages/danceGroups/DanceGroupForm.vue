@@ -78,7 +78,7 @@ export default {
           { withCredentials: true }
         )
 
-        alert("Kolektīvs veiksmīgi reģistrēts!")
+        alert("Kolektīvs reģistrēts, gaidiet administrātora apstiprinājumu!")
         this.$router.push('/')
 
       } catch (err) {

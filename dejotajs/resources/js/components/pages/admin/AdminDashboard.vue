@@ -5,8 +5,7 @@
       Deju kolektīvu apstiprinājumi
     </h1>
 
-    <!-- Grupas kartes responsīvā režģī -->
-    <v-row dense>
+    <v-row dense class="pa-2">
       <v-col
         v-for="group in groups"
         :key="group.id"
@@ -14,49 +13,50 @@
         sm="6"
         md="4"
         lg="3"
+        class="d-flex"
       >
-        <v-card class="mb-6 rounded-lg elevation-4 group-card">
-          <v-card-title class="bg-softblue text-primary font-weight-bold rounded-t-lg">
-            {{ group.name }}
-          </v-card-title>
-
-          <v-card-text class="px-4 py-4 bg-secondary">
-            <div><strong>Statuss:</strong> {{ statusMap[group.status] || group.status }}</div>
-          </v-card-text>
-
-          <v-card-actions class="d-flex justify-end px-4 py-2 bg-secondary">
-            <v-btn
-              color="green"
-              variant="tonal"
-              small
-              class="mx-1"
-              @click="updateStatus(group.id, 'approve')"
-            >
-              Apstiprināt
-            </v-btn>
-            <v-btn
-              color="red"
-              variant="tonal"
-              small
-              class="mx-1"
-              @click="updateStatus(group.id, 'decline')"
-            >
-              Noraidīt
-            </v-btn>
-            <v-btn
-              v-if="group.approval_url"
-              :href="group.approval_url"
-              target="_blank"
-              small
-              variant="outlined"
-              class="ml-2"
-            >
-              Atvērt dokumentu
-            </v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-col>
-    </v-row>
+    <v-card class="flex-grow-1 mb-4 rounded-lg elevation-4 group-card d-flex flex-column">
+      <v-card-title class="bg-softblue text-primary font-weight-bold">
+        {{ group.name }}
+      </v-card-title>
+      <v-card-text class="px-4 py-4 bg-secondary flex-grow-1">
+        <div>
+          <strong>Status:</strong> {{ statusMap[group.status] || group.status }}
+        </div>
+        </v-card-text>
+            <v-card-actions class="px-4 py-3 bg-secondary flex-wrap justify-end">
+              <v-btn
+                color="green"
+                variant="tonal"
+                size="small"
+                class="ma-1"
+                @click="updateStatus(group.id, 'approve')"
+              >
+                Apstiprināt
+              </v-btn>
+              <v-btn
+                color="red"
+                variant="tonal"
+                size="small"
+                class="ma-1"
+                @click="updateStatus(group.id, 'decline')"
+              >
+                Noraidīt
+              </v-btn>
+              <v-btn
+                v-if="group.approval_url"
+                :href="group.approval_url"
+                target="_blank"
+                size="small"
+                variant="outlined"
+                class="ma-1"
+              >
+                Atvērt dokumentu
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-col>
+      </v-row>
     <v-alert
       v-if="groups.length === 0"
       type="info"
@@ -110,7 +110,7 @@ export default {
       users: [],
       allGroups: [],
       statusMap: {
-        pending: 'Gaidīšana',
+        waiting: 'Gaida apstiprinājumu',
         approved: 'Apstiprināts',
         declined: 'Noraidīts'
       },

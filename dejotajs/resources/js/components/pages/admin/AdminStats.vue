@@ -71,16 +71,17 @@ export default {
   },
   methods: {
     fetchGroupsAndRenderCharts() {
-      fetch('/danceGroups-all')
+      fetch('/admin/stats', { withCredentials: true })
         .then(res => res.json())
         .then(data => {
           this.groups = Array.isArray(data.data) ? data.data : [];
+          console.log('Iegūtie kolektīvi:', this.groups);
 
           // --- Diagramma 1: statusi ---
           const total = this.groups.length;
           const approved = this.groups.filter(g => g.status === 'approved').length;
           const declined = this.groups.filter(g => g.status === 'declined').length;
-          const pending = this.groups.filter(g => g.status === 'waiting').length;
+          const waiting = this.groups.filter(g => g.status === 'waiting').length;
 
           const ctxStatus = document.getElementById('statusChart').getContext('2d');
           const gradientStatus = ctxStatus.createLinearGradient(0, 0, 0, 400);
@@ -93,7 +94,7 @@ export default {
               labels: ['Kopā', 'Gaidīšana', 'Apstiprināti', 'Noraidīti'],
               datasets: [{
                 label: 'Deju kolektīvi',
-                data: [total, pending, approved, declined],
+                data: [total, waiting, approved, declined],
                 backgroundColor: [
                   gradientStatus,
                   'rgba(250,204,21,0.7)',

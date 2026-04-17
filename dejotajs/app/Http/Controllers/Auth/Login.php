@@ -23,7 +23,7 @@ class Login extends Controller
                 'user' => $user
             ], 200);
         }
-
+    
         return response()->json(['message' => 'Nepareizs e-pasts vai parole'], 401);
     }
 }
