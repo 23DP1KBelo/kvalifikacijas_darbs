@@ -92,7 +92,7 @@ export default{
     methods: {
         async fetchAgeGroups() {
              try {
-                  const res = await axios.get('/admission-age-groups')
+                  const res = await axios.get('/api/admission-age-groups')
                   this.ageGroups = res.data.data
                   console.log(this.ageGroups)
                 } catch (err) {

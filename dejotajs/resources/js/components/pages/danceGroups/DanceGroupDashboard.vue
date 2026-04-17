@@ -57,7 +57,7 @@
                 <v-btn variant="tonal" color="text" @click="applyFilters" aria-label="Meklēt pēc filtra">
                   Filtrēt
                 </v-btn>
-                <v-btn variant="secondary" @click="resetFilters" aria-label="Atcelt filtrus">
+                <v-btn variant="tonal" @click="resetFilters" aria-label="Atcelt filtrus">
                   Atcelt
                 </v-btn>
               </v-card-actions>
@@ -143,12 +143,12 @@ export default {
   },
   methods: {
     async fetchFilterOptions() {
-      const res = await axios.get('/filter-options')
+      const res = await axios.get('/api/filter-options/')
       this.cities = res.data.cities || []
     },
     fetchDanceGroups() {
       axios
-        .get('/danceGroups-all')
+        .get('/api/danceGroups-all')
         .then(res => {
           this.groups = Array.isArray(res.data.data) ? res.data.data : []
         })
@@ -159,14 +159,14 @@ export default {
     },
     searchGroups() {
       axios
-        .get('/search-dance-groups', { params: { q: this.searchQuery } })
+        .get('/api/search-dance-groups', { params: { q: this.searchQuery } })
         .then(res => {
           this.groups = Array.isArray(res.data.data) ? res.data.data : []
         })
         .catch(err => console.error(err))
     },
     async fetchGroups() {
-      const res = await axios.get('/filter-dance-groups', {
+      const res = await axios.get('/api/filter-dance-groups', {
         params: {
           city: this.selectedCity,
           age_group: this.selectedAgeGroup,
@@ -190,7 +190,7 @@ export default {
       }
 
       axios
-        .get(`/sort-dance-groups/${this.sortOrder}`)
+        .get(`/api/sort-dance-groups/${this.sortOrder}`)
         .then(res => {
           this.groups = Array.isArray(res.data.data) ? res.data.data : []
         })

@@ -88,13 +88,19 @@
               color="white"
               variant="tonal"
             >
-              <strong class="mr-2">{{ group.dance_group.name }}:</strong>
-              {{ group.name }} ({{ group.age_group }})
-            </v-chip>
+              <strong class="mr-2">
+                {{ group.dance_group?.name || group.name || 'Nezināma grupa' }}:
+              </strong>
+              {{ group.name || '—' }}
+
+              <span v-if="group.age_group">
+                ({{ group.age_group }})
+              </span>
+        </v-chip>
           </div>
-          <v-alert v-else type="info" variant="tonal">
-            Neviena grupa nepiedalās šajā pasākumā
-          </v-alert>
+          <div v-else>
+            Nav norādītas grupas, kas piedalās šajā pasākumā.
+          </div>
         </v-card-text>
         <v-divider />
         <v-card-actions class="px-4 pb-4">
@@ -185,7 +191,7 @@ export default {
   methods: {
     async fetchEvents() {
       try {
-        const res = await axios.get('/events')
+        const res = await axios.get('/api/events')
         this.events = res.data.data || []
 
       const genreColors = { 
@@ -217,24 +223,29 @@ export default {
       } catch (err) { console.error(err) }
     },
     async fetchProfileInfo() {
-      try {
-        const res = await axios.get('/api/leader-groups', { withCredentials: true })
-        this.danceGroups = res.data || []
-        this.isLeader = this.danceGroups.length > 0
-      } catch {
-        this.danceGroups = []
-        this.isLeader = false
-      } finally {
-        this.loadingProfile = false
-      }
-    },
-    isAdminCheck() {
-      if (this.localUser?.role === 'admin') {
-        this.isAdmin = true
-      } else {
-        this.isAdmin = false
-      }
-    },
+  try {
+    const profileRes = await axios.get('/api/profile', { withCredentials: true })
+
+    const user = profileRes.data?.user || null
+    this.localUser = user
+
+    this.isAdmin = user?.role === 'admin'
+
+    const groupRes = await axios.get('/api/leader-groups', { withCredentials: true })
+
+    this.danceGroups = groupRes.data || []
+    this.isLeader = this.danceGroups.length > 0
+
+  } catch (err) {
+    console.error(err)
+    this.localUser = null
+    this.isAdmin = false
+    this.isLeader = false
+    this.danceGroups = []
+  } finally {
+    this.loadingProfile = false
+  }
+},
     genreLV(genre) {
       const map = {
         'lyrical dance': 'Liriskā dejas',
@@ -291,7 +302,7 @@ export default {
           date_start: this.formatForDB(this.editForm.date_start),
           date_end: this.formatForDB(this.editForm.date_end)
         }
-        await axios.put(`/event/${payload.id}`, payload, { withCredentials: true })
+        await axios.put(`/api/event/${payload.id}`, payload, { withCredentials: true })
         this.editDialog = false
         this.dialog = false
         this.fetchEvents()
@@ -303,7 +314,7 @@ export default {
     async deleteEvent() {
       const id = this.selectedEvent.id
       try {
-        await axios.delete(`/event/${id}`, { withCredentials: true })
+        await axios.delete(`/api/event/${id}`, { withCredentials: true })
         this.dialog = false
         this.fetchEvents()
       } catch (err) {
@@ -314,7 +325,7 @@ export default {
      async deleteEventAdmin() {
       const id = this.selectedEvent.id
       try {
-        await axios.delete(`/event/admin/${id}`, { withCredentials: true })
+        await axios.delete(`/api/event/admin/${id}`, { withCredentials: true })
         this.dialog = false
         this.fetchEvents()
       } catch (err) {

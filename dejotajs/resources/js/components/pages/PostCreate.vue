@@ -49,7 +49,7 @@ export default {
         formData.append('private', this.privatePost ? '1' : '0')
         formData.append('dance_group_id', groupId)
 
-        await axios.post('/posts', formData, {
+        await axios.post('/api/posts', formData, {
           withCredentials: true,
           headers: { 'Content-Type': 'multipart/form-data' }
         })

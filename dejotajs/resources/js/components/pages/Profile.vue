@@ -67,7 +67,7 @@ export default {
   },
   async mounted() {
     try {
-      const res = await axios.get('api/profile', { withCredentials: true });
+      const res = await axios.get('/api/profile', { withCredentials: true });
 
       this.user.name = res.data.user.name;
       this.user.surname = res.data.user.surname;

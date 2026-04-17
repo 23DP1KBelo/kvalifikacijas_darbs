@@ -127,24 +127,24 @@ export default {
   },
   methods: {
     fetchGroups() {
-      axios.get('/admin/danceGroups', { withCredentials: true })
+      axios.get('/api/admin/danceGroups', { withCredentials: true })
         .then(res => { this.groups = Array.isArray(res.data.data) ? res.data.data : []; })
         .catch(err => console.log(err));
     },
     fetchUsers() {
-      axios.get('/admin/users', { withCredentials: true })
+      axios.get('/api/admin/users', { withCredentials: true })
         .then(res => { this.users = Array.isArray(res.data.data) ? res.data.data : []; })
         .catch(err => console.log(err));
     },
     fetchAllGroups() {
-      axios.get('/danceGroups-all')
+      axios.get('/api/danceGroups-all')
         .then(res => { this.allGroups = Array.isArray(res.data.data) ? res.data.data : []; })
         .catch(err => console.log(err));
     },
     updateStatus(id, action) {
       const url = action === 'approve'
-        ? '/admin/danceGroups/approval'
-        : '/admin/danceGroups/decline';
+        ? '/api/admin/danceGroups/approval'
+        : '/api/admin/danceGroups/decline';
 
       axios.post(url, { id }, { withCredentials: true })
         .then(() => { this.groups = this.groups.filter(g => g.id !== id); })

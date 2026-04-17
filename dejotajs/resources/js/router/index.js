@@ -57,20 +57,25 @@ const router = createRouter({
 
 // Router guard
 router.beforeEach(async (to, from, next) => {
-    if (!to.meta.requiresAuth) return next();
+  if (!to.meta.requiresAuth) return next();
 
-    try {
-        const res = await axios.get('/user', { withCredentials: true });
-        const { logged_in, user } = res.data;
+  try {
+    const res = await axios.get('/api/user', {
+      withCredentials: true
+    });
 
-        if (!logged_in || !user) return next('/login');
+    const user = res.data?.user ?? res.data;
 
-        if (to.meta.requiresAdmin && user.role !== 'admin') return next('/');
+    if (!user) return next('/login');
 
-        return next();
-    } catch (e) {
-        return next('/login');
+    if (to.meta.requiresAdmin && user.role !== 'admin') {
+      return next('/');
     }
+
+    return next();
+  } catch (e) {
+    return next('/login');
+  }
 });
 
 

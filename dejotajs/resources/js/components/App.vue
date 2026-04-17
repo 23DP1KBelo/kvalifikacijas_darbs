@@ -1,43 +1,43 @@
 <template>
   <v-app>
-    <UserNavBar v-if="loggedIn" :user="user"/>
-    <NavBar v-else/>    
+    <UserNavBar v-if="user" :user="user" />
+
+    <NavBar v-else />
+
     <v-main>
       <RouterView />
     </v-main>
-    <Footer/>
+
+    <Footer />
   </v-app>
 </template>
 
 <script>
-import axios from '../axion';
-import Footer from './content/Footer.vue';
-import NavBar from './content/NavBar.vue';
-import UserNavBar from './content/UserNavBar.vue';
+import axios from "axios";
+import UserNavBar from "./content/UserNavBar.vue";
+import NavBar from "./content/NavBar.vue";
+import Footer from "./content/Footer.vue";
 
 export default {
-  name: 'App',
-  components: {
-    Footer,
-    NavBar,
-    UserNavBar,
-  },
+  components: { UserNavBar, NavBar, Footer },
+
   data() {
     return {
-      loggedIn: false,
-      user: null
+      user: null,
     };
   },
+
   async mounted() {
     try {
-      const response = await axios.get('/user');
-      this.loggedIn = response.data.logged_in;
-      this.user = response.data.user;
-    } catch {
-      this.loggedIn = false;
+      const res = await axios.get("/api/profile", {
+        withCredentials: true,
+      });
+
+      this.user = res.data.user ?? null;
+    } catch (e) {
       this.user = null;
     }
-  }
+  },
 };
 </script>
 

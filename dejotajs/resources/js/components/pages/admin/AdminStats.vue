@@ -71,7 +71,7 @@ export default {
   },
   methods: {
     fetchGroupsAndRenderCharts() {
-      fetch('/admin/stats', { withCredentials: true })
+      fetch('/api/admin/stats', { withCredentials: true })
         .then(res => res.json())
         .then(data => {
           this.groups = Array.isArray(data.data) ? data.data : [];
@@ -158,7 +158,7 @@ export default {
         .catch(err => console.error('Kļūda ielādējot datus:', err));
     },
     fetchUsers() {
-      axios.get('/admin/users', { withCredentials: true })
+      axios.get('/api/admin/users', { withCredentials: true })
         .then(res => { 
           this.users = Array.isArray(res.data.data) ? res.data.data : []; 
         })

@@ -8,6 +8,10 @@
                 <v-btn color="primary" size="small" class="mb-4 mr-6"  @click="joinGroup(group.id)">Pievienoties</v-btn>
             </div>
         </v-card>
+        <v-alert v-if="groups.length === 0" type="info" class="mt-4">
+            Šobrīd nav pieejami kolektīvi, kuros iespējams kļūt par vadītāju.
+        </v-alert>
+
     </v-container>
 </template>
 
@@ -35,7 +39,7 @@ export default {
         joinGroup(groupId) {
             axios.post('/api/members', { dance_group_id: groupId }, { withCredentials: true })
             .then(res => {
-                alert('Pievienots kolektīvam!');
+                alert('Gaidiet apstiprinājumu no kolektīva vadītāja!');
                 window.location.reload();
             })
             .catch(err => {

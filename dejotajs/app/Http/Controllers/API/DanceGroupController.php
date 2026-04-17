@@ -229,6 +229,7 @@ class DanceGroupController extends Controller
 
         $groups = $user->danceGroupMembers()
             ->where('role', 'leader')
+            ->whereHas('danceGroup', function ($q) {$q->where('status', 'approved');})
             ->with('danceGroup')
             ->get()
             ->map(function ($member) {

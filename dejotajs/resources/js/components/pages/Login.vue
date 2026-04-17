@@ -38,42 +38,34 @@ export default {
   },
   methods: {
     async login() {
-      try {
-        // Sanctum CSRF cookie
-        await axios.get('/sanctum/csrf-cookie', { withCredentials: true });
+  try {
 
-        const response = await axios.post('/login', {
-          email: this.email,
-          password: this.password,
-        },{ withCredentials: true });
+    // 1. CSRF cookie
+    await axios.get('/sanctum/csrf-cookie');
 
-        const userResponse = await axios.get('/user', { withCredentials: true })
+    // 2. login
+    await axios.post('/api/login', {
+      email: this.email,
+      password: this.password,
+    });
 
-        const user = userResponse.data.user;
+    // 3. user
+    const userResponse = await axios.get('/api/user');
+    const user = userResponse.data;
 
-        localStorage.setItem('user', JSON.stringify(user))
+    localStorage.setItem('user', JSON.stringify(user));
 
-        this.$root.user = user;
-        this.$root.loggedIn = true;  
+    this.$root.user = user;
+    this.$root.loggedIn = true;
 
-        if(user.role === 'admin') {
-          this.$router.push('/dashboard');
-        } else {
-          this.$router.push('/');
-        }
+    this.$router.push(user.role === 'admin' ? '/dashboard' : '/');
 
-      } catch (err) {
-          if (err.response && err.response.data && err.response.data.errors) {
-            this.error = Object.values(err.response.data.errors)
-                              .flat()
-                              .join(' ');
-          } else if (err.response && err.response.data && err.response.data.message) {
-            this.error = err.response.data.message;
-          } else {
-            this.error = 'Nezināma kļūda. Mēģiniet vēlreiz.';
-          }
-        }
-    }
+  } catch (err) {
+    this.error =
+      err.response?.data?.message ||
+      'Nezināma kļūda. Mēģiniet vēlreiz.';
+  }
+}
   }
 }
 

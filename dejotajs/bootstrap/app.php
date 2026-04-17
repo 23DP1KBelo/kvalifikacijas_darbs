@@ -4,6 +4,7 @@ use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Middleware\HandleCors;
+use Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful;
 use App\Http\Middleware\IsAdmin;
 use App\Http\Middleware\IsLeader;
 
@@ -16,8 +17,13 @@ return Application::configure(basePath: dirname(__DIR__))
     )
 
     ->withMiddleware(function (Middleware $middleware): void {
+
         $middleware->web(append: [
             HandleCors::class,
+        ]);
+
+        $middleware->api(prepend: [
+            EnsureFrontendRequestsAreStateful::class,
         ]);
 
         $middleware->api(append: [
@@ -25,11 +31,12 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
 
         $middleware->alias([
-        'admin' => IsAdmin::class,
-        'leader' => IsLeader::class
-    ]);
+            'admin' => IsAdmin::class,
+            'leader' => IsLeader::class,
+        ]);
     })
 
     ->withExceptions(function (Exceptions $exceptions): void {
         //
-    })->create();
+    })
+    ->create();
