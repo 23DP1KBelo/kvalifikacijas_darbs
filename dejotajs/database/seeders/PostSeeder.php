@@ -2,32 +2,29 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
-use App\Models\Post;
 use App\Models\DanceGroupMember;
-use Faker\Factory as Faker;
+use App\Models\Post;
+use Illuminate\Database\Seeder;
 
 class PostSeeder extends Seeder
 {
     public function run(): void
     {
-        $faker = Faker::create('lv_LV');
+        $leaders = DanceGroupMember::where('role', 'leader')
+            ->where('status', 'approved')
+            ->get();
 
-        // Tikai leaderi
-        $leaders = DanceGroupMember::where('role', 'leader')->get();
+        if ($leaders->isEmpty()) {
+            return;
+        }
 
-        foreach ($leaders as $leader) {
-            // Nejaušs skaits postu katram leader
-            $numPosts = rand(1, 5);
+        $postsCount = rand(40, 50);
 
-            for ($i = 0; $i < $numPosts; $i++) {
-                Post::create([
-                    'dance_group_member_id' => $leader->id,
-                    'title' => $faker->sentence(6, true),
-                    'description' => $faker->paragraph(3, true),
-                    'private' => $faker->boolean(50),
-                ]);
-            }
+        for ($i = 0; $i < $postsCount; $i++) {
+
+            Post::factory()->create([
+                'dance_group_member_id' => $leaders->random()->id,
+            ]);
         }
     }
 }

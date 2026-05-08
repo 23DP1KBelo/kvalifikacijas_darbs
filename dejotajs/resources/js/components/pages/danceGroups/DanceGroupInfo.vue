@@ -5,8 +5,7 @@
         <v-card elevation="2" class="mt-8">
 
           <v-img
-            v-if="group?.picture_url"
-            :src="group.picture_url"
+            :src="group.picture_url || `https://picsum.photos/id/${group.id}/600/350`"
             height="500"
             class="card-full-image"
             alt="img_kolektīvs"

@@ -3,48 +3,50 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use App\Models\AppUser;
 use App\Models\DanceGroup;
-use App\Models\AgeGroup;
 use App\Models\DanceGroupMember;
-use Faker\Factory as Faker;
 
 class DanceGroupMemberSeeder extends Seeder
 {
     public function run(): void
     {
-        $faker = Faker::create('lv_LV');
-
-        $users = AppUser::where('role', 'user')->get(); 
         $groups = DanceGroup::all();
 
         foreach ($groups as $group) {
 
-            $ageGroups = AgeGroup::where('dance_group_id', $group->id)->get();
-            $leader = $users->random();
+            $leadersCount = rand(1, 3);
 
-            DanceGroupMember::create([
-                'user_id' => $leader->id,
-                'dance_group_id' => $group->id,
-                'age_group_id' => $ageGroups->random()?->id,
-                'role' => 'leader',
-                'status' => 'approved',
-            ]);
-
-            $availableUsers = $users->where('id', '!=', $leader->id);
-            $numDancers = min(rand(5,10), $availableUsers->count());
-            $dancers = $availableUsers->random($numDancers);
-
-            foreach ($dancers as $dancer) {
+            for ($i = 0; $i <= $leadersCount; $i++) {
 
                 DanceGroupMember::create([
-                    'user_id' => $dancer->id,
                     'dance_group_id' => $group->id,
-                    'age_group_id' => $ageGroups->random()?->id,
-                    'role' => 'dancer',
-                    'status' => collect(['approved','waiting'])->random(),
+                    'user_id' => rand(2, 100),
+                    'role' => 'leader',
+                    'status' => 'approved',
+                    'age_group_id' => null,
                 ]);
+            }
+
+            if ($group->status === 'approved') {
+
+                $ageGroups = $group->ageGroups;
+
+                if ($ageGroups->isNotEmpty()) {
+
+                    $dancersCount = rand(10, 15);
+
+                    for ($i = 0; $i <= $dancersCount; $i++) {
+
+                        DanceGroupMember::create([
+                            'dance_group_id' => $group->id,
+                            'user_id' => rand(2, 100),
+                            'role' => 'dancer',
+                            'status' => 'approved',
+                            'age_group_id' => $ageGroups->random()->id,
+                        ]);
+                    }
+                }
             }
         }
     }
-}
+}   

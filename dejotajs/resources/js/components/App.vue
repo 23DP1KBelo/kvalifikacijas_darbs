@@ -5,7 +5,7 @@
     <NavBar v-else />
 
     <v-main>
-      <RouterView />
+      <RouterView/>
     </v-main>
 
     <Footer />

@@ -4,10 +4,15 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\AppUser;
+use App\Models\DanceGroup;
+use App\Models\AgeGroup;
 
 class DanceGroupMember extends Model
 {
     use SoftDeletes;
+    use HasFactory;
     protected $fillable = [
         'status',
         'role',

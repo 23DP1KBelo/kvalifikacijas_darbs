@@ -1,5 +1,5 @@
 <template>
-    <v-footer app class="d-flex align-center justify-center flex-wrap " color="primary" :style="{overflowY: 'auto'}" height="100px">
+    <v-footer class="d-flex align-center justify-center flex-wrap" color="primary" :style="{overflowY: 'auto'}" height="100px">
       <div v-if="!$vuetify.display.mobile" >
         <v-btn variant="text" @click="goTo(linkRoutes[index])" v-for="(link, index) in links" :key="link" rounded>{{ link }}</v-btn>
       </div>

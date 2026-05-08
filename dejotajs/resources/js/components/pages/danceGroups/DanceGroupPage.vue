@@ -34,13 +34,12 @@
           class="position-absolute top-0 right-0 pa-2"
           style="z-index:2"
         >
-          <v-btn  v-if="isLeader" icon="mdi-pencil" variant="text" @click="editPost(post)"></v-btn>
+          <v-btn  v-if="isLeader" icon="mdi-pencil" variant="text" @click="openEditDialog(post)"></v-btn>
           <v-btn  v-if="isLeader" icon="mdi-delete" variant="text" color="red" @click="deletePost(post.id)"></v-btn>
         </div>
 
         <v-img
-          v-if="post.picture"
-          :src="post.picture"
+          :src="post.picture || `https://picsum.photos/id/${post.id}/600/350`"
           height="40vh"
           cover
         ></v-img>
@@ -150,18 +149,6 @@ export default {
       } catch (err) {
         console.error('Kļūda dzēšot ierakstu:', err)
         alert('Neizdevās dzēst ierakstu')
-      }
-    },
-
-    async editPost(post) {
-      try {
-        const postId = post.id
-        await axios.put(`/api/posts/${postId}`, post, { withCredentials: true })
-        alert('Ieraksts veiksmīgi atjaunināts')
-        this.fetchPosts()
-      } catch (err) {
-        console.error('Kļūda atjauninot ierakstu:', err)
-        alert('Neizdevās atjaunināt ierakstu')
       }
     },
     openEditDialog(post) {

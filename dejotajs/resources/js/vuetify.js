@@ -7,30 +7,30 @@ export const vuetify = createVuetify({
     VFileUpload,
   },
   theme: {
-    defaultTheme: 'light', // sākotnējā tēma
+    defaultTheme: 'light', 
     themes: {
       light: {
         dark: false,
         colors: {
-          primary: '#0A1931',    // tumši zila
-          secondary: '#1A3D63',  // vidēji tumši zila
-          accent: '#4A7FA7',     // akcenta zila
-          softblue: '#B3CFE5',   // maiga zila
-          background: '#F6FAFD', // gaisma fona krāsa
-          surface: '#ffffff',     // kartīšu/fona krāsa
-          text: '#0A1931',        // galvenā teksta krāsa
+          primary: '#0A1931',    
+          secondary: '#1A3D63',  
+          accent: '#4A7FA7',     
+          softblue: '#B3CFE5',   
+          background: '#F6FAFD', 
+          surface: '#ffffff',     
+          text: '#0A1931',        
         },
       },
       dark: {
         dark: true,
         colors: {
-          primary: '#0A1931',    // tumši zila joprojām
-          secondary: '#1A3D63',
-          accent: '#4A7FA7',
-          softblue: '#4A7FA7',   // tumšākā versija fona
-          background: '#1d2d44', // tumšs fona tonis
-          surface: '#1B263B',     // kartīšu fons tumšajā režīmā
-          text: '#f2f3f7',        // gaišs teksts tumšajā režīmā
+          primary: '#7CC6FE',      
+          secondary: '#3A86C8',    
+          accent: '#A5D8FF',
+          background: '#07111F',   
+          surface: '#0F1B2D',      
+          softblue: '#16263D',
+          text: '#F4F9FF',         
         },
       },
     },

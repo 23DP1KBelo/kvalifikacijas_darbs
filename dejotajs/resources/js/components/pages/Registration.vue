@@ -10,7 +10,7 @@
                     <v-text-field label="Parole" v-model="password" type="password" required></v-text-field>
                     <v-text-field label="Paroles apstiprinājums" v-model="password_confirmation" type="password" required></v-text-field>
                     <v-text-field label="Tālrunis" v-model="phone_number" required></v-text-field>
-                    <v-alert v-if="error" type="error" dense outlined class="mt-3">
+                    <v-alert v-if="error" type="error" dense outlined class="mt-3" style="white-space: pre-line">
                         {{ error }}
                     </v-alert>
                     <div class="d-flex justify-center align-center text-center mb-4">
@@ -46,7 +46,7 @@ export default {
                     this.error = 'Paroles nesakrīt.';
                     return;
                 }
-                const response = await axios.post('/register', {
+                const response = await axios.post('/api/register', {
                     name: this.name,
                     surname: this.surname,
                     email: this.email,
@@ -59,7 +59,8 @@ export default {
                 if (err.response && err.response.data && err.response.data.errors) {
                     this.error = Object.values(err.response.data.errors)
                                     .flat()
-                                    .join(' ');
+                                    .map(e => `• ${e}`)
+                                    .join('\n');
                 } else if (err.response && err.response.data && err.response.data.message) {
                     this.error = err.response.data.message;
                 } else {

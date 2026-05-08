@@ -112,12 +112,12 @@ export default {
   methods: {
     fetchDancers() {
       axios
-        .get(`/dancers/${this.group.id}`, { withCredentials: true })
+        .get(`/api/dancers/${this.group.id}`, { withCredentials: true })
         .then((res) => {
           this.dancers = (res.data.data || []).map(dancer => ({
             ...dancer,
             selectAgeGroup: null,
-            error: '' // inicializē error katram dancer
+            error: '' 
           }));
         })
         .catch((err) => console.log(err));
@@ -136,7 +136,7 @@ export default {
         .catch((err) => console.error(err));
     },
     updateStatus(dancer, action) {
-      const url = action === "approve" ? "/dancers/approval" : "/dancers/decline";
+      const url = action === "approve" ? "/api/dancers/approval" : "/api/dancers/decline";
 
       if(!dancer.selectAgeGroup ) {
         dancer.error = 'Lūdzu, izvēlieties vecuma grupu pirms apstiprināšanas.';

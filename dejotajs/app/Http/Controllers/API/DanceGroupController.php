@@ -132,7 +132,7 @@ class DanceGroupController extends Controller
         $danceGroup = DanceGroup::create($validated);
 
         DanceGroupMember::create([
-            'status' => 'approved',
+            'status' => 'waiting',
             'role' => 'leader',
             'user_id' => Auth::id(),
             'dance_group_id' => $danceGroup->id
@@ -204,19 +204,26 @@ class DanceGroupController extends Controller
     {
         $queryText = $request->input('q');
 
-        $danceGroups = DanceGroup::query()
-            ->where('status', 'approved')
+        $danceGroups = DanceGroup::where('status', 'approved')
             ->when($queryText, function ($query) use ($queryText) {
-                $query->where('name', 'like', $queryText . '%')
-                    ->orWhereHas('members', fn($memberQuery) => $memberQuery
-                            ->where('role', 'leader')
-                            ->whereHas('appUser', fn($userQuery) => $userQuery
-                                ->where('name', 'like', $queryText . '%')
-                                ->orWhere('surname', 'like', $queryText . '%')
-                            )
-                    );
+                $query->where(function ($q) use ($queryText) {
+                    $q->where('name', 'like', $queryText . '%')
+                        ->orWhereHas('members', function ($memberQuery) use ($queryText) {
+                            $memberQuery->where('role', 'leader')
+                                ->whereHas('appUser', function ($userQuery) use ($queryText) {
+                                    $userQuery->where('name', 'like', $queryText . '%')
+                                        ->orWhere('surname', 'like', $queryText . '%');
+                                });
+                        });
+                });
             })
-            ->with(['members' => fn($q) => $q->where('role', 'leader')->with('appUser')])
+            ->with([
+                'ageGroups',
+                'members' => fn($q) => $q
+                    ->where('status', 'approved')
+                    ->where('role', 'leader')
+                    ->with('appUser')
+            ])
             ->get();
 
         return DanceGroupResource::collection($danceGroups);

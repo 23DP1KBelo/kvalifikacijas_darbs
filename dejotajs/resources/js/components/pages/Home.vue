@@ -1,14 +1,14 @@
 <template>
   <v-app>
     <v-main>
-      <v-container fluid class="hero-section">
+      <v-container fluid class="bg-softblue">
         <v-container class="py-16">
           <v-row align="center">
             <v-col cols="12" md="6">
               <h1 class="text-primary text-h2 font-weight-bold mb-4">
                 DEJOTĀJS
               </h1>
-              <p class="text-text text-h6 mb-6">
+              <p class="text-secondary text-h6 mb-6">
                 Kustība. Ritms. Brīvība.
               </p>
             </v-col>
@@ -35,7 +35,7 @@
               md="4"
             >
               <v-card class="px-2 py-2" elevation="4" height="500">
-                <v-img v-if="post.picture" :src="post.picture" height="200px" cover alt="img_kolektīvs"></v-img>
+                <v-img  :src="post.picture || `https://picsum.photos/id/${post.id}/600/350`" height="200px" cover alt="img_kolektīvs"></v-img>
                 <v-card-subtitle class="mt-4 px-4 text-subtitle-2">
                   {{ post.dance_group_member?.dance_group?.name || 'Nezināms kolektīvs' }}
                 </v-card-subtitle>
@@ -60,9 +60,6 @@
 </template>
 
 <style>
-.hero-section {
-  background: #F6FAFD;
-}
 
 .hero-image { 
   height: 400px; 

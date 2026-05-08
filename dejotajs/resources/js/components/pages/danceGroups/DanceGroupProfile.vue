@@ -43,8 +43,7 @@
         </div>
         <v-card class="group-card">
           <v-img
-            v-if="group.picture_url"
-            :src="group.picture_url"
+            :src="group.picture_url || `https://picsum.photos/id/${group.id}/600/350`"
             height="450"
             cover
             class="group-image"

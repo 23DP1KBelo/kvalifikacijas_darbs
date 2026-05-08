@@ -22,6 +22,7 @@ class AppUserResource extends JsonResource
             'role' => $this->role,
             'phone_number' => $this->phone_number,
             'created_at' => $this->created_at,
+            'danceGroupMembers' => $this->danceGroupMembers
         ];
     }
 }

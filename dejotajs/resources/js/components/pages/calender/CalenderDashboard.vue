@@ -39,10 +39,10 @@
       </v-card-text>
     </v-card>
     <v-dialog v-model="dialog" max-width="520">
-      <v-card v-if="selectedEvent" rounded="xl" elevation="6" class="bg-secondary">
+      <v-card v-if="selectedEvent" rounded="xl" elevation="6" class="bg-background">
         <v-card-title class="text-h5 font-weight-bold d-flex align-center justify-space-between">
           <div class="d-flex align-center">
-            <v-icon class="mr-3" color="white">mdi-calendar-star</v-icon>
+            <v-icon class="mr-3" color="text">mdi-calendar-star</v-icon>
             {{ selectedEvent.title }}
           </div>
           <div>
@@ -56,10 +56,10 @@
         <v-card-text>
           Izveidoja: {{ selectedEvent.extendedProps.dance_group_member.name }} ({{ genreLV(selectedEvent.extendedProps.dance_group_member.genre) }})
         </v-card-text>
-          <v-list density="comfortable" class="bg-secondary">
+          <v-list density="comfortable" class="bg-background" >
             <v-list-item>
               <template #prepend>
-                <v-icon color="white">mdi-map-marker</v-icon>
+                <v-icon color="text">mdi-map-marker</v-icon>
               </template>
               <v-list-item-title>
                 {{ selectedEvent.extendedProps.location }}
@@ -68,7 +68,7 @@
             </v-list-item>
             <v-list-item>
               <template #prepend>
-                <v-icon color="white">mdi-clock-outline</v-icon>
+                <v-icon color="text">mdi-clock-outline</v-icon>
               </template>
               <v-list-item-title>
                 {{ formatDate(selectedEvent.start) }} - {{ formatDate(selectedEvent.end) }}
@@ -85,7 +85,7 @@
               v-for="group in selectedEvent.extendedProps.dance_groups"
               :key="group.id"
               class="ma-1"
-              color="white"
+              color="text"
               variant="tonal"
             >
               <strong class="mr-2">

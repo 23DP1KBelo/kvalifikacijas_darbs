@@ -93,8 +93,7 @@
           @click="goTo(`/group-info/${group.id}`)"
         >
           <v-img
-            v-if="group.picture_url"
-            :src="group.picture_url"
+            :src="group.picture_url || `https://picsum.photos/id/${group.id}/600/350`"
             height="200"
             cover
             alt="img_kolektīvs"

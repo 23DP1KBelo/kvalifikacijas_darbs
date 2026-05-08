@@ -3,7 +3,7 @@
     elevation="2"
     class="bg-primary text-white d-flex justify-space-between"
   >
-    <v-app-bar-nav-icon @click.stop="drawer = !drawer" class="text-white" aria-label="Navigācija"></v-app-bar-nav-icon>
+    <v-app-bar-nav-icon @click.stop="drawer = !drawer" class="text-surface" aria-label="Navigācija"></v-app-bar-nav-icon>
     <v-app-bar-title
       class="app-bar-title text-h4 text-center clickable "
       @click="$router.push('/')"
@@ -11,10 +11,10 @@
       Dejotājs
     </v-app-bar-title>
     <div class="d-flex align-center">
-      <v-btn icon class="text-white" @click="$router.push('/login')" aria-label="Pieslēgšanās">
+      <v-btn icon class="text-surface" @click="$router.push('/login')" aria-label="Pieslēgšanās">
         <v-icon aria-label="Pieslēgties">mdi-account</v-icon>
       </v-btn>
-      <v-btn icon class="text-white" @click="toggleTheme" aria-label="Fona maiņa">
+      <v-btn icon class="text-surface" @click="toggleTheme" aria-label="Fona maiņa">
         <v-icon>{{ isDark ? 'mdi-white-balance-sunny' : 'mdi-weather-night' }}</v-icon>
       </v-btn>
     </div>
@@ -31,7 +31,7 @@
         :key="link"
         link
         @click="goTo(linkRoutes[index])"
-        class="hover-bg-softblue rounded-lg my-1"
+        class="hover-bg-secondary rounded-lg my-1"
       >
         <v-list-item-title class="text-text">{{ link }}</v-list-item-title>
       </v-list-item>

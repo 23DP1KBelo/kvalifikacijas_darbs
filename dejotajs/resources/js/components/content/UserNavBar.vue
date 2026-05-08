@@ -184,24 +184,17 @@ export default {
     },
     async logout() {
       try {
-        await fetch('/logout', {
-          method: 'POST',
-          credentials: 'include',
-          headers: {
-            'X-CSRF-TOKEN': document
-              .querySelector('meta[name="csrf-token"]')
-              .getAttribute('content'),
-          },
-        });
+        await axios.post('/logout', {}, { withCredentials: true })
 
         localStorage.removeItem('user')
-        
-        this.$root.loggedIn = false;
-        this.$root.user = null;
-        this.$router.push('/login');
+
+        this.$root.loggedIn = false
+        this.$root.user = null
+
+        window.location.href = '/login'
       } catch (e) {
-        console.error('Logout failed', e);
-      }
+        console.error('Logout failed', e)
+      } 
     },
   },
   async mounted() {

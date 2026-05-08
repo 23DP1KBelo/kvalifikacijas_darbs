@@ -39,7 +39,7 @@ const routes = [
     { path: '/leaderApproval/:id', component: LeaderApproval, meta: {requiresAuth: true, requiresLeader:true}},
     { path: '/dance-groups', component: DanceGroupDashboard},
     { path: '/group-info/:id', component: DanceGroupInfo},
-    { path: '/create-post/:id', component: PostCreate, meta: { requiresAuth: true }},
+    { path: '/create-post/:id', component: PostCreate, meta: { requiresAuth: true, requiresLeader: true }},
     { path: '/posts', component: PostsShow },
     { path: '/age-group-form/:id', component: AgeGroupForm, meta: { requiresAuth: true, requiresLeader: true }},
     { path: '/group-profile/:id', component: DanceGroupProfile, meta: { requiresAuth: true, requiresLeader: true }},
@@ -55,7 +55,6 @@ const router = createRouter({
     routes,
 });
 
-// Router guard
 router.beforeEach(async (to, from, next) => {
   if (!to.meta.requiresAuth) return next();
 
@@ -64,15 +63,28 @@ router.beforeEach(async (to, from, next) => {
       withCredentials: true
     });
 
-    const user = res.data?.user ?? res.data;
+    const user = res.data.user || res.data;
+    const members = res.data.dance_group_members || [];
 
     if (!user) return next('/login');
 
     if (to.meta.requiresAdmin && user.role !== 'admin') {
-      return next('/');
+      return next('/no-access');
+    }
+
+    if (to.meta.requiresLeader) {
+      const isLeader = members.some(member =>
+        member.role === 'leader' &&
+        member.status === 'approved'
+      );
+
+      if (!isLeader) {
+        return next('/no-access');
+      }
     }
 
     return next();
+
   } catch (e) {
     return next('/login');
   }

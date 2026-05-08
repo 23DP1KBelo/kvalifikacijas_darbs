@@ -1,7 +1,6 @@
-<template>
+<template >
   <v-container class="py-8">
-    <h1 class="text-center mb-8 text-primary">Lietotāja profils</h1>
-
+    <h1 class="text-center mb-8">Lietotāja profils</h1>
     <v-row justify="center">
       <v-col cols="12" md="8">
         <v-card color="primary" elevation="16" class="mx-auto mb-6 pa-6">
@@ -30,7 +29,7 @@
                 <v-card-title class="text-h6 text-center">{{ group.name }}</v-card-title>
                 <v-card-subtitle class="text-center">
                   <template v-if="group.role === 'leader'">
-                    Vadītājs
+                    Vadītājs ({{ translateStatus(group.status) }})
                   </template>
                   <template v-else>
                     Dejotājs, Vecuma grupa: {{ group.age_group || 'Nav norādīta' }}
@@ -51,19 +50,28 @@ import axios from 'axios';
 export default {
   data() {
     return {
+      statusMap: {
+        approved: 'Apstiprināts',
+        waiting: 'Gaida apstiprinājumu'
+      },
       user: {
         name: '',
         surname: '',
         email: '',
-        dance_groups: []
+        dance_groups: [],
       },
       error: ''
     }
   },
+  methods: {
+    translateStatus(status) {
+      return this.statusMap[status] || status;
+    },
+  },
   computed: {
     approvedGroups() {
-      return this.user.dance_groups.filter(g => g.status === 'approved');
-    }
+      return this.user.dance_groups.filter(g => g.status == 'approved' ||  g.status === 'waiting');
+    },
   },
   async mounted() {
     try {
@@ -80,6 +88,7 @@ export default {
         age_group: member.age_group?.age_group || null,
         status: member.status 
       }));
+
     } catch (err) {
       this.error = 'Neizdevās ielādēt profilu';
       console.error(err);

@@ -26,7 +26,7 @@ class AppUserRequest extends FormRequest
             'surname' => 'required|max:50',
             'email' => 'required|email|unique:app_users,email',
             'password' => 'required|min:8|max:50',
-            'phone_number' => 'required|max:20',
+            'phone_number' => 'required|min:8|max:12',
         ];
     }
 
@@ -44,7 +44,8 @@ class AppUserRequest extends FormRequest
             'password.min' => 'Parolei jābūt vismaz 8 rakstzīmēm.',
             'password.max' => 'Parolei jābūt ne vairāk kā 50 rakstzīmēm.',
             'phone_number.required' => 'Telefona numura lauks ir obligāts.',
-            'phone_number.max' => 'Telefona numuram jābūt ne vairāk kā 20 rakstzīmēm.',
+            'phone_number.min' => 'Telefona numuram jābūt vismaz 8 rakstzīmēm',
+            'phone_number.max' => 'Telefona numuram jābūt ne vairāk kā 12 rakstzīmēm.',
         ];
     }
 }

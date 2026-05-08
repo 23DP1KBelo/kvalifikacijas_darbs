@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\DanceGroup;
 use App\Http\Resources\DanceGroupResource;
+use App\Models\DanceGroupMember;
 
 class AdminController extends Controller
 {
@@ -23,6 +24,11 @@ class AdminController extends Controller
             'status' => 'approved'
         ]);
 
+        DanceGroupMember::where('dance_group_id', $groupId)
+        ->update([
+            'status' => 'approved'
+        ]);
+
         return response()->json([
             'message' => 'Veiksmīgi apstiprināts deju kolektīvs'
         ]);
@@ -32,6 +38,11 @@ class AdminController extends Controller
         $groupId = $request->id;
 
         DanceGroup::where('id', $groupId)->update([
+            'status' => 'declined'
+        ]);
+
+        DanceGroupMember::where('dance_group_id', $groupId)
+        ->update([
             'status' => 'declined'
         ]);
 

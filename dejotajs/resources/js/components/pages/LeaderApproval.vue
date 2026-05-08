@@ -85,14 +85,14 @@ export default {
   methods: {
     fetchLeaders() {
       axios
-        .get(`/approval-leader/${this.group.id}`, { withCredentials: true })
+        .get(`/api/approval-leader/${this.group.id}`, { withCredentials: true })
         .then((res) => {
           this.leaders = Array.isArray(res.data.data) ? res.data.data : [];
         })
         .catch((err) => console.log(err));
     },
     updateStatus(leader, action) {
-      const url = action === "approve" ? "/approval-leader" : "/decline-leader";
+      const url = action === "approve" ? "/api/approval-leader" : "/api/decline-leader";
 
       axios
         .post(
@@ -110,6 +110,7 @@ export default {
         })
         .catch((err) => console.error(err.response?.data || err));
     },
+    
     translateRole(role) {
       return this.roleMap[role] || role;
     },

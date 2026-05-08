@@ -13,6 +13,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\Login;
+use App\Http\Controllers\Auth\RegistrationController;
+use App\Http\Resources\DanceGroupMemberResource;
+
 
 Route::apiResource('posts', PostController::class);
 
@@ -32,7 +35,9 @@ Route::apiResource('admissions', AdmissionController::class);
 
 Route::apiResource('events', EventController::class);
 
+
 Route::post('/login', Login::class);
+Route::post('/register', [RegistrationController::class, 'register']);
 
 Route::get('/danceGroups-all', [DanceGroupController::class, 'getAllGroups']);
 Route::get('/search-dance-groups', [DanceGroupController::class, 'search']);
@@ -44,7 +49,15 @@ Route::get('/dance-group-info/{danceGroup}', [DanceGroupController::class, 'show
 Route::get('/admission-age-groups', [AgeGroupController::class, 'getAdmissonAgeGroups']);
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+    /** @var \App\Models\AppUser $user */
+    $user = $request->user();
+
+    return response()->json([
+        'user_id' => $user->id,
+        'user_model' => get_class($user),
+        'members_count' => $user->danceGroupMembers()->count(),
+        'dance_group_members' => $user->danceGroupMembers()->get(),
+    ]);
 });
 
 Route::middleware(['auth:sanctum'])->group(function () {
@@ -106,6 +119,7 @@ Route::middleware(['auth:sanctum', 'admin'])->group(function () {
     Route::delete('/event/admin/{event}', [EventController::class, 'destroy']);
 
     Route::get('/admin/stats', [DanceGroupController::class, 'index']);
+    Route::get('/admin/stats-dancers', [DanceGroupController::class, 'getAllGroups']);
 });
 
 

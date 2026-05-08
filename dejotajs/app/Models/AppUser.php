@@ -5,11 +5,12 @@ namespace App\Models;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\DanceGroupMember;
-
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class AppUser extends Authenticatable
 {
     use SoftDeletes;
+    use HasFactory;
     protected $table = 'app_users';
 
     protected $fillable = [

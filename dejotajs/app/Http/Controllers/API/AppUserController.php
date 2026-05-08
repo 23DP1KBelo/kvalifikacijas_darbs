@@ -16,7 +16,8 @@ class AppUserController extends Controller
      */
     public function index()
     {
-        $users = AppUser::all();
+        $users = AppUser::with('danceGroupMembers')->get();
+
         return AppUserResource::collection($users);
     }
 

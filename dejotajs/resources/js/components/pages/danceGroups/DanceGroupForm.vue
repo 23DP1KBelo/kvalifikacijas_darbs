@@ -83,7 +83,10 @@ export default {
 
       } catch (err) {
         if (err.response && err.response.data && err.response.data.errors) {
-          this.error = Object.values(err.response.data.errors).flat().join(' ');
+          this.error = Object.values(err.response.data.errors)
+                      .flat()
+                      .map(e => `• ${e}`)
+                      .join('\n');
         } else if (err.response && err.response.data && err.response.data.message) {
           this.error = err.response.data.message;
         } else {
