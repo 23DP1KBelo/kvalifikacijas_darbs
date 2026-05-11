@@ -6,8 +6,8 @@
             <v-form ref="form" v-model="valid" class="mt-4">
               <v-text-field label="E-pasts" v-model="email" required></v-text-field>
               <v-text-field label="Parole" v-model="password" type="password" required></v-text-field>
-              <v-alert v-if="error" type="error" dense outlined class="mt-3">
-                {{ error }}
+              <v-alert v-if="error" type="error" dense outlined class="mt-3" style="white-space: pre-line">
+                  {{ error }}
               </v-alert>
               <div class="d-flex justify-center align-center text-center flex-column">
                 <v-btn class="mt-2 mb-4" color="primary" @click="login">
@@ -61,9 +61,16 @@ export default {
     this.$router.push(user.role === 'admin' ? '/dashboard' : '/');
 
   } catch (err) {
-    this.error =
-      err.response?.data?.message ||
-      'Nezināma kļūda. Mēģiniet vēlreiz.';
+    if (err.response && err.response.data && err.response.data.errors) {
+      this.error = Object.values(err.response.data.errors)
+            .flat()
+            .map(e => `• ${e}`)
+            .join('\n');
+    } else if (err.response && err.response.data && err.response.data.message) {
+        this.error = err.response.data.message;
+    } else {
+        this.error = 'Nezināma kļūda. Mēģiniet vēlreiz.';
+    }
   }
 }
   }

@@ -59,7 +59,7 @@ router.beforeEach(async (to, from, next) => {
   if (!to.meta.requiresAuth) return next();
 
   try {
-    const res = await axios.get('/api/user', {
+    const res = await axios.get('/api/profile', {
       withCredentials: true
     });
 

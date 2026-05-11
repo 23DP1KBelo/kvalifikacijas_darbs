@@ -1,98 +1,160 @@
 <template>
-  <v-container fluid class="pa-0">
-    <!-- Grupas nosaukums + poga -->
-    <v-row no-gutters class="d-flex justify-center align-center py-6">
-      <v-col cols="12" md="8" class="d-flex flex-column align-center">
-        <div class="d-flex ">
-          <h1 class="text-h4 font-weight-bold text-primary mb-2 text-center cursor-pointer" @click="$router.push(`/group-profile/${group.id}`)">
-          {{ group.name }}
-          </h1>
-          <v-btn v-if="isLeader" icon="mdi-delete" variant="text" color="red" class="pb-2" @click="deleteDanceGroup()"></v-btn>
-        </div>
-        <div class="d-flex justify-end align-center w-100">
-          <div v-if="isLeader">
-            <v-btn  class="bg-primary text-white" rounded elevation="4" @click="$router.push(`/create-post/${group.id}`)">
-              Pievienot ierakstu
-            </v-btn>
-          </div>
-        </div>
-      </v-col>
-    </v-row>
-    <v-row justify="center" class="mb-12" v-if="posts.length">
-      <v-col
-        v-for="post in posts"
-        :key="post.id"
-        cols="12"
-        class="d-flex justify-center mb-12"
-      >
-      <v-card
-        class="rounded-lg elevation-12 position-relative"
-        style="overflow: hidden; width: 90%; max-width: 700px;"
-      >
-        <div
-          v-if="!post.picture"
-          class="position-absolute top-0 right-0 pa-2"
-          style="z-index:2"
+  <v-container fluid class="group-page pa-0">
+    <section class="hero-section">
+      <v-container>
+        <v-row justify="center">
+          <v-col cols="12" md="10" lg="8">
+            <div class="hero-card">
+              <div>
+                <p class="text-caption text-uppercase text-secondary mb-1">
+                  Kolektīva ieraksti
+                </p>
+                <h1
+                  class="text-h3 font-weight-bold text-primary cursor-pointer"
+                  @click="$router.push(`/group-profile/${group.id}`)"
+                >
+                  {{ group.name || 'Kolektīvs' }}
+                </h1>
+              </div>
+              <div class="hero-actions" v-if="isLeader">
+                <v-btn
+                  class="bg-primary text-white"
+                  rounded="xl"
+                  elevation="6"
+                  prepend-icon="mdi-plus"
+                  @click="$router.push(`/create-post/${group.id}`)"
+                >
+                  Pievienot ierakstu
+                </v-btn>
+                <v-btn
+                  icon="mdi-delete-outline"
+                  variant="tonal"
+                  color="secondary"
+                  rounded="xl"
+                  @click="deleteDanceGroup"
+                />
+              </div>
+            </div>
+          </v-col>
+        </v-row>
+      </v-container>
+    </section>
+    <v-container class="posts-container">
+      <v-row justify="center" v-if="posts.length">
+        <v-col
+          v-for="post in posts"
+          :key="post.id"
+          cols="12"
+          md="10"
+          lg="8"
+          class="mb-8"
         >
-          <v-btn  v-if="isLeader" icon="mdi-pencil" variant="text" @click="openEditDialog(post)"></v-btn>
-          <v-btn  v-if="isLeader" icon="mdi-delete" variant="text" color="red" @click="deletePost(post.id)"></v-btn>
-        </div>
+          <v-card class="post-card" elevation="0">
+            <div class="post-image-wrapper">
+              <v-img
+                :src="post.picture || `https://picsum.photos/id/${post.id}/900/500`"
+                height="360"
+                cover
+                class="post-image"
+              />
+              <div v-if="isLeader" class="post-actions">
+                <v-btn
+                  icon="mdi-pencil-outline"
+                  variant="flat"
+                  size="small"
+                  class="text-secondary"
+                  @click="openEditDialog(post)"
+                />
+                <v-btn
+                  icon="mdi-delete-outline"
+                  variant="flat"
+                  size="small"
+                  class="text-secondary"
+                  @click="deletePost(post.id)"
+                />
+              </div>
+            </div>
 
-        <v-img
-          :src="post.picture || `https://picsum.photos/id/${post.id}/600/350`"
-          height="40vh"
-          cover
-        ></v-img>
+            <v-card-text class="pa-7">
+              <div class="d-flex justify-space-between align-center flex-wrap ga-2 mb-3">
+                <v-chip color="primary" variant="tonal" size="small">
+                  {{ post.dance_group_member?.dance_group?.name || group.name || 'Kolektīvs' }}
+                </v-chip>
 
-        <v-card-actions
-          v-if="post.picture"
-          class="d-flex justify-end"
-        >
-          <v-btn  v-if="isLeader" icon="mdi-pencil" variant="text" @click="openEditDialog(post)"></v-btn>
-          <v-btn  v-if="isLeader" icon="mdi-delete" variant="text" color="red" @click="deletePost(post.id)"></v-btn>
-        </v-card-actions>
+                <span class="text-primary text-medium-emphasis">
+                  {{ formatDate(post.created_at) }}
+                </span>
+              </div>
 
-        <v-card-text
-          class="d-flex flex-column justify-center align-center text-center px-6 py-6"
-        >
-          <div class="text-subtitle-2 mb-2 text-secondary">
-            {{ post.dance_group_member?.dance_group?.name || 'Nezināms kolektīvs' }}
-          </div>
+              <h2 class="text-h5 font-weight-bold mb-3 text-black">
+                {{ post.title }}
+              </h2>
 
-          <div class="text-h5 font-weight-bold mb-2">
-            {{ post.title }}
-          </div>
+              <p class="text-body-1 text-black">
+                {{ post.description }}
+              </p>
+            </v-card-text>
+          </v-card>
+        </v-col>
+      </v-row>
 
-          <div class="text-body-1 mb-4 text-break">
-            {{ post.description }}
-          </div>
+      <v-row v-else justify="center">
+        <v-col cols="12" md="8">
+          <v-card class="empty-card text-center pa-10" elevation="0">
 
-          <div class="text-caption text-secondary">
-            {{ formatDate(post.created_at) }}
-          </div>
+            <h2 class="text-h5 font-weight-bold mb-2">
+              Šim kolektīvam vēl nav ierakstu
+            </h2>
+
+            <p class="text-body-1 text-medium-emphasis mb-6">
+              Kad kolektīva vadītājs pievienos ierakstu, tas būs redzams šajā sadaļā.
+            </p>
+          </v-card>
+        </v-col>
+      </v-row>
+    </v-container>
+
+    <v-dialog v-model="editDialog" max-width="560px">
+      <v-card class="dialog-card">
+        <v-card-title class="text-h5 font-weight-bold px-6 pt-6">
+          Rediģēt ierakstu
+        </v-card-title>
+
+        <v-card-text class="px-6">
+          <v-form ref="editForm">
+            <v-text-field
+              label="Virsraksts"
+              v-model="editPostData.title"
+              variant="outlined"
+              rounded="lg"
+              required
+            />
+
+            <v-textarea
+              label="Apraksts"
+              v-model="editPostData.description"
+              variant="outlined"
+              rounded="lg"
+              rows="5"
+              required
+            />
+          </v-form>
         </v-card-text>
+
+        <v-card-actions class="px-6 pb-6">
+          <v-spacer />
+
+          <v-btn variant="text" @click="editDialog = false">
+            Atcelt
+          </v-btn>
+
+          <v-btn color="primary" rounded="xl" @click="submitEdit">
+            Saglabāt
+          </v-btn>
+        </v-card-actions>
       </v-card>
-      </v-col>
-    </v-row>
-    <div v-else class="d-flex justify-center" style="height: 100vh;">
-      <span class="text-secondary text-h5">Šim kolektīvam nav ierakstu</span>
-    </div>
-  </v-container>
-  <v-dialog v-model="editDialog" max-width="500px">
-    <v-card>
-      <v-card-title class="text-h5">Rediģēt ierakstu</v-card-title>
-      <v-card-text>
-        <v-form ref="editForm">
-          <v-text-field label="Virsraksts" v-model="editPostData.title" required></v-text-field>
-          <v-textarea label="Apraksts" v-model="editPostData.description" required></v-textarea>
-        </v-form>
-      </v-card-text>
-      <v-card-actions>
-        <v-btn text @click="editDialog = false">Atcelt</v-btn>
-        <v-btn color="primary" @click="submitEdit">Saglabāt</v-btn>
-      </v-card-actions>
-    </v-card>
     </v-dialog>
+  </v-container>
 </template>
 
 <script>
@@ -106,6 +168,7 @@ export default {
       group: {},
       posts: [],
       editDialog: false,
+      user: null,
       editPostData: {
         id: null,
         title: '',
@@ -120,7 +183,7 @@ export default {
   computed: {
     isLeader() {
       return this.group?.leaders?.some(
-        leader => leader.user?.id === this.$root.user?.id
+        leader => Number(leader.user?.id) === Number(this.user?.id)
       ) ?? false
     }
   },
@@ -149,6 +212,17 @@ export default {
       } catch (err) {
         console.error('Kļūda dzēšot ierakstu:', err)
         alert('Neizdevās dzēst ierakstu')
+      }
+    },
+    async fetchUser() {
+      try {
+        const res = await axios.get('/api/profile', {
+          withCredentials: true
+        })
+
+        this.user = res.data.user
+      } catch (err) {
+        this.user = null
       }
     },
     openEditDialog(post) {
@@ -205,8 +279,9 @@ export default {
       return new Date(date).toLocaleDateString()
     }
   },
-  mounted() {
-    this.fetchPosts()
+  async mounted() {
+    await this.fetchUser()
+    await this.fetchPosts()
   },
   watch: {
     'route.params.id': function () {
@@ -215,4 +290,113 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.group-page {
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at top left, rgba(74, 144, 226, 0.12), transparent 32%),
+    linear-gradient(180deg, #f7f9fc 0%, #ffffff 45%);
+}
+
+.hero-section {
+  padding: 48px 0 24px;
+}
+
+.hero-card {
+  background: rgba(255, 255, 255, 0.86);
+  backdrop-filter: blur(14px);
+  border: 1px solid rgba(120, 144, 156, 0.18);
+  border-radius: 28px;
+  padding: 32px;
+  box-shadow: 0 20px 60px rgba(31, 41, 55, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.hero-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.posts-container {
+  padding-bottom: 64px;
+}
+
+.post-card {
+  border-radius: 28px;
+  overflow: hidden;
+  background: #ffffff;
+  border: 1px solid rgba(120, 144, 156, 0.16);
+  box-shadow: 0 18px 45px rgba(31, 41, 55, 0.08);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.post-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 26px 70px rgba(31, 41, 55, 0.12);
+}
+
+.post-image-wrapper {
+  position: relative;
+}
+
+.post-image {
+  border-bottom: 1px solid rgba(120, 144, 156, 0.16);
+}
+
+.post-actions {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  display: flex;
+  gap: 10px;
+}
+
+.action-btn {
+  background: rgba(255, 255, 255, 0.92) !important;
+  backdrop-filter: blur(8px);
+}
+
+.post-description {
+  line-height: 1.75;
+  white-space: pre-line;
+}
+
+.empty-card {
+  border-radius: 28px;
+  background: #ffffff;
+  border: 1px dashed rgba(120, 144, 156, 0.35);
+  box-shadow: 0 18px 45px rgba(31, 41, 55, 0.06);
+}
+
+.dialog-card {
+  border-radius: 24px !important;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+@media (max-width: 700px) {
+  .hero-card {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 24px;
+  }
+
+  .hero-actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .post-image {
+    height: 260px !important;
+  }
+}
+</style>
 

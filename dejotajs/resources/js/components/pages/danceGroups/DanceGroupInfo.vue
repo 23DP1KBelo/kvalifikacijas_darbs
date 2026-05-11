@@ -84,59 +84,73 @@ export default {
     return {
       group: null,
       ageGroups: [],
+      user: null,
+      loading: true,
     };
   },
   computed: {
     translatedGenre() {
       return this.group?.genre ? (genreMap[this.group.genre] || this.group.genre) : 'Nav norādīts';
     },
-     canJoinGroup() {
+    canJoinGroup() {
+      if (!this.group || !this.user) return false;
       if (!this.ageGroups || this.ageGroups.length === 0) return false;
 
-      const userId = this.$root.user?.id;
-      if (!userId) return false;
+      const userId = this.user.id;
 
       return !this.group.leaders?.some(leader => leader.user.id === userId);
     },
-    joinGroup() {
-    const groupId = this.$route.params.id;
-    if (!groupId) return;
-
-    const userId = this.$root.user?.id;
-
-    axios.post('/api/members/join', {
-        user_id: userId,
-        dance_group_id: groupId
-      }, 
-      { withCredentials: true }
-    )
-    .then(res => {
-      alert('Vadītājs saņems paziņojumu un apstiprinās Jūsu dalību.');
-    })
-    .catch(err => {
-      console.error(err.response?.data); 
-      alert(err.response?.data?.message || 'Neizdevās pievienoties.');
-    });
-  }
   },
-  mounted() {
-    this.fetchGroupInfo();
+  async mounted() {
+    await Promise.all([
+      this.fetchUser(),
+      this.fetchGroupInfo()
+    ]);
+
+    this.loading = false;
   },
   methods: {
-    fetchGroupInfo() {
+    async fetchUser() {
+      try {
+        const res = await axios.get('/api/profile', {
+          withCredentials: true,
+        });
+
+        this.user = res.data.user;
+      } catch (e) {
+        this.user = null;
+      }
+    },
+
+    async fetchGroupInfo() {
       const groupId = this.$route.params.id;
       if (!groupId) return;
-      axios
-        .get(`/api/dance-group-info/${groupId}`)
-        .then((res) => {
-          this.group = res.data.data;
-          if(this.group.age_groups) {
-            this.ageGroups = this.group.age_groups;
-            console.log(this.ageGroups);
-          }
-        })
-        .catch((err) => console.error(err));
+
+      const res = await axios.get(`/api/dance-group-info/${groupId}`);
+      this.group = res.data.data;
+
+      if (this.group.age_groups) {
+        this.ageGroups = this.group.age_groups;
+      }
     },
+
+    joinGroup() {
+      const groupId = this.$route.params.id;
+      if (!groupId) return;
+
+      axios.post('/api/members/join', {
+        user_id: this.user.id,
+        dance_group_id: groupId
+      }, {
+        withCredentials: true
+      })
+      .then(() => {
+        alert('Vadītājs saņems paziņojumu un apstiprinās Jūsu dalību.');
+      })
+      .catch(err => {
+        alert(err.response?.data?.message || 'Neizdevās pievienoties.');
+      });
+    }
   }
 };
 </script>
