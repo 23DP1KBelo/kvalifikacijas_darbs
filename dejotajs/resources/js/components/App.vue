@@ -27,17 +27,17 @@ export default {
     };
   },
 
-  // async mounted() {
-  //   try {
-  //     const res = await axios.get("/api/profile", {
-  //       withCredentials: true,
-  //     });
+  async mounted() {
+    try {
+      const res = await axios.get("/api/profile", {
+        withCredentials: true,
+      });
 
-  //     this.user = res.data.user ?? null;
-  //   } catch (e) {
-  //     this.user = null;
-  //   }
-  // },
+      this.user = res.data.user ?? null;
+    } catch (e) {
+      this.user = null;
+    }
+  },
 };
 </script>
 
