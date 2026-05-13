@@ -45,7 +45,7 @@ const routes = [
     { path: '/group-profile/:id', component: DanceGroupProfile, meta: { requiresAuth: true, requiresLeader: true }},
     { path: '/admisson/:id', component: AdmissonForm, meta: { requiresAuth: true, requiresLeader: true }},
     { path: '/admisson', component: AdmissonDashboard},
-    { path: '/calender', component: CalenderDashboard},
+    { path: '/calender', component: CalendarDashboard},
     { path: '/calender/event', component: EventForm, meta: {requiresAuth: true, requiresLeader: true}},
     { path: '/dashboard/stats', component: AdminStats, meta: { requiresAuth: true, requiresAdmin: true }},
 ];
