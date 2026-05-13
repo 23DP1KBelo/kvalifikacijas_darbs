@@ -20,8 +20,8 @@ import AgeGroupForm from '../components/pages/AgeGroupForm.vue';
 import DanceGroupProfile from '../components/pages/danceGroups/DanceGroupProfile.vue';
 import AdmissonForm from '../components/pages/AdmissonForm.vue';
 import AdmissonDashboard from '../components/pages/AdmissonDashboard.vue';
-import CalenderDashboard from '../components/pages/calender/calenderDashboard.vue';
-import EventForm from '../components/pages/calender/EventForm.vue';
+import CalenderDashboard from '../components/pages/calendar/CalenderDashboard.vue';
+import EventForm from '../components/pages/calendar/EventForm.vue';
 import AdminStats from '../components/pages/admin/AdminStats.vue';
 
 const routes = [
