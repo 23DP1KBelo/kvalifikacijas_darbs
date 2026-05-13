@@ -5,15 +5,15 @@
 :8080 {
 	root * /app/dejotajs/public
 
-	# Serve static files directly (Vite-built assets, images, fonts, etc.)
-	@static {
-		file
-		path /build/assets/* /favicon.ico /robots.txt
-	}
+	# Serve any request that maps to a real file on disk directly,
+	# including Vite-built assets under /build/, images, fonts, etc.
+	@static file
 	handle @static {
 		file_server
 	}
 
-	# Route all other requests through FrankenPHP to Laravel's front controller
-	php_server
+	# Everything else goes to Laravel via FrankenPHP
+	handle {
+		php_server
+	}
 }
