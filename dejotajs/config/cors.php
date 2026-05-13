@@ -11,7 +11,7 @@ return [
     'allowed_origins' => [
         'http://localhost:8000',
         'http://127.0.0.1:8000',
-        'https://dejotajs.up.railway.app'
+        'https://kvalifikacijasdarbs-production.up.railway.app'
     ],
 
     'allowed_headers' => ['*'],
