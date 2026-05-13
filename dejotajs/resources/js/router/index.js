@@ -20,7 +20,7 @@ import AgeGroupForm from '../components/pages/AgeGroupForm.vue';
 import DanceGroupProfile from '../components/pages/danceGroups/DanceGroupProfile.vue';
 import AdmissonForm from '../components/pages/AdmissonForm.vue';
 import AdmissonDashboard from '../components/pages/AdmissonDashboard.vue';
-import CalenderDashboard from '../components/pages/calendar/CalenderDashboard.vue';
+import CalendarDashboard from '../components/pages/calendar/CalendarDashboard.vue';
 import EventForm from '../components/pages/calendar/EventForm.vue';
 import AdminStats from '../components/pages/admin/AdminStats.vue';
 
@@ -55,40 +55,40 @@ const router = createRouter({
     routes,
 });
 
-// router.beforeEach(async (to, from, next) => {
-//   if (!to.meta.requiresAuth) return next();
+router.beforeEach(async (to, from, next) => {
+  if (!to.meta.requiresAuth) return next();
 
-//   try {
-//     const res = await axios.get('/api/profile', {
-//       withCredentials: true
-//     });
+  try {
+    const res = await axios.get('/api/profile', {
+      withCredentials: true
+    });
 
-//     const user = res.data.user || res.data;
-//     const members = res.data.dance_group_members || [];
+    const user = res.data.user || res.data;
+    const members = res.data.dance_group_members || [];
 
-//     if (!user) return next('/login');
+    if (!user) return next('/login');
 
-//     if (to.meta.requiresAdmin && user.role !== 'admin') {
-//       return next('/no-access');
-//     }
+    if (to.meta.requiresAdmin && user.role !== 'admin') {
+      return next('/no-access');
+    }
 
-//     if (to.meta.requiresLeader) {
-//       const isLeader = members.some(member =>
-//         member.role === 'leader' &&
-//         member.status === 'approved'
-//       );
+    if (to.meta.requiresLeader) {
+      const isLeader = members.some(member =>
+        member.role === 'leader' &&
+        member.status === 'approved'
+      );
 
-//       if (!isLeader) {
-//         return next('/no-access');
-//       }
-//     }
+      if (!isLeader) {
+        return next('/no-access');
+      }
+    }
 
-//     return next();
+    return next();
 
-//   } catch (e) {
-//     return next('/login');
-//   }
-// });
+  } catch (e) {
+    return next('/login');
+  }
+});
 
 
 export default router;
