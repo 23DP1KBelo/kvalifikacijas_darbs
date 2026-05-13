@@ -8,9 +8,18 @@
 	# Serve static files directly (Vite-built assets, images, fonts, etc.)
 	@static {
 		file
-		path /build/assets/* /favicon.ico /robots.txt
+		path_regexp static ^/(build|public)/
 	}
 	handle @static {
+		file_server
+	}
+
+	# Serve well-known root-level static files directly
+	@rootstatic {
+		file
+		path /favicon.ico /robots.txt
+	}
+	handle @rootstatic {
 		file_server
 	}
 
