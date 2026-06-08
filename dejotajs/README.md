@@ -1,59 +1,84 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Dejotājs
+>Tīmekļa vietne deju kopienai un to pasākumu publicēšanai.
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Mūsdienās digitālās tehnoloģijas arvien vairāk tiek izmantotas arī kultūras un brīva laika jomās, tostarp dejošanā. Deju kolektīvi, dejotāji un deju interesanti izmanto dažādas platformas, lai iegūtu informāciju, sazinātos un organizētu savu darbību. Tomēr šobrīd šī informācija ir sadrumstalota un pieejama vairākas atsevišķās sistēmās, kas apgrūtina informācijas meklēšanu un nodošanu deju interesantiem. Līdz ar to rodas nepieciešamība pēc vietas tīmekļa sistēmas, kas būtu pielāgota tieši deju nozarei.
 
-## About Laravel
+## Tehnoloģijas
+### Frontend
+- HTML;
+- CSS;
+- Vue 3;
+- Chart.js.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+### Backend
+- PHP;
+- Laravel 13;
+- MySQL;
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## Aplikācijas startēšana
+### Backend startēšana:
+```sh 
+composer i --ignore-platform-reqs
+cp .env.example .env
+./vendor/bin/sail up -d
+```
+### Frontend startēšana:
+```sh 
+npm i
+npm run dev
+```
+## Testa piemēri
+**Testa dati – Reģistrācijas forma (Kolektīva nosaukums)**
 
-## Learning Laravel
+| Testa ID | Ieejas dati | Izejas dati |
+|-----------|-------------|-------------|
+| 1 | - | Kolektīva nosaukuma lauks ir obligāts |
+| 2 | aaaa | - |
+| 3 | Šis ir testa teksts, kas paredzēts validācijas pārbaudei. Tā mērķis ir pārsniegt noteikto divsimt piecdesmit piecu rakstzīmju ierobežojumu, lai pārliecinātos, vai sistēma korekti attēlo kļūdas paziņojumu un neļauj saglabāt nederīgus datus datu bāzē. | Kolektīva nosaukumam jābūt ne vairāk kā 255 rakstzīmēm. |
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+**Testa dati – Reģistrācijas forma (Kolektīva apraksts)**
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+| Testa ID | Ieejas dati | Izejas dati |
+|-----------|-------------|-------------|
+| 1 | - | Lūdzu, uzrakstiet informāciju par kolektīvu |
+| 2 | aaaa | - |
+| 3 | Šis ir garāks testa teksts, kas paredzēts validācijas mehānisma pārbaudei tīmekļa vietnes ievades formā. Teksts speciāli pārsniedz piecsimt rakstzīmju ierobežojumu, lai pārbaudītu, vai sistēma korekti apstrādā nederīgus ievaddatus un nepieļauj to saglabāšanu datu bāzē. Šādas pārbaudes ir būtiskas, lai nodrošinātu datu kvalitāti, novērstu pārlieku garu ierakstu ievadi un aizsargātu sistēmu pret neparedzētu datu apstrādi. Ja validācija darbojas korekti, lietotājam ir jāsaņem kļūdas paziņojums. | Informācija par kolektīvu nevar būt garāka par 500 rakstzīmēm. |
 
-## Laravel Sponsors
+**Testa dati – Reģistrācijas forma (Kolektīva pilsēta)**
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+| Testa ID | Ieejas dati | Izejas dati |
+|-----------|-------------|-------------|
+| 1 | - | Lūdzu, norādiet kolektīva pilsētu. |
+| 2 | Rīga | - |
+| 3 | Šis ir testa teksts, kas paredzēts validācijas pārbaudei. Tā mērķis ir pārsniegt noteikto divsimt piecdesmit piecu rakstzīmju ierobežojumu, lai pārliecinātos, vai sistēma korekti attēlo kļūdas paziņojumu un neļauj saglabāt nederīgus datus datu bāzē. | Pilsētas lauks nevar būt garāks par 255 rakstzīmēm. |
 
-### Premium Partners
+**Testa dati – Reģistrācijas forma (Kolektīva adrese)**
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+| Testa ID | Ieejas dati | Izejas dati |
+|-----------|-------------|-------------|
+| 1 | - | Lūdzu, norādiet kolektīva adresi. |
+| 2 | Salaspils iela 89 | - |
+| 3 | Šis ir testa teksts, kas paredzēts validācijas pārbaudei. Tā mērķis ir pārsniegt noteikto divsimt piecdesmit piecu rakstzīmju ierobežojumu, lai pārliecinātos, vai sistēma korekti attēlo kļūdas paziņojumu un neļauj saglabāt nederīgus datus datu bāzē. | Adreses lauks nevar būt garāks par 255 rakstzīmēm. |
 
-## Contributing
+**Testa dati – Reģistrācijas forma (Kolektīva žanrs)**
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+| Testa ID | Ieejas dati | Izejas dati |
+|-----------|-------------|-------------|
+| 1 | - | Lūdzu, norādiet kolektīva žanru. |
+| 2 | Tautas dejas | - |
 
-## Code of Conduct
+**Testa dati – Reģistrācijas forma (Kolektīva attēls)**
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+| Testa ID | Ieejas dati | Izejas dati |
+|-----------|-------------|-------------|
+| 1 | Nepievienots | - |
+| 2 | Pievienots | - |
+| 3 | Pievienots dokuments | Attēla failam ir jābūt šādos formātos: jpg, jpeg, png. |
 
-## Security Vulnerabilities
+**Testa dati – Reģistrācijas forma (Kolektīva apstiprinājuma dokuments)**
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+| Testa ID | Ieejas dati | Izejas dati |
+|-----------|-------------|-------------|
+| 1 | Nepievienots | Lūdzu pievienojiet dokumentu, kas apliecina, ka kolektīvs pastāv. |
+| 2 | Pievienots | - |
