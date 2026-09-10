@@ -1,83 +1,96 @@
 <template>
   <v-app>
     <v-main>
-      <v-container fluid class="bg-softblue">
-        <v-container class="py-16">
-          <v-row align="center">
-            <v-col cols="12" md="6">
-              <h1 class="text-primary text-h2 font-weight-bold mb-4">
-                DEJOTĀJS
-              </h1>
-              <p class="text-secondary text-h6 mb-6">
-                Kustība. Ritms. Brīvība.
-              </p>
-            </v-col>
-            <v-col cols="12" md="6">
-              <div class="hero-image" :style="{ backgroundImage: 'url(' + heroImage + ')' }"></div>
-            </v-col>
-          </v-row>
-        </v-container>
-      </v-container>
-      <v-container fluid class="py-12 text-center bg-secondary">
-        <div  class="text-h3 font-italic">
-          "Deja ir brīvība, kas izpaužas caur kustību"
-        </div>
-      </v-container>
-      <v-container fluid class="py-16 bg-softblue">
-        <v-container>
-          <h2 class="text-center text-text mb-10 text-h3">Aktualitātes</h2>
-
-          <v-row>
-            <v-col
+      <v-row class="ma-0" style="height: 100vh;">
+        <!-- RAKSTI -->
+        <v-col
+          cols="12"
+          md="9"
+          class="pa-4 d-flex flex-column"
+          style="height: 100%;"
+        >
+          <h2 class="text-center text-accents mb-7">
+            JAUNĀKIE RAKSTI
+          </h2>
+          <div class="overflow-y-auto flex-grow-1">
+            <v-card
               v-for="post in latestPosts"
               :key="post.id"
-              cols="12"
-              md="4"
+              class="bg-primary elevation-3 mb-8 pa-6 pa-md-8 mx-auto"
+              width="600"
+              max-width="90%"
             >
-              <v-card class="px-2 py-2" elevation="4" height="500">
-                <v-img  :src="post.picture || `https://picsum.photos/id/${post.id}/600/350`" height="200px" cover alt="img_kolektīvs"></v-img>
-                <v-card-subtitle class="mt-4 px-4 text-subtitle-2">
-                  {{ post.dance_group_member?.dance_group?.name || 'Nezināms kolektīvs' }}
-                </v-card-subtitle>
-                <v-card-title class="px-4 text-secondary">{{ post.title }}</v-card-title>
-                <v-card-text class="px-4 pb-4 text-body-1">
-                  {{ post.description || ' ' }}
-                </v-card-text>
-              </v-card>
-            </v-col>
-          </v-row>
+              <h3 class="text-right mb-6">
+                {{ post.dance_group_member?.dance_group?.name || 'Nezināms kolektīvs' }}
+              </h3>
+              <v-img
+                :src="post.picture || `https://picsum.photos/id/${post.id}/600/350`"
+                height="250"
+                width="100%"
+                cover
+              />
+              <v-card-subtitle class="text-right text-black mt-2">
+                {{ formatDate(post.created_at) }}
+              </v-card-subtitle>
+              <v-card-text class="text-center text-black text-body-1 mt-4 text-para">
+                {{ post.description || '' }}
+              </v-card-text>
+            </v-card>
+          </div>
+        </v-col>
+        <!-- PASĀKUMI -->
+        <v-col
+          cols="3"
+          class="d-none d-md-block pa-4"
+          style="height: 100%;"
+        >
+          <div class="h-100">
 
-          <v-container fluid class="d-flex justify-center">
-            <v-btn color="primary" class="mt-4" @click="$router.push('/posts')">
-              Skatīt visas aktualitātes
-            </v-btn>
-          </v-container> 
-        </v-container>
-      </v-container>
+            <h2 class="text-accent text-center text-accents">
+              APMEKLĒ!
+            </h2>
+            <v-list class="pa-4 mt-10">
+              <v-list-item
+                v-for="event in upcomingEvents"
+                :key="event.id"
+                class="border-b"
+              >
+                  <v-list-item-title class="text-h6 text-wrap">
+                    {{ formatDate(event.date_start) }} -
+                    {{ event.name || 'Nezināms pasākums' }}
+                  </v-list-item-title>
 
+                  <v-list-subheader class="text-right">
+                    {{ event.location || 'Nezināma vieta' }}
+                  </v-list-subheader>
+              </v-list-item>
+            </v-list>
+            <div class="d-flex justify-center">
+              <v-btn
+                rounded="lg"
+                class="bg-accent mt-6 text-none"
+                @click="$router.push('/calender')"
+              >
+                Uzzināt vairāk
+              </v-btn>
+            </div>
+          </div>
+        </v-col>
+      </v-row>
     </v-main>
   </v-app>
 </template>
 
 <style>
-
-.hero-image { 
-  height: 400px; 
-  border-radius: 24px; 
-  background-size: cover; 
-  background-position: center; 
-}
-
-.fixed-card {
-  display: flex;
-  flex-direction: column;
-  height: 300px;
-}
-
-.card-text {
-  flex-grow: 1;
-  overflow: hidden;
-}
+  .text-accents {
+    font-size: 48px;
+  }
+  .text-small {
+    font-family: "Playfair Display", serif;
+  }
+  .text-para {
+    font-size: 14px;
+  }
 </style>
 
 <script>
@@ -90,28 +103,48 @@ export default {
     return {
       heroImage,
       posts: [],
+      events: [],
     }
   },
   computed: {
     latestPosts() {
       if (!this.posts || this.posts.length === 0) return []
-      return this.posts.slice(0, 3)
+      return this.posts.slice(0, 10) // Atgriež pēdējos 10 ierakstus, ja tie eksistē
+    },
+    upcomingEvents() {
+      if (!this.events || this.events.length === 0) return []
+      return this.events.slice(0, 3) // Atgriež pēdējos 4 pasākumus, ja tie eksistē
     }
   },
   methods: {
-    async fetchLatestPosts() {
-      try {
-        const res = await axios.get('/api/posts')
-        this.posts = Array.isArray(res.data) ? res.data : (res.data.posts || res.data.data || [])
-        console.log('Ielādētie post:', this.posts)
-      } catch (err) {
-        console.error('Kļūda ielādējot postus:', err)
-        this.posts = []
-      }
-    }
+    async fetchData() {
+        try {
+          const [postsRes, eventsRes] = await Promise.all([
+            axios.get('/api/posts'),
+            axios.get('/api/events')
+          ])
+
+          this.posts = Array.isArray(postsRes.data) ? postsRes.data : (postsRes.data.posts || postsRes.data.data || [])
+          this.events = Array.isArray(eventsRes.data) ? eventsRes.data : (eventsRes.data.posts ||eventsRes.data.data || [])
+
+        } catch (err) {
+           console.error('Kļūda ielādējot datus:', err)
+            this.posts = []
+            this.events = []
+
+        }
+    },
+    formatDate(date) {
+    return new Date(date).toLocaleDateString('lv-LV', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric'
+    })
+  }
+
   },
   mounted() {
-    this.fetchLatestPosts()
+    this.fetchData()
   }
 }
 </script>

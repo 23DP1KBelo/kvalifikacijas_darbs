@@ -12,12 +12,13 @@ export const vuetify = createVuetify({
       light: {
         dark: false,
         colors: {
-          primary: '#0A1931',    
-          secondary: '#1A3D63',  
-          accent: '#4A7FA7',     
+          primary: '#FFFDFD',    
+          secondary: '#F7FAFF',  
+          accent: '#02317A',     
           softblue: '#B3CFE5',   
-          background: '#F6FAFD', 
-          surface: '#ffffff',     
+          background: '#FFFDFD', 
+          surface: '#ffffff',
+
           text: '#0A1931',        
         },
       },
