@@ -18,7 +18,6 @@ export const vuetify = createVuetify({
           softblue: '#B3CFE5',   
           background: '#FFFDFD', 
           surface: '#ffffff',
-
           text: '#0A1931',        
         },
       },

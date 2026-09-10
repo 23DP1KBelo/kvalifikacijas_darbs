@@ -1,5 +1,5 @@
 <template>
-  <v-app>
+  <v-app >
     <UserNavBar v-if="user" :user="user" />
 
     <NavBar v-else />

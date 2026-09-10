@@ -1,5 +1,5 @@
 <template>
-<v-app-bar elevation="0" height="110">
+<v-app-bar elevation="0" height="110" class="border-b">
   <img src="../../assets/img/logo.png" alt="Logo" class="logo" @click="$router.push('/')"/>
 
   <v-spacer/>
@@ -9,12 +9,13 @@
     <v-btn rounded="lg" class="bg-accent pt-0 pb-0 pl-4 pr-5 text text-none letter-spacing-0 mr-3" @click="$router.push('/login')">Pieslēgties</v-btn>
   </div>
 </v-app-bar>
-  <v-navigation-drawer class="pt-10 d-flex flex-colum border-0">
+  <v-navigation-drawer class="pt-10 d-flex flex-colum ">
     <v-list  class="mt-10">
       <v-list-item
         v-for="(link, index) in links"
         :key="link"
         link
+        class="hover-effect pt-6 ml-5 text-2xl"
         @click="goTo(linkRoutes[index])"
       >
         <v-list-item-title class="text-text text-h7 mb-6"><v-icon class="mr-5 ml-5">{{ icons[index] }}</v-icon> {{ link }}</v-list-item-title>
@@ -83,5 +84,13 @@ export default {
   font-size: 16px;
   letter-spacing: 0;
 }
+.hover-effect{
+    transition: all 0.3s ease;
+  }
+ .hover-effect:hover {
+    background-color: #F7FAFF !important;
+    transform: translateX(30px);
+    border-radius: 8px;
+  }
 </style>
 

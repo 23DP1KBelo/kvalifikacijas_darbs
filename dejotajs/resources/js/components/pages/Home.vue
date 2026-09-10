@@ -12,12 +12,13 @@
           <h2 class="text-center text-accents mb-7">
             JAUNĀKIE RAKSTI
           </h2>
-          <div class="overflow-y-auto flex-grow-1">
+          <div class="overflow-y-auto flex-grow-1 mt-3">
             <v-card
               v-for="post in latestPosts"
               :key="post.id"
-              class="bg-primary elevation-3 mb-8 pa-6 pa-md-8 mx-auto"
+              class="bg-primary elevation-3 mb-8 pa-6 pa-md-8 mx-auto d-flex flex-column justify-center"
               width="600"
+              height="650"
               max-width="90%"
             >
               <h3 class="text-right mb-6">
@@ -27,7 +28,8 @@
                 :src="post.picture || `https://picsum.photos/id/${post.id}/600/350`"
                 height="250"
                 width="100%"
-                cover
+                contain
+                class="d-flex justify-center align-center"
               />
               <v-card-subtitle class="text-right text-black mt-2">
                 {{ formatDate(post.created_at) }}
@@ -53,7 +55,7 @@
               <v-list-item
                 v-for="event in upcomingEvents"
                 :key="event.id"
-                class="border-b"
+                class="border-b hover-effect"
               >
                   <v-list-item-title class="text-h6 text-wrap">
                     {{ formatDate(event.date_start) }} -
@@ -68,10 +70,10 @@
             <div class="d-flex justify-center">
               <v-btn
                 rounded="lg"
-                class="bg-accent mt-6 text-none"
+                class="bg-accent mt-6 text-none text-small letter-spacing-0"
                 @click="$router.push('/calender')"
               >
-                Uzzināt vairāk
+                Uzzināt vairāk!
               </v-btn>
             </div>
           </div>
@@ -89,7 +91,16 @@
     font-family: "Playfair Display", serif;
   }
   .text-para {
-    font-size: 14px;
+    font-size: 12px;
+    font-family: "Inter", sans-serif;
+  }
+  .hover-effect{
+    transition: all 0.3s ease;
+  }
+  .hover-effect:hover {
+    background-color: #F7FAFF;
+    transform: translateX(-15px);
+    border-radius: 8px;
   }
 </style>
 
