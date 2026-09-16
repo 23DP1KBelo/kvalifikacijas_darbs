@@ -1,10 +1,10 @@
 <template>
-   <v-container fluid class="py-10">
-  <div class="d-flex justify-center flex-column mb-10">
-    <h1 class="text-center text-accents">RAKSTI</h1>
-    <h2 class="text-subhed text-center">Kolektīvu pasākumi, intereses un atpūta</h2>
-  </div>
-     <v-container>
+    <v-container fluid class="py-10">
+      <div class="d-flex justify-center flex-column mb-10">
+        <h1 class="text-center text-accents">RAKSTI</h1>
+        <p class="text-subhed text-center">Kolektīvu pasākumi, intereses un atpūta</p>
+      </div>
+      <v-container>
       <v-row>
         <v-col
           v-for="post in paginatedPosts"

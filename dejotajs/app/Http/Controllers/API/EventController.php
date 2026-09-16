@@ -19,7 +19,9 @@ class EventController extends Controller
             'member.danceGroup',
             'ageGroups.danceGroup', 
             'ageGroups.admissions'
-        ])->get();
+        ])
+        ->orderByDesc('created_at')
+        ->get();
 
         return EventResource::collection($events);
 

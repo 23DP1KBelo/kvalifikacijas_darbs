@@ -23,7 +23,8 @@ import AdmissonDashboard from '../components/pages/AdmissonDashboard.vue';
 import CalenderDashboard from '../components/pages/calender/calenderDashboard.vue';
 import EventForm from '../components/pages/calender/EventForm.vue';
 import AdminStats from '../components/pages/admin/AdminStats.vue';
-
+import DancerChat from '../components/pages/chat/dancerChat.vue';
+import DanceGroupControls from '../components/pages/danceGroups/DanceGroupControls.vue';
 const routes = [
     { path: '/', component: Home },
     { path: '/login', component: Login },
@@ -48,6 +49,8 @@ const routes = [
     { path: '/calender', component: CalenderDashboard},
     { path: '/calender/event', component: EventForm, meta: {requiresAuth: true, requiresLeader: true}},
     { path: '/dashboard/stats', component: AdminStats, meta: { requiresAuth: true, requiresAdmin: true }},
+    { path: '/chat', component: DancerChat},
+    { path: '/danceGroup/controls', component:DanceGroupControls, meta: {requiresAuth: true, requiresLeader: true}}
 ];
 
 const router = createRouter({

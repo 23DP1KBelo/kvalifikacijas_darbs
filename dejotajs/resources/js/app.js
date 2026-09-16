@@ -1,4 +1,5 @@
 import { createApp } from 'vue';
+import { createPinia } from 'pinia';
 import App from './components/App.vue';
 import router from './router';
 import '@mdi/font/css/materialdesignicons.css'
@@ -13,6 +14,7 @@ axios.defaults.baseURL = 'http://127.0.0.1:8000';
 
 
 createApp(App)
+    .use(createPinia())
     .use(router)
     .use(vuetify)
     .mount('#app');

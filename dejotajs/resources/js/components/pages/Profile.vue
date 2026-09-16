@@ -45,55 +45,55 @@
 </template>
 
 <script>
-import axios from 'axios';
+import { useAuthStore } from '@/stores/auth'
 
 export default {
+  name: 'Profile',
+
   data() {
     return {
+      authStore: useAuthStore(),
+
       statusMap: {
         approved: 'Apstiprināts',
-        waiting: 'Gaida apstiprinājumu'
+        waiting: 'Gaida apstiprinājumu',
       },
-      user: {
-        name: '',
-        surname: '',
-        email: '',
-        dance_groups: [],
-      },
-      error: ''
+
+      error: '',
     }
   },
+
+  computed: {
+    user() {
+      return this.authStore.user
+    },
+
+    danceGroups() {
+      return this.user?.dance_groups || []
+    },
+
+    approvedGroups() {
+      return this.danceGroups.filter(
+        group =>
+          group.status === 'approved' ||
+          group.status === 'waiting'
+      )
+    },
+  },
+
   methods: {
     translateStatus(status) {
-      return this.statusMap[status] || status;
+      return this.statusMap[status] || status
     },
   },
-  computed: {
-    approvedGroups() {
-      return this.user.dance_groups.filter(g => g.status == 'approved' ||  g.status === 'waiting');
-    },
-  },
+
   async mounted() {
     try {
-      const res = await axios.get('/api/profile', { withCredentials: true });
-
-      this.user.name = res.data.user.name;
-      this.user.surname = res.data.user.surname;
-      this.user.email = res.data.user.email;
-
-      this.user.dance_groups = res.data.dance_group_members.map(member => ({
-        id: member.dance_group.id,
-        name: member.dance_group.name,
-        role: member.role,
-        age_group: member.age_group?.age_group || null,
-        status: member.status 
-      }));
-
+      await this.authStore.fetchProfile()
     } catch (err) {
-      this.error = 'Neizdevās ielādēt profilu';
-      console.error(err);
+      this.error = 'Neizdevās ielādēt profilu'
     }
-  }
+  },
 }
 </script>
 

@@ -29,11 +29,16 @@ class DanceGroupMemberController extends Controller
     public function store(DanceGroupMemberRequest $request)
     {
         $validated = $request->validated();
-        $validated['user_id'] = Auth::id(); 
+
+        $validated['user_id'] = Auth::id();
+        $validated['status'] = 'waiting';
+        $validated['role'] = 'dancer';
 
         $member = DanceGroupMember::create($validated);
 
-        return (new DanceGroupMemberResource($member))->response()->setStatusCode(201);
+        return (new DanceGroupMemberResource($member))
+            ->response()
+            ->setStatusCode(201);
     }
 
 

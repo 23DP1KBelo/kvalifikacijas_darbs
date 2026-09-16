@@ -1,74 +1,178 @@
 <template>
   <v-container fluid class="pa-0">
-    <v-row justify="center" align="center" class="fill-height">
-      <v-col cols="10" md="8" lg="6" v-if="group">
-        <v-card elevation="2" class="mt-8">
+    <v-row justify="center" class="fill-height">
+      <v-col
+        v-if="group"
+        cols="12"
+        md="10"
+        lg="9"
+      >
+        <v-card
+          elevation="2"
+          class="rounded-0 mt-8"
+          min-height="600"
+        >
+          <v-row no-gutters class="h-100">
+            <!-- KREISĀ PUSE -->
+            <v-col
+              cols="12"
+              md="6"
+              class="d-flex flex-column pa-8"
+            >
+              <!-- Atpakaļ poga -->
+              <div class="d-flex justify-start">
+                <v-btn
+                  variant="text"
+                  prepend-icon="mdi-arrow-left"
+                  @click="$router.back()"
+                >
+                </v-btn>
+              </div>
+              <!-- Par kolektīvu -->
+              <div class="d-flex align-center justify-space-between mt-4 text-small">
+                <h2 class="text-small">
+                  Par kolektīvu
+                </h2>
 
-          <v-img
-            :src="group.picture_url || `https://picsum.photos/id/${group.id}/600/350`"
-            height="500"
-            class="card-full-image"
-            alt="img_kolektīvs"
-            cover>
-          </v-img>
+                <v-chip
+                class="border bg-accent text-white"
+                >
+                  {{ translatedGenre || 'Nav norādīts' }}
+                </v-chip>
+              </div>
 
-          <div v-if="canJoinGroup" class="d-flex justify-end mx-4">
-            <v-btn class="mt-4 bg-secondary" @click="joinGroup()">
-              Pievienoties kolektīvam
-            </v-btn>
-          </div>
+              <v-divider class="my-7"></v-divider>
 
-          <div v-if="!canJoinGroup" class="d-flex justify-end mx-4 mt-4">
-            <p>Kolektīvam nav iespējams pievienoties</p>
-          </div>
+              <!-- Vadītāji -->
+              <div class="mb-10">
+                  <h3 class="text-small">
+                    Vadītāji:
+                  </h3>
+                <p class="text-para">
+                  {{
+                    group?.leaders?.map(
+                      l => `${l.user.name} ${l.user.surname}`
+                    ).join(', ') || 'Nav vadītāju'
+                  }}
+                </p>
+              </div>
+              <!-- Atrašanās vieta -->
+              <div class="mb-3 d-flex flex-row">
+                <v-icon>
+                  mdi-map-marker-outline
+                </v-icon>
+                <p class="text-para ml-3">
+                  {{ group?.city }}, {{ group?.address }}
+                </p>
+              </div>
+              <!-- Dalībnieki -->
+              <div class="d-flex flex-row">
+                <v-icon>
+                  mdi-account-group-outline
+                </v-icon>
+                <p class="text-para ml-3">
+                  Dalībnieki: {{ group?.dancers?.length || 0 }}
+                </p>
+              </div>
 
+              <v-divider class="my-6"></v-divider>
 
-          <v-divider class="my-4"></v-divider>
+              <!-- Apraksts -->
+              <div class=" d-flex align-center">
+                <p class="text-para text-center w-100">
+                  {{ group?.description || 'Nav apraksta' }}
+                </p>
+              </div>
+              
+              <v-divider class="my-6"></v-divider>      
 
-          <v-card-subtitle class="mt-8">{{ group?.city }}, {{ group?.address }}</v-card-subtitle>
+              <!-- Vecuma grupas -->
+              <div class="mt-6">
+                  <h3 class="text-small mb-4">
+                    Vecuma grupas:
+                  </h3>
+                <div class="d-flex flex-wrap ga-2">
+                  <v-chip class="bg-white"
+                    v-for="ageGroup in group?.age_groups || []"
+                    :key="ageGroup.id"
+                    variant="outlined"
+                    style="border-color: #02317A;"
+                  >
+                    {{ ageGroup.name }}: {{ ageGroup.age_group }}
+                  </v-chip>
 
-          <v-card-text>
-            <v-divider class="my-4"></v-divider>
-            <p><strong>Dalībnieku skaits:</strong> {{ group?.dancers?.length || 0 }}</p>
-            <p>
-              <strong>Vadītāji:</strong>
-              {{ group?.leaders?.map(l => `${l.user.name} ${l.user.surname}`).join(', ') || 'Nav vadītāju' }}
-            </p>
-            <v-divider class="my-4"></v-divider>
-            
-            <p><strong>Žanrs:</strong> {{ translatedGenre || 'Nav norādīts' }}</p>
-            <p><strong>Apraksts:</strong> {{ group?.description || 'Nav apraksta' }}</p>
-
-            <v-divider class="my-4"></v-divider>
-
-            <p><strong>Vecuma grupas:</strong></p>
-            <ul>
-              <li v-for="ageGroup in group?.age_groups || []" :key="ageGroup.id">
-                {{ ageGroup.name }} ({{ ageGroup.age_group || 'Nav informācijas' }})
-              </li>
-              <li v-if="!(group?.age_groups?.length)">Nav vecuma grupu</li>
-            </ul>
-
-            <v-divider class="my-4"></v-divider>
-          </v-card-text>
-
-          <v-card-actions>
-            <v-btn class="bg-primary my-2 mx-2" @click="$router.back()">Atpakaļ</v-btn>
-          </v-card-actions>
+                  <v-chip
+                    v-if="!(group?.age_groups?.length)"
+                  >
+                    Nav vecuma grupu
+                  </v-chip>
+                </div>
+              </div>
+            </v-col>
+            <!-- LABĀ PUSE -->
+            <v-col
+              cols="12"
+              md="6"
+              class="d-flex flex-column pa-8 order-first order-md-last"
+            >
+              <!-- Pievienoties -->
+              <div class="mt-6 text-right">
+                <v-btn
+                  v-if="canJoinGroup"
+                  class="bg-accent text-small"
+                  @click="joinGroup()"
+                >
+                  Pievienoties kolektīvam
+                </v-btn>
+              </div>
+              <!-- Kolektīva nosaukums -->
+              <h2
+                class="text-accent text-accents mt-6 text-uppercase text-center"
+              >
+                {{ group?.name || 'KOLEKTĪVS' }}
+              </h2>
+              <!-- Bilde -->
+              <div class="flex-grow-1 d-flex align-center justify-center py-6">
+                <v-img
+                  :src="
+                    group?.picture_url ||
+                    `../../../assets/img/hero.png`
+                  "
+                  width="100%"
+                  max-width="600"
+                  height="350"
+                  contain
+                  alt="Kolektīva attēls"
+                />
+              </div>
+            </v-col>
+          </v-row>
         </v-card>
       </v-col>
+      <!-- Datu ielādēšana -->
+      <v-col
+        v-else
+        cols="12"
+        class="text-center"
+      >
+        <v-progress-circular
+          indeterminate
+          color="primary"
+          size="64"
+        ></v-progress-circular>
 
-      <!-- Loading / fallback -->
-      <v-col cols="12" class="text-center" v-else>
-        <v-progress-circular indeterminate color="primary" size="64"></v-progress-circular>
-        <p>Ielādē kolektīva datus...</p>
+        <p class="mt-4">
+          Ielādē kolektīva datus...
+        </p>
       </v-col>
+
     </v-row>
   </v-container>
 </template>
 
 <script>
 import axios from "axios";
+import { useAuthStore } from '@/stores/auth'
 
 const genreMap = {
   'lyrical dance': 'Liriskā deja',
@@ -84,50 +188,61 @@ export default {
     return {
       group: null,
       ageGroups: [],
-      user: null,
       loading: true,
     };
   },
   computed: {
+    authStore() {
+      return useAuthStore();
+    },
     translatedGenre() {
       return this.group?.genre ? (genreMap[this.group.genre] || this.group.genre) : 'Nav norādīts';
     },
     canJoinGroup() {
-      if (!this.group || !this.user) return false;
-      if (!this.ageGroups || this.ageGroups.length === 0) return false;
+      if (
+        !this.group ||
+        this.authStore.loading ||
+        !this.authStore.isAuthenticated
+      ) {
+        return false;
+      }
 
-      const userId = this.user.id;
+      const alreadyMember = this.authStore.danceGroupMembers.some(
+        member =>
+          Number(member.dance_group?.id) === Number(this.group.id) &&
+          (member.status === 'approved' || member.status === 'waiting') &&
+          (member.role === 'dancer' || member.role === 'leader')
+      );
 
-      return !this.group.leaders?.some(leader => leader.user.id === userId);
-    },
+      if (alreadyMember) {
+        return false;
+      }
+
+      if (!this.ageGroups || this.ageGroups.length === 0) {
+        return false;
+      }
+
+      return true;
+    }
   },
   async mounted() {
+    const authStore = useAuthStore()
     await Promise.all([
-      this.fetchUser(),
+      authStore.fetchUser(),
       this.fetchGroupInfo()
     ]);
 
     this.loading = false;
   },
   methods: {
-    async fetchUser() {
-      try {
-        const res = await axios.get('/api/profile', {
-          withCredentials: true,
-        });
-
-        this.user = res.data.user;
-      } catch (e) {
-        this.user = null;
-      }
-    },
-
     async fetchGroupInfo() {
       const groupId = this.$route.params.id;
       if (!groupId) return;
 
       const res = await axios.get(`/api/dance-group-info/${groupId}`);
       this.group = res.data.data;
+
+      console.log(res)
 
       if (this.group.age_groups) {
         this.ageGroups = this.group.age_groups;
@@ -136,43 +251,29 @@ export default {
 
     joinGroup() {
       const groupId = this.$route.params.id;
-      if (!groupId) return;
+
+      if (!groupId || !this.authStore.user) return;
 
       axios.post('/api/members/join', {
-        user_id: this.user.id,
+        user_id: this.authStore.user.id,
         dance_group_id: groupId
       }, {
         withCredentials: true
       })
-      .then(() => {
+      .then(async () => {
+
+        // Atjauno lietotāja kolektīvu datus
+        await this.authStore.fetchUser();
+
         alert('Vadītājs saņems paziņojumu un apstiprinās Jūsu dalību.');
       })
       .catch(err => {
-        alert(err.response?.data?.message || 'Neizdevās pievienoties.');
+        alert(
+          err.response?.data?.message ||
+          'Neizdevās pievienoties.'
+        );
       });
-    }
+    },
   }
 };
 </script>
-
-<style scoped>
-.fill-height {
-  min-height: 100vh;
-}
-.v-card-title.headline {
-  font-size: 2rem;
-  font-weight: bold;
-}
-.v-card-text p {
-  margin-bottom: 0.5rem;
-}
-ul {
-  padding-left: 1.2rem;
-}
-
-.card-full-image {
-  width: 100%;
-  object-fit: cover;
-}
-
-</style>

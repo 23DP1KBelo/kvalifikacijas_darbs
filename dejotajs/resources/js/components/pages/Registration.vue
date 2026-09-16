@@ -1,40 +1,12 @@
-<!-- <template>
-     <v-container class="d-flex justify-center align-center mt-8">
-        <v-card class=" bg-softblue" elevation="16" width="500px">
-            <v-card-title class="text-center mb-4 mt-4">Reģistrēšanās</v-card-title>
-            <v-card-text>
-                <v-form>
-                    <v-text-field label="Vārds" v-model="name" required></v-text-field>
-                    <v-text-field label="Uzvārds" v-model="surname" required></v-text-field>
-                    <v-text-field label="E-pasts" v-model="email" required></v-text-field>
-                    <v-text-field label="Parole" v-model="password" type="password" required></v-text-field>
-                    <v-text-field label="Paroles apstiprinājums" v-model="password_confirmation" type="password" required></v-text-field>
-                    <v-text-field label="Tālrunis" v-model="phone_number" required></v-text-field>
-                    <v-alert v-if="error" type="error" dense outlined class="mt-3" style="white-space: pre-line">
-                        {{ error }}
-                    </v-alert>
-                    <div class="d-flex justify-center align-center text-center mb-4">
-                        <v-btn class="mt-4" color="primary" @click="registration">
-                            Reģistrēties
-                        </v-btn>
-                    </div>
-                </v-form>
-            </v-card-text>
-        </v-card>
-    </v-container>
-</template> -->
 <template>
       <v-row>
         <!-- HERO daļa -->
         <v-col
-          md="7"
+          md="5"
           class="d-none d-md-flex align-center justify-center" style="height: 100vh;"
         >
           <div class="d-flex flex-column pl-10 ">
             <h2 class="text-accents text-accent">Esi daļa</h2>
-            <div class="d-flex justify-center"> 
-              <img src="../../assets/img/logo.png" alt="Logo" class="w-50 text-right" > 
-            </div>
             <h2 class="text-accents text-accent text-right">no DEJAS!</h2>
           </div>
         </v-col>
@@ -42,7 +14,7 @@
         <!-- Reģistrācijas forma -->
        <v-col 
         cols="12" 
-        md="5" 
+        md="7" 
         class="d-flex flex-column justify-center align-center h-100 login-column"
         >
             <v-spacer class="d-none d-md-flex" style="height: 50px;"></v-spacer>

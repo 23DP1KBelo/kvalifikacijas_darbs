@@ -1,48 +1,51 @@
 <template>
-  <v-app >
-    <UserNavBar v-if="user" :user="user" />
+  <v-app>
 
-    <NavBar v-else />
+    <!-- Admin -->
+    <AdminNavBar
+      v-if="auth.isAdmin"
+      :user="auth.user"
+    />
+
+    <!-- Leader -->
+    <LeaderNavBar
+      v-else-if="auth.isLeader"
+      :user="auth.user"
+    />
+
+    <!-- Parasts lietotājs -->
+    <UserNavBar
+      v-else-if="auth.isAuthenticated"
+      :user="auth.user"
+    />
+
+    <!-- Viesis -->
+    <NavBar
+      v-else
+    />
 
     <v-main>
-      <RouterView/>
+      <RouterView />
     </v-main>
 
     <Footer />
+
   </v-app>
 </template>
 
-<script>
-import axios from "axios";
-import UserNavBar from "./content/UserNavBar.vue";
-import NavBar from "./content/NavBar.vue";
-import Footer from "./content/Footer.vue";
+<script setup>
+import { onMounted } from 'vue'
+import { useAuthStore } from '@/stores/auth'
 
-export default {
-  components: { UserNavBar, NavBar, Footer },
+import NavBar from './content/NavBar.vue'
+import UserNavBar from './content/UserNavBar.vue'
+import LeaderNavBar from './content/LeaderNavBar.vue'
+import AdminNavBar from './content/AdminNavBar.vue'
+import Footer from './content/Footer.vue'
 
-  data() {
-    return {
-      user: null,
-    };
-  },
+const auth = useAuthStore()
 
-  async mounted() {
-    try {
-      const res = await axios.get("/api/profile", {
-        withCredentials: true,
-      });
-
-      this.user = res.data.user ?? null;
-    } catch (e) {
-      this.user = null;
-    }
-  },
-};
+onMounted(() => {
+  auth.fetchUser()
+})
 </script>
-
-<style scoped>
-h1 {
-  color: #333;
-}
-</style>

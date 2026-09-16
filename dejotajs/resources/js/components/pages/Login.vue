@@ -2,22 +2,19 @@
       <v-row>
         <!-- HERO daļa -->
         <v-col
-          md="7"
+          md="5"
           class="d-none d-md-flex align-center justify-center" style="height: 100vh;"
         >
           <div class="d-flex flex-column pl-10 ">
             <h2 class="text-accents text-accent">Esi daļa</h2>
-            <div class="d-flex justify-center"> 
-              <img src="../../assets/img/logo.png" alt="Logo" class="w-50 text-right" > 
-            </div>
-            <h2 class="text-accents text-accent text-right">no DEJAS!</h2>
+            <h2 class="text-accents text-accent">no DEJAS!</h2>
           </div>
         </v-col>
 
         <!-- Pieslēgāsnās forma -->
         <v-col
           cols="12"
-          md="5"
+          md="7"
           class="d-flex flex-column justify-center align-center h-100 login-column"
         >
           <div class="w-100 d-none d-md-flex" style="height: 150px;"></div>
@@ -49,63 +46,80 @@
 </style>
 
 <script>
-import axios from 'axios';
+import axios from 'axios'
+import { useAuthStore } from '@/stores/auth'
 
 export default {
-  data() {
-    return {
-      email: '',
-      password: '',
-      valid: false,
-      error: '',
-      emailRules: [
-        v => !!v || 'E-pasts ir obligāts',
-        v => /.+@.+\..+/.test(v) || 'Lūdzu, ievadiet derīgu e-pasta adresi'
-      ],
-      passwordRules: [
-        v => !!v || 'Parole ir obligāta',
-        v => v.length >= 6 || 'Parolei jābūt vismaz 6 rakstzīmēm'
-      ]
+    data() {
+        return {
+            email: '',
+            password: '',
+            valid: false,
+            error: '',
+
+            emailRules: [
+                v => !!v || 'E-pasts ir obligāts',
+                v => /.+@.+\..+/.test(v) || 'Lūdzu, ievadiet derīgu e-pasta adresi'
+            ],
+
+            passwordRules: [
+                v => !!v || 'Parole ir obligāta',
+                v => v.length >= 6 || 'Parolei jābūt vismaz 6 rakstzīmēm'
+            ]
+        }
+    },
+
+    methods: {
+        async login() {
+            this.error = ''
+
+            try {
+                // 1. CSRF cookie
+                await axios.get('/sanctum/csrf-cookie', {
+                    withCredentials: true
+                })
+
+                // 2. Login
+                await axios.post('/api/login', {
+                    email: this.email,
+                    password: this.password,
+                }, {
+                    withCredentials: true
+                })
+
+                // 3. Ielādē lietotāju Pinia store
+                const auth = useAuthStore()
+
+                await auth.fetchUser()
+
+                // 4. Pāreja uz lapu
+                this.$router.push(
+                    auth.isAdmin ? '/dashboard' : '/'
+                )
+
+            } catch (err) {
+                if (
+                    err.response &&
+                    err.response.data &&
+                    err.response.data.errors
+                ) {
+                    this.error = Object.values(err.response.data.errors)
+                        .flat()
+                        .map(e => `• ${e}`)
+                        .join('\n')
+
+                } else if (
+                    err.response &&
+                    err.response.data &&
+                    err.response.data.message
+                ) {
+                    this.error = err.response.data.message
+
+                } else {
+                    this.error = 'Nezināma kļūda. Mēģiniet vēlreiz.'
+                }
+            }
+        }
     }
-  },
-  methods: {
-    async login() {
-  try {
-
-    // 1. CSRF cookie
-    await axios.get('/sanctum/csrf-cookie');
-
-    // 2. login
-    await axios.post('/api/login', {
-      email: this.email,
-      password: this.password,
-    });
-
-    // 3. user
-    const userResponse = await axios.get('/api/user');
-    const user = userResponse.data;
-
-    localStorage.setItem('user', JSON.stringify(user));
-
-    this.$root.user = user;
-    this.$root.loggedIn = true;
-
-    this.$router.push(user.role === 'admin' ? '/dashboard' : '/');
-
-  } catch (err) {
-    if (err.response && err.response.data && err.response.data.errors) {
-      this.error = Object.values(err.response.data.errors)
-            .flat()
-            .map(e => `• ${e}`)
-            .join('\n');
-    } else if (err.response && err.response.data && err.response.data.message) {
-        this.error = err.response.data.message;
-    } else {
-        this.error = 'Nezināma kļūda. Mēģiniet vēlreiz.';
-    }
-  }
 }
-  }
-}
-
 </script>

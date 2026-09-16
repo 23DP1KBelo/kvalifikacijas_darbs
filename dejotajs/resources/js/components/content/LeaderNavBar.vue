@@ -56,13 +56,16 @@
         </v-list-item>
         </v-list>
     <v-spacer class="mb-7"></v-spacer>
-    <!-- Dejotāja saites -->
+    <!-- Administratora saites -->
     <v-list>
-        <v-list-item 
-            @click="goTo('/chat')"
-            class= "hover-effect pt-6 ml-5 text-2xl"
+        <v-list-item
+            v-for="(link, index) in leaderLinks"
+            :key="link"
+            link
+            class="hover-effect ml-5 text-2xl"
+            @click="goTo(leaderRoutes[index])"
         >
-            <v-list-item-title class="text-text text-h7 mb-6"><v-icon class="mr-5 ml-5">mdi-message-text-outline</v-icon> Saziņa</v-list-item-title>
+            <v-list-item-title class="text-text text-h7 mb-6 text-wrap text-break"><v-icon class="mr-5 ml-5">{{ leaderIcons[index] }}</v-icon>{{ link }}</v-list-item-title>
         </v-list-item>
     </v-list>
   </v-navigation-drawer>
@@ -83,12 +86,12 @@
 
         <span>{{ link }}</span>
       </v-btn>
-      <v-btn @click="goTo('/chat')">
+      <v-btn @click="goTo('/danceGroup/controls')">
         <v-icon>
-            mdi-message-text-outline
+            mdi-account-group
         </v-icon>
 
-        <span> Saziņa</span>
+        <span>Pārvaldība</span>
       </v-btn>
     </v-bottom-navigation>
 </template>
@@ -114,6 +117,9 @@ export default {
             linkRoutes: ['/posts', '/dance-groups', '/calender', '/admisson'],
             links: ['Raksti','Kolektīvi', 'Pasākumi', 'Uzņemšana'],
             icons:[ 'mdi-view-grid', 'mdi-account-group', 'mdi-calendar-month','mdi-hand-wave-outline'],
+            leaderRoutes: ['/danceGroup/controls'],
+            leaderIcons: ['mdi-account-group'],
+            leaderLinks: ['Kolektīvu pārvaldība'],
         }
     },
 

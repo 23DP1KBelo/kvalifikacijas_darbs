@@ -1,119 +1,256 @@
 <template>
-  <v-container class="py-8">
-    <div class="text-center mb-8">
-      <h1 class="page-title">Deju kolektīvi</h1>
-      <p class="page-subtitle">
-        Atrodi deju kolektīvus Latvijā
+  <v-container fluid class="py-10">
+
+    <!-- Virsraksts -->
+    <div class="d-flex justify-center flex-column mb-10">
+      <h1 class="text-center text-accents">
+        DEJU KOLEKTĪVI
+      </h1>
+
+      <p class="text-subhed text-center">
+        Atrodi savu deju kolektīvu Latvijā!
       </p>
     </div>
-    <!-- Filtrēšana un meklēšana -->
-    <v-card class="pa-4 mb-6 search-card" elevation="2">
-      <v-row align="center" justify="space-between">
 
-        <v-col cols="12" md="6">
-          <v-text-field v-model="searchQuery" label="Meklēt kolektīvu" prepend-inner-icon="mdi-magnify" learable variant="outlined" density="comfortable" hide-details @input="searchGroups" class="text-text"/>
-        </v-col>
+    <!-- Meklēšana un filtri -->
+    <v-container>
+      <v-card
+        class="pa-4 mb-8 rounded-0 elevation-2"
+      >
+        <v-row class="align-center">
 
-        <v-col cols="12" md="6" class="d-flex justify-end">
-          <!-- kārtošana -->
-          <v-btn icon variant="tonal" color="text" @click="sortGroups" class="me-2" aria-label="Kārtot pēc nosaukuma">
-            <v-icon>
-              {{ sortOrder === 'asc' ? 'mdi-sort-alphabetical-ascending' : 'mdi-sort-alphabetical-descending' }}
-            </v-icon>
-          </v-btn>
-          <!-- filtru menu -->
-          <v-menu v-model="filterMenu" transition="scale-transition" offset-y :close-on-content-click="false">
-            <template #activator="{ props }">
-              <v-btn icon variant="tonal" color="text" v-bind="props" aria-label="Filtri">
-                <v-icon>mdi-filter-variant</v-icon>
-              </v-btn>
-            </template>
-            <v-card class="pa-2" width="320">
-              <v-card-title class="text-h6">
-                Filtrēt kolektīvus
-              </v-card-title>
-              <v-card-text>
-                <v-select
-                  v-model="selectedCity"
-                  :items="cities"
-                  label="Pilsēta"
-                  clearable
-                  variant="outlined"
-                  density="comfortable"
-                  class="mb-3"
-                />
-                <v-select
-                  label="Žanrs"
-                  :items="genres"
-                  item-title="title"
-                  item-value="value"
-                  v-model="selectedGenre"
-                  variant="outlined"
-                  density="comfortable"
-                />
-              </v-card-text>
-              <v-card-actions>
-                <v-spacer />
-                <v-btn variant="tonal" color="text" @click="applyFilters" aria-label="Meklēt pēc filtra">
-                  Filtrēt
+          <!-- Meklēšana -->
+          <v-col
+            cols="12"
+            md="7"
+          >
+            <v-text-field
+              v-model="searchQuery"
+              label="Meklēt kolektīvu"
+              prepend-inner-icon="mdi-magnify"
+              clearable
+              variant="outlined"
+              density="comfortable"
+              hide-details
+              @input="searchGroups"
+              class="text-text"
+            />
+          </v-col>
+
+          <!-- Darbības -->
+          <v-col
+            cols="12"
+            md="5"
+            class="d-flex justify-end"
+          >
+
+            <!-- Kārtošana -->
+            <v-btn
+              icon
+              variant="tonal"
+              color="text"
+              @click="sortGroups"
+              class="me-2"
+              aria-label="Kārtot pēc nosaukuma"
+            >
+              <v-icon>
+                {{
+                  sortOrder === 'asc'
+                    ? 'mdi-sort-alphabetical-ascending'
+                    : 'mdi-sort-alphabetical-descending'
+                }}
+              </v-icon>
+            </v-btn>
+
+            <!-- Filtri -->
+            <v-menu
+              v-model="filterMenu"
+              transition="scale-transition"
+              offset-y
+              :close-on-content-click="false"
+            >
+              <template #activator="{ props }">
+                <v-btn
+                  icon
+                  variant="tonal"
+                  color="text"
+                  v-bind="props"
+                  aria-label="Filtri"
+                >
+                  <v-icon>
+                    mdi-filter-variant
+                  </v-icon>
                 </v-btn>
-                <v-btn variant="tonal" @click="resetFilters" aria-label="Atcelt filtrus">
-                  Atcelt
-                </v-btn>
-              </v-card-actions>
-            </v-card>
-          </v-menu>
+              </template>
+
+              <v-card
+                class="pa-2 rounded-0"
+                width="320"
+              >
+                <v-card-title class="text-h6">
+                  Filtrēt kolektīvus
+                </v-card-title>
+
+                <v-card-text>
+
+                  <v-select
+                    v-model="selectedCity"
+                    :items="cities"
+                    label="Pilsēta"
+                    clearable
+                    variant="outlined"
+                    density="comfortable"
+                    class="mb-3"
+                  />
+
+                  <v-select
+                    v-model="selectedGenre"
+                    label="Žanrs"
+                    :items="genres"
+                    item-title="title"
+                    item-value="value"
+                    clearable
+                    variant="outlined"
+                    density="comfortable"
+                  />
+
+                </v-card-text>
+
+                <v-card-actions>
+                  <v-spacer />
+
+                  <v-btn
+                    variant="tonal"
+                    color="text"
+                    @click="applyFilters"
+                  >
+                    Filtrēt
+                  </v-btn>
+
+                  <v-btn
+                    variant="tonal"
+                    @click="resetFilters"
+                  >
+                    Atcelt
+                  </v-btn>
+                </v-card-actions>
+              </v-card>
+            </v-menu>
+
+          </v-col>
+        </v-row>
+      </v-card>
+
+      <!-- Nav rezultātu -->
+      <v-alert
+        v-if="!groups.length"
+        type="info"
+        variant="tonal"
+        icon="mdi-information-outline"
+        class="mb-8"
+      >
+        Nav atrasts neviens kolektīvs pēc izvēlētajiem filtriem.
+      </v-alert>
+
+      <!-- Kolektīvu kartītes -->
+      <v-row>
+        <v-col
+          v-for="group in groups"
+          :key="group.id"
+          cols="12"
+          sm="6"
+          lg="3"
+          class="d-flex"
+        >
+          <v-card
+            class="w-100 d-flex flex-column elevation-3 rounded-0 card-hover"
+            height="350"
+            @click="goTo(`/group-info/${group.id}`)"
+          >
+
+            <!-- Kolektīva nosaukums -->
+            <h2
+              class="font-weight-bold text-left px-4 pt-10 text-accent"
+            >
+              {{ group.name }}
+            </h2>
+
+            <!-- Vadītāji -->
+            <div class="px-4 pt-1">
+              <div class="text-caption text-medium-emphasis mb-1">
+                <v-icon size="16" class="mr-1">
+                  mdi-account-outline
+                </v-icon>
+                Vadītāji
+              </div>
+
+              <div class="text-body-2 text-truncate">
+                {{
+                  group.leaders?.length
+                    ? group.leaders
+                        .map(
+                          l =>
+                            `${l.user?.name || ''} ${l.user?.surname || ''}`
+                        )
+                        .join(', ')
+                    : 'Nav vadītāju'
+                }}
+              </div>
+            </div>
+
+            <!-- Adrese -->
+            <div class="px-4 pt-4">
+              <div class="text-caption text-medium-emphasis mb-1">
+                <v-icon size="16" class="mr-1">
+                  mdi-map-marker-outline
+                </v-icon>
+                Atrašanās vieta
+              </div>
+
+              <div class="text-body-2 text-truncate">
+                {{ group.city }}
+                <span v-if="group.address">
+                  · {{ group.address }}
+                </span>
+              </div>
+            </div>
+
+            <!-- Žanrs -->
+            <div class="px-4 pt-4">
+              <div class="text-caption text-medium-emphasis mb-1">
+                <v-icon size="16" class="mr-1">
+                  mdi-dance-ballroom
+                </v-icon>
+                Žanrs
+              </div>
+
+              <div class="text-body-2 text-truncate">
+                <span v-if="group.genre">
+                  {{ getGenreTitle(group.genre) }}
+                </span>
+              </div>
+            </div>
+
+            <v-spacer />
+
+            <!-- Apakšējā daļa -->
+            <v-card-actions
+              class="d-flex justify-end px-4 pb-4"
+            >
+              <v-btn
+                icon="mdi-arrow-top-right"
+                variant="text"
+                aria-label="Skatīt kolektīvu"
+                @click.stop="goTo(`/group-info/${group.id}`)"
+              />
+            </v-card-actions>
+
+          </v-card>
+
         </v-col>
       </v-row>
-    </v-card>
-    <!-- Ja nav kolektīvu, alert -->
-    <v-alert
-      v-if="!groups.length"
-      type="info"
-      variant="tonal"
-      border="start"
-      icon="mdi-information-outline"
-      class="mb-6"
-    >
-      Nav atrasts neviens kolektīvs pēc izvēlētajiem filtriem.
-    </v-alert>
-    <!-- GROUP CARDS -->
-    <v-row>
-      <v-col
-        v-for="group in groups"
-        :key="group.id"
-        cols="12"
-        sm="6"
-        md="4"
-        lg="3"
-      >
-        <v-card
-          elevation="3"
-          class="group-card bg-softblue"
-          @click="goTo(`/group-info/${group.id}`)"
-        >
-          <v-img
-            :src="group.picture_url || `https://picsum.photos/id/${group.id}/600/350`"
-            height="200"
-            cover
-            alt="img_kolektīvs"
-          />
-          <v-card-title class="group-title">
-            {{ group.name }}
-          </v-card-title>
-          <v-card-subtitle class="text-truncate">
-            {{
-              group.leaders?.length
-                ? group.leaders.map(l => `${l.user?.name || ''} ${l.user?.surname || ''}`).join(', ')
-                : 'Nav vadītāju'
-            }}
-          </v-card-subtitle>
-          <v-card-text class="text-medium-emphasis">
-            {{ group.city }}, {{ group.address }}
-          </v-card-text>
-        </v-card>
-      </v-col>
-    </v-row>
+
+    </v-container>
   </v-container>
 </template>
 
@@ -155,6 +292,13 @@ export default {
     },
     goTo(route) {
       this.$router.push(route)
+    },
+    getGenreTitle(genre) {
+      const foundGenre = this.genres.find(
+        item => item.value === genre
+      )
+
+      return foundGenre?.title || genre
     },
     searchGroups() {
       axios

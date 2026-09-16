@@ -17,7 +17,12 @@ class ProfileController extends Controller
             return response()->json(['message' => 'Not authenticated'], 401);
         }
 
-        $members = $user->danceGroupMembers()->with(['danceGroup', 'ageGroup'])->get();
+        $members = $user
+            ->danceGroupMembers()
+            ->with(['danceGroup', 'ageGroup'])
+            ->get()
+            ->unique('dance_group_id')
+            ->values();
 
         return response()->json([
             'user' => $user,
