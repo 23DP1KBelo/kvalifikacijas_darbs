@@ -92,5 +92,35 @@ export const useAuthStore = defineStore('auth', {
                 this.danceGroupMembers = []
             }
         },
+
+        async fetchProfile() {
+            this.loading = true
+
+            try {
+                const res = await axios.get('/api/profile', {
+                    withCredentials: true,
+                })
+
+                const user = res.data.user
+
+                user.dance_groups = res.data.dance_group_members.map(member => ({
+                    id: member.dance_group.id,
+                    name: member.dance_group.name,
+                    role: member.role,
+                    age_group: member.age_group?.age_group || null,
+                    status: member.status,
+                }))
+
+                this.user = user
+
+                return user
+            } catch (error) {
+                console.error(error)
+                this.user = null
+                throw error
+            } finally {
+                this.loading = false
+            }
+        },
     },
 })

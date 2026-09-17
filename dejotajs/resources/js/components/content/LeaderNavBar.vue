@@ -117,9 +117,9 @@ export default {
             linkRoutes: ['/posts', '/dance-groups', '/calender', '/admisson'],
             links: ['Raksti','Kolektīvi', 'Pasākumi', 'Uzņemšana'],
             icons:[ 'mdi-view-grid', 'mdi-account-group', 'mdi-calendar-month','mdi-hand-wave-outline'],
-            leaderRoutes: ['/danceGroup/controls'],
-            leaderIcons: ['mdi-account-group'],
-            leaderLinks: ['Kolektīvu pārvaldība'],
+            leaderRoutes: ['/chat'],
+            leaderIcons: ['mdi-message-text-outline'],
+            leaderLinks: ['Saziņa'],
         }
     },
 

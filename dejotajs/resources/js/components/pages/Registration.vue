@@ -129,11 +129,11 @@ export default {
             password_confirmation: '',
             phone_number: '',
             error: '',
-                  emailRules: [
+        emailRules: [
         v => !!v || 'E-pasts ir obligāts',
         v => /.+@.+\..+/.test(v) || 'Lūdzu, ievadiet derīgu e-pasta adresi'
       ],
-      surnameRules: [
+        surnameRules: [
         v => !!v || 'Uzvārds ir obligāts'
       ],
       nameRules: [

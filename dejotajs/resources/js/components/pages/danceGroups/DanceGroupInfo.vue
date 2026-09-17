@@ -23,9 +23,9 @@
               <div class="d-flex justify-start">
                 <v-btn
                   variant="text"
-                  prepend-icon="mdi-arrow-left"
                   @click="$router.back()"
                 >
+                  <v-icon>mdi-arrow-left</v-icon>
                 </v-btn>
               </div>
               <!-- Par kolektīvu -->
@@ -134,14 +134,10 @@
               <!-- Bilde -->
               <div class="flex-grow-1 d-flex align-center justify-center py-6">
                 <v-img
-                  :src="
-                    group?.picture_url ||
-                    `../../../assets/img/hero.png`
-                  "
+                  :src="group.picture_url"
                   width="100%"
-                  max-width="600"
                   height="350"
-                  contain
+                  cover
                   alt="Kolektīva attēls"
                 />
               </div>

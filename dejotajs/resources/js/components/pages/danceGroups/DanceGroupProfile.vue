@@ -1,4 +1,19 @@
 <template>
+  <v-main>
+    <v-row class="ma-0" style="height: 100vh;">
+        <!-- Kolektīva informācija -->
+        <v-col
+          cols="12"
+          md="9"
+          class="pa-4 d-flex flex-column"
+          style="height: 100%;"
+        >
+        </v-col>
+      </v-row>
+      <!-- Saziņas informācija -->
+  </v-main>
+</template>
+<!-- <template>
   <v-container class="py-8" fluid>
 
     <v-row justify="center" class="mb-6">
@@ -229,7 +244,7 @@
       </v-card>
     </v-dialog>
   </v-container>
-</template>
+</template> -->
 
 <script>
 import axios from 'axios'
@@ -245,6 +260,17 @@ export default{
       city: '',
       address: '',
     }
+  }
+},
+computed: {
+  isLeader() {
+    if (!this.authStore.user || !this.group?.leaders) {
+      return false
+    }
+
+    return this.group.leaders.some(
+      leader => leader.user.id === this.authStore.user.id
+    )
   }
 },
 methods: {
