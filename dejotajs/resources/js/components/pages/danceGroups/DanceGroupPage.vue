@@ -1,4 +1,397 @@
 <template>
+  <v-row class="ma-0">
+      <!-- Kolektīva informācija -->
+      <v-col
+        cols="12"
+        md="9"
+        class="pa-4 d-flex flex-column"
+        style="height: 100%;"
+      >
+      <v-container>
+        <div class="d-flex flex-row justify-center">
+        <h2 class="text-center text-accents mb-7">
+          {{ group.name }}
+        </h2>
+        <v-btn
+          variant="text"
+          class="mt-5 ml-2"
+          @click="openEditDialog()"
+        >
+          <v-icon>mdi-pencil-outline</v-icon>
+        </v-btn>
+      </div>
+      <v-img
+        :src="group.picture_url"
+        width="100%"
+        height="230"
+        cover
+        alt="Kolektīva attēls"
+      />
+      <!-- Vieta, dalībnieki, žanrs -->
+      <div class="d-flex flex-row justify-space-between mt-7">
+        <div class="mb-3 d-flex flex-row">
+          <v-icon>
+            mdi-map-marker-outline
+          </v-icon>
+          <p class="text-small ml-3 ">
+            {{ group?.city }}, {{ group?.address }}
+          </p>
+        </div>
+        <!-- Dalībnieki -->
+        <div class="d-flex flex-row">
+          <v-icon>
+            mdi-account-group-outline
+          </v-icon>
+          <p class="text-small ml-3">
+            Dalībnieki: {{ group?.dancers?.length || 0 }}
+          </p>
+        </div>
+        <div class="d-flex flex-row">
+          <v-icon>
+            mdi-star-outline
+          </v-icon>
+          <p class="text-small ml-3">
+             {{ translatedGenre || 'Nav norādīts' }}
+          </p>
+        </div>
+      </div>
+  
+      <div class=" mt-5">
+        <div>
+          <v-btn
+            variant="text"
+            class="text-small text-none"
+            @click="showMore = !showMore"
+          >
+            <v-icon>
+              {{ showMore ? 'mdi-chevron-down' : 'mdi-chevron-right' }}
+            </v-icon>
+              <h3 class="text-small text-none">
+                Par kolektīvu
+              </h3>
+          </v-btn>
+          <v-divider class="mb-7"/>
+          <!--  Informācija par kolektīvu -->
+          <v-expand-transition>
+            <!-- Izbīdāmā iznformācija -->
+            <div v-if="showMore" class="pa-4">
+              <!-- Apraksts -->
+              <div>
+                <p class="text-para text-center">
+                  {{ group.description}}
+                </p>
+              </div>
+              <v-divider class="mt-7 mb-7"/>
+              <!-- Vadītāji -->
+              <div>
+                <h3 class="text-small">
+                  Vadītāji:
+                </h3>
+                <div class="d-flex flex-wrap ga-2 mt-7 text-small">
+                  <v-chip
+                    v-for="leader in group?.leaders"
+                    :key="leader.user.id"
+                    variant="outlined"
+                    style="border-color: #02317A;"
+                    class="bg-white pa-7"
+                  >
+                    {{ leader.user.name }} {{ leader.user.surname }}
+                  </v-chip>
+
+                  <v-chip
+                    v-if="!group?.leaders?.length"
+                    variant="tonal"
+                    class="mt-7"
+                  >
+                    Nav vadītāju
+                  </v-chip>
+                </div>
+              </div>
+              <v-divider class="mt-7 mb-7"/>
+              <!-- Vecuma grupas -->
+              <div>
+                <h3 class="text-small">
+                  Vecuma grupas
+                </h3>
+                <div class="d-flex justify-end">
+                  <v-btn
+                    v-if="isLeader"
+                    rounded="lg"
+                    class="bg-accent mt-6 text-none text-small letter-spacing-0"
+                    @click="addAgeGroup = true"
+                  >
+                    Pievienot grupu
+                  </v-btn>
+                </div>
+                <div class="d-flex flex-wrap ga-2">
+                  <v-chip 
+                    v-for="ageGroup in group?.age_groups || []"
+                    :key="ageGroup.id"
+                    variant="outlined"
+                    style="border-color: #02317A;"
+                    class="bg-white text-small mt-7 pa-4"
+                  >
+                    {{ ageGroup.name }}: {{ ageGroup.age_group }}
+                  </v-chip>
+
+                  <v-chip
+                    class="mt-7 text-small pa-4"
+                    v-if="!(group?.age_groups?.length)"
+                  >
+                    Nav vecuma grupu
+                  </v-chip>
+                </div>
+              </div>
+              <v-divider class="mt-7 mb-7"/>
+              <!-- Uzņemšanu apraksti -->
+             <!-- Uzņemšanas -->
+<div>
+  <h3 class="text-small">
+    Kolektīva uzņemšanas
+  </h3>
+
+  <!-- Pievienot uzņemšanu -->
+  <div class="d-flex justify-end">
+    <v-btn
+      v-if="isLeader"
+      rounded="lg"
+      class="bg-accent mt-6 text-none text-small letter-spacing-0"
+      @click="$router.push('/calender')"
+    >
+      Pievienot uzņemšanu
+    </v-btn>
+  </div>
+
+  <!-- Uzņemšanas -->
+    <div
+      v-if="group?.age_groups?.some(
+        ageGroup => ageGroup.admissions?.length
+      )"
+      class="d-flex flex-wrap ga-3"
+    >
+      <template
+        v-for="ageGroup in group.age_groups"
+        :key="ageGroup.id"
+      >
+        <v-card
+          v-for="admission in ageGroup.admissions"
+          :key="admission.id"
+          variant="outlined"
+          rounded="lg"
+          class="bg-primary elevation-3 mb-8 pa-6 pa-md-8 mx-auto d-flex flex-column justify-center mt-7"
+          width="700"
+        >
+
+          <!-- Uzņemšanas nosaukums -->
+          <h3 class="text-small text-center">
+            {{ admission.name }} ( {{ ageGroup.name }} {{ ageGroup.age_group }})
+          </h3>
+          <!-- Datumi -->
+          <div class="text-para text-center mt-3">
+            <h4>
+              {{ admission.start_date }} -
+              {{ admission.end_date }}
+            </h4>
+          </div>
+          <!-- Pievienoties -->
+          <div class="d-flex justify-end">
+            <v-btn
+              rounded="lg"
+              class="bg-accent mt-6 text-none text-small letter-spacing-0"
+            >
+              Pievienoties
+            </v-btn>
+          </div>
+        </v-card>
+            </template>
+          </div>
+
+              <!-- Nav uzņemšanu -->
+              <v-chip
+                v-else
+                class="mt-7 text-small pa-4"
+              >
+                Nav pieejamu uzņemšanu
+              </v-chip>
+            </div>
+
+              <v-divider class="mt-7 mb-7"/>
+            </div>
+          </v-expand-transition>
+          <!-- Kolektīva raksti -->
+          <div class="d-flex flex-row justify-center align-center">
+            <h2 class="text-center text-accents mb-7 mr-7">
+              KOLEKTĪVA RAKSTI
+            </h2>
+            <v-menu>
+              <template #activator="{ props }">
+                <v-btn
+                  v-bind="props"
+                  icon
+                  variant="text"
+                >
+                  <v-icon>mdi-filter-variant</v-icon>
+                </v-btn>
+              </template>
+
+              <v-list>
+                <v-list-item @click="postFilter = 'all'; currentPage = 1">
+                  <v-list-item-title>Visi raksti</v-list-item-title>
+                </v-list-item>
+
+                <v-list-item @click="postFilter = 'public'; currentPage = 1">
+                  <v-list-item-title>Publiskie</v-list-item-title>
+                </v-list-item>
+
+                <v-list-item @click="postFilter = 'private'; currentPage = 1">
+                  <v-list-item-title>Privātie</v-list-item-title>
+                </v-list-item>
+              </v-list>
+            </v-menu>
+          </div>
+          <v-row class="mt-4">
+            <v-col
+              v-for="post in paginatedPosts"
+              :key="post.id"
+              cols="12"
+              sm="6"
+              md="4"
+            >
+              <v-card
+                variant="outlined"
+                rounded="lg"
+                height="220"
+                class="overflow-hidden"
+                @click="openArticle(post)"
+              >
+                <!-- Ja ir bilde -->
+                <v-img
+                  v-if="post.picture"
+                  :src="post.picture"
+                  height="100%"
+                  cover
+                  alt="Posta attēls"
+                />
+
+                <!-- Ja nav bildes -->
+                <div
+                  v-else
+                  class="h-100 d-flex align-center justify-center pa-4"
+                >
+                  <h3 class="text-center text-small">
+                    {{ post.title }}
+                  </h3>
+                </div>
+              </v-card>
+              <v-dialog
+                v-model="dialog"
+                max-width="1100"
+              >
+                <v-card
+                  class="rounded-0 order-last order-md-first"
+                  min-height="600"
+                >
+                  <v-row no-gutters class="h-100">
+                    <v-col
+                      cols="12"
+                      md="6"
+                      class="d-flex flex-column pa-8"
+                    >
+                      <!-- Atpakaļ poga -->
+                      <div class="d-flex justify-start">
+                        <v-btn
+                          variant="text"
+                          prepend-icon="mdi-arrow-left"
+                          @click="dialog = false"
+                        >
+                        </v-btn>
+                      </div>
+                      <!-- Kolektīva nosaukums -->
+                      <h4 class="mt-4">
+                        <div 
+                          class="text-subtitle-1 text-medium-emphasis text-right"
+                        >
+                          {{
+                            selectedPost?.dance_group_member?.dance_group?.name ||
+                            'Nezināms kolektīvs'
+                          }}
+                        </div>
+                      </h4>
+                      <!-- Pilnais teksts -->
+                      <div class="flex-grow-1 d-flex align-center py-8">
+                        <div class=" text-para text-black">
+                          {{ selectedPost?.description || '' }}
+                        </div>
+                      </div>
+                      <!-- Datums -->
+                      <div class="text-caption text-medium-emphasis">
+                        {{ formatDate(selectedPost?.created_at) }}
+                      </div>
+                    </v-col>
+                    <!-- Labā puse -->
+                    <v-col
+                      cols="12"
+                      md="6"
+                      class="d-flex flex-column pa-8 order-first order-md-last"
+                    >
+                      <!-- Raksta nosaukums -->
+                      <h2 class="text-accent text-accents mt-6 text-uppercase text-center">
+                        {{ selectedPost?.title }}
+                      </h2>
+                      <!-- Bilde -->
+                      <v-img
+                        :src="
+                          selectedPost?.picture ||
+                          `https://picsum.photos/id/${selectedPost?.id}/600/350`
+                        "
+                        width="100%"
+                        height="350"
+                        contain
+                        alt="Raksta_attels"
+                      />
+                    </v-col>
+                  </v-row>
+                </v-card>
+              </v-dialog>
+            </v-col>
+          </v-row>
+          <v-pagination
+            v-if="pageCount > 1"
+            v-model="currentPage"
+            :length="pageCount"
+            :total-visible="5"
+            rounded="circle"
+            class="mt-6"
+          />
+        </div>
+      </div>
+      </v-container>
+      </v-col>  
+      <!-- Saziņas informācija -->
+      <v-col
+        cols="3"
+        class="d-none d-md-block pa-4"
+        style="height: 100%;"
+      >
+        <div class="h-100">
+          <h2 class="text-accent text-center text-accents">
+            SAZINIES!
+          </h2>
+        </div> 
+      </v-col>
+    </v-row>
+    <EditDanceGroupDialog
+      v-model="editDialog"
+      :group="group"
+      @updated="fetchGroup"
+    />
+    <AddAgeGroup
+      v-model="addAgeGroup"
+      :group="group"
+      @updated="fetchGroup"
+    />
+</template>
+<!-- <template>
   <v-container fluid class="group-page pa-0">
     <section class="hero-section">
       <v-container>
@@ -155,45 +548,119 @@
       </v-card>
     </v-dialog>
   </v-container>
-</template>
+</template> -->
 
 <script>
 import axios from 'axios'
-import { useRoute } from 'vue-router'
+import { useAuthStore } from '@/stores/auth'
+import EditDanceGroupDialog from './EditDanceGroupDialog.vue'
+import AddAgeGroup from './AddAgeGroup.vue'
+
+const genreMap = {
+  'lyrical dance': 'Liriskā deja',
+  'contemporary dance': 'Mūsdienīgās dejas',
+  'ballet': 'Balets',
+  'hip hop': 'Hip-hops',
+  'folk dance': 'Tautas dejas',
+  'other': 'Cits'
+};
 
 export default {
+  components: {
+    EditDanceGroupDialog,
+    AddAgeGroup
+  },
   name: 'GroupPosts',
   data() {
     return {
+      showMore: false,
+      postFilter: 'all',
+      currentPage: 1,
+      postsPerPage: 9,
+      authStore: useAuthStore(),
       group: {},
-      posts: [],
+      postFilter: 'all',
       editDialog: false,
-      user: null,
+      addAgeGroup: false,
+      dialog: false,
+      selectedPost: null,
+      posts: [],
       editPostData: {
         id: null,
         title: '',
         description: ''
-      }
+      },
     }
-  },
-  setup() {
-    const route = useRoute()
-    return { route }
   },
   computed: {
+    translatedGenre() {
+      return this.group?.genre ? (genreMap[this.group.genre] || this.group.genre) : 'Nav norādīts';
+    },
+    user() {
+      return this.authStore.user
+    },
     isLeader() {
-      return this.group?.leaders?.some(
-        leader => Number(leader.user?.id) === Number(this.user?.id)
-      ) ?? false
-    }
+      if (!this.authStore.user || !this.group?.leaders) {
+        return false
+      }
+
+      return this.group.leaders.some(
+        leader => leader.user.id === this.authStore.user.id
+      )
+    },
+    paginatedPosts() {
+      const start = (this.currentPage - 1) * this.postsPerPage
+      const end = start + this.postsPerPage
+
+      return this.filteredPosts.slice(start, end)
+    },
+
+    pageCount() {
+      return Math.ceil(this.filteredPosts.length / this.postsPerPage)
+    },
+    filteredPosts() {
+      if (this.postFilter === 'public') {
+        return this.posts.filter(post => post.private === 'publisks')
+      }
+
+      if (this.postFilter === 'private') {
+        return this.posts.filter(post => post.private === 'Privāts')
+      } 
+      console.log(this.posts.map(post => post.private))
+      return this.posts
+    },
   },
   methods: {
+    openEditDialog() {
+      this.editGroupData = {
+        name: this.group.name,
+        description: this.group.description,
+        city: this.group.city,
+        address: this.group.address,
+      }
+      this.editDialog = true
+    },
+
+    openArticle(post) {
+      this.selectedPost = post
+      this.dialog = true
+    },
+    async fetchGroup() {
+        try {
+          const res = await axios.get(`/api/dance-group-info/${this.$route.params.id}`, { withCredentials: true })
+          this.group = res.data.data
+          this.leaders = this.group.leaders
+        } catch (err) {
+          this.group = null
+        }
+    },
     async fetchPosts() {
       try {
         const groupId = this.$route.params.id
         const res = await axios.get(`/api/my-posts/${groupId}`, { withCredentials: true })
         this.group = res.data.dance_group
         this.posts = res.data.posts
+        console.log(this.posts)
       } catch (err) {
         if (err.response && err.response.status === 403) {
           this.$router.push('/no-access')
@@ -204,63 +671,52 @@ export default {
         }
       }
     },
-    async deletePost(postId) {
-      try {
-        await axios.delete(`/api/posts/${postId}`, { withCredentials: true })
-        this.posts = this.posts.filter(post => post.id !== postId)
-        alert('Ieraksts veiksmīgi dzēsts')
-      } catch (err) {
-        console.error('Kļūda dzēšot ierakstu:', err)
-        alert('Neizdevās dzēst ierakstu')
-      }
-    },
-    async fetchUser() {
-      try {
-        const res = await axios.get('/api/profile', {
-          withCredentials: true
-        })
+    // async deletePost(postId) {
+    //   try {
+    //     await axios.delete(`/api/posts/${postId}`, { withCredentials: true })
+    //     this.posts = this.posts.filter(post => post.id !== postId)
+    //     alert('Ieraksts veiksmīgi dzēsts')
+    //   } catch (err) {
+    //     console.error('Kļūda dzēšot ierakstu:', err)
+    //     alert('Neizdevās dzēst ierakstu')
+    //   }
+    // },
+    // openEditDialog(post) {
+    //   this.editPostData = {
+    //     id: post.id,
+    //     title: post.title,
+    //     description: post.description,
+    //     private: post.private,                  
+    //     dance_group_member_id: post.dance_group_member_id,
+    //     picture: post.picture
+    //   }
+    //   this.editDialog = true
+    // },
+    //   async submitEdit() {
+    //     try {
+    //       const payload = {
+    //         title: this.editPostData.title,
+    //         description: this.editPostData.description,
+    //         private: this.editPostData.private === 'Privāts',
+    //       }
 
-        this.user = res.data.user
-      } catch (err) {
-        this.user = null
-      }
-    },
-    openEditDialog(post) {
-      this.editPostData = {
-        id: post.id,
-        title: post.title,
-        description: post.description,
-        private: post.private,                  
-        dance_group_member_id: post.dance_group_member_id,
-        picture: post.picture
-      }
-      this.editDialog = true
-    },
-      async submitEdit() {
-        try {
-          const payload = {
-            title: this.editPostData.title,
-            description: this.editPostData.description,
-            private: this.editPostData.private === 'Privāts',
-          }
+    //       if (this.editPostData.picture instanceof File) {
+    //         payload.picture = this.editPostData.picture
+    //       }
 
-          if (this.editPostData.picture instanceof File) {
-            payload.picture = this.editPostData.picture
-          }
+    //       const res = await axios.put(`/api/posts/${this.editPostData.id}`, payload, { withCredentials: true })
 
-          const res = await axios.put(`/api/posts/${this.editPostData.id}`, payload, { withCredentials: true })
+    //       const index = this.posts.findIndex(p => p.id === this.editPostData.id)
+    //       if (index !== -1) this.posts[index] = res.data
 
-          const index = this.posts.findIndex(p => p.id === this.editPostData.id)
-          if (index !== -1) this.posts[index] = res.data
-
-          this.editDialog = false
-          alert('Ieraksts veiksmīgi atjaunināts')
-          this.fetchPosts() 
-        } catch (err) {
-          console.error('Kļūda atjauninot ierakstu:', err.response?.data || err)
-          alert('Neizdevās atjaunināt ierakstu')
-        }
-      },
+    //       this.editDialog = false
+    //       alert('Ieraksts veiksmīgi atjaunināts')
+    //       this.fetchPosts() 
+    //     } catch (err) {
+    //       console.error('Kļūda atjauninot ierakstu:', err.response?.data || err)
+    //       alert('Neizdevās atjaunināt ierakstu')
+    //     }
+    //   },
       async deleteDanceGroup() {
       if (!confirm('Vai tiešām vēlaties dzēst šo kolektīvu? Šī darbība ir neatgriezeniska.')) {
         return
@@ -280,8 +736,9 @@ export default {
     }
   },
   async mounted() {
-    await this.fetchUser()
+    await this.authStore.fetchProfile()
     await this.fetchPosts()
+    await this.fetchGroup()
   },
   watch: {
     'route.params.id': function () {
@@ -290,113 +747,3 @@ export default {
   }
 }
 </script>
-
-<style scoped>
-.group-page {
-  min-height: 100vh;
-  background:
-    radial-gradient(circle at top left, rgba(74, 144, 226, 0.12), transparent 32%),
-    linear-gradient(180deg, #f7f9fc 0%, #ffffff 45%);
-}
-
-.hero-section {
-  padding: 48px 0 24px;
-}
-
-.hero-card {
-  background: rgba(255, 255, 255, 0.86);
-  backdrop-filter: blur(14px);
-  border: 1px solid rgba(120, 144, 156, 0.18);
-  border-radius: 28px;
-  padding: 32px;
-  box-shadow: 0 20px 60px rgba(31, 41, 55, 0.08);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 24px;
-}
-
-.hero-actions {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  flex-shrink: 0;
-}
-
-.posts-container {
-  padding-bottom: 64px;
-}
-
-.post-card {
-  border-radius: 28px;
-  overflow: hidden;
-  background: #ffffff;
-  border: 1px solid rgba(120, 144, 156, 0.16);
-  box-shadow: 0 18px 45px rgba(31, 41, 55, 0.08);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.post-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 26px 70px rgba(31, 41, 55, 0.12);
-}
-
-.post-image-wrapper {
-  position: relative;
-}
-
-.post-image {
-  border-bottom: 1px solid rgba(120, 144, 156, 0.16);
-}
-
-.post-actions {
-  position: absolute;
-  top: 16px;
-  right: 16px;
-  display: flex;
-  gap: 10px;
-}
-
-.action-btn {
-  background: rgba(255, 255, 255, 0.92) !important;
-  backdrop-filter: blur(8px);
-}
-
-.post-description {
-  line-height: 1.75;
-  white-space: pre-line;
-}
-
-.empty-card {
-  border-radius: 28px;
-  background: #ffffff;
-  border: 1px dashed rgba(120, 144, 156, 0.35);
-  box-shadow: 0 18px 45px rgba(31, 41, 55, 0.06);
-}
-
-.dialog-card {
-  border-radius: 24px !important;
-}
-
-.cursor-pointer {
-  cursor: pointer;
-}
-
-@media (max-width: 700px) {
-  .hero-card {
-    flex-direction: column;
-    align-items: flex-start;
-    padding: 24px;
-  }
-
-  .hero-actions {
-    width: 100%;
-    justify-content: space-between;
-  }
-
-  .post-image {
-    height: 260px !important;
-  }
-}
-</style>
-

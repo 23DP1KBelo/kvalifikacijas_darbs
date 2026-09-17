@@ -1,18 +1,3 @@
-<template>
-  <v-main>
-    <v-row class="ma-0" style="height: 100vh;">
-        <!-- Kolektīva informācija -->
-        <v-col
-          cols="12"
-          md="9"
-          class="pa-4 d-flex flex-column"
-          style="height: 100%;"
-        >
-        </v-col>
-      </v-row>
-      <!-- Saziņas informācija -->
-  </v-main>
-</template>
 <!-- <template>
   <v-container class="py-8" fluid>
 

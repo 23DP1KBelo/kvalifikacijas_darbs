@@ -32,7 +32,7 @@ const routes = [
     { path: '/profile', component: Profile, meta: { requiresAuth: true } },
     { path: '/dashboard', component: AdminDashboard, meta: { requiresAuth: true, requiresAdmin: true } },
     { path: '/create-dance-group', component: DanceGroupForm},
-    { path: '/group/:id', component: DanceGroupPage, meta: { requiresAuth: true }},
+    { path: '/group/:id', component: DanceGroupPage},
     { path: '/no-access', component: NoAccess },
     { path: '/dancerApproval/:id', component: DancerApproval, meta: { requiresAuth: true, requiresLeader: true } },
     { path: '/dance-leader', component: LeaderForm, meta: { requiresAuth: true } },
@@ -61,35 +61,50 @@ const router = createRouter({
 router.beforeEach(async (to, from, next) => {
   if (!to.meta.requiresAuth) return next();
 
-  try {
-    const res = await axios.get('/api/profile', {
-      withCredentials: true
-    });
+try {
+  const res = await axios.get('/api/profile', {
+    withCredentials: true
+  })
 
-    const user = res.data.user || res.data;
-    const members = res.data.dance_group_members || [];
+  const user = res.data.user || res.data
+  const members = res.data.dance_group_members || []
 
-    if (!user) return next('/login');
+  // Lietotājs nav nepieciešams publiskām lapām
+  if (to.meta.requiresAuth && !user) {
+    return next('/login')
+  }
 
-    if (to.meta.requiresAdmin && user.role !== 'admin') {
-      return next('/no-access');
+  // Admin pārbaude
+  if (to.meta.requiresAdmin) {
+    if (!user || user.role !== 'admin') {
+      return next('/no-access')
     }
+  }
 
-    if (to.meta.requiresLeader) {
+  // Vadītāja pārbaude
+  if (to.meta.requiresLeader) {
+      if (!user) {
+        return next('/login')
+      }
+
       const isLeader = members.some(member =>
         member.role === 'leader' &&
         member.status === 'approved'
-      );
+      )
 
       if (!isLeader) {
-        return next('/no-access');
+        return next('/no-access')
       }
     }
 
-    return next();
+    next()
 
-  } catch (e) {
-    return next('/login');
+  } catch (error) {
+    if (to.meta.requiresAuth || to.meta.requiresLeader || to.meta.requiresAdmin) {
+      return next('/login')
+    }
+
+    next()
   }
 });
 

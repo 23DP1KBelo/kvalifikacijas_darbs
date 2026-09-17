@@ -27,6 +27,7 @@ class PostResource extends JsonResource
                     'name' => $this->danceGroupMember->appUser?->name,
                 ],
                 'dance_group' => [
+                    'id' => $this->danceGroupMember->danceGroup?->id,
                     'name' => $this->danceGroupMember->danceGroup?->name,
                 ],
             ]

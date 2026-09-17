@@ -92,11 +92,12 @@
                     Vecuma grupas:
                   </h3>
                 <div class="d-flex flex-wrap ga-2">
-                  <v-chip class="bg-white"
+                  <v-chip 
                     v-for="ageGroup in group?.age_groups || []"
                     :key="ageGroup.id"
                     variant="outlined"
                     style="border-color: #02317A;"
+                    class="bg-white"
                   >
                     {{ ageGroup.name }}: {{ ageGroup.age_group }}
                   </v-chip>
@@ -129,7 +130,7 @@
               <h2
                 class="text-accent text-accents mt-6 text-uppercase text-center"
               >
-                {{ group?.name || 'KOLEKTĪVS' }}
+                {{ group?.name || 'NAV ZINĀMS KOLEKTĪVS' }}
               </h2>
               <!-- Bilde -->
               <div class="flex-grow-1 d-flex align-center justify-center py-6">
@@ -243,6 +244,11 @@ export default {
       if (this.group.age_groups) {
         this.ageGroups = this.group.age_groups;
       }
+    },
+
+    goTo(route) {
+      this.$router.push(route)
+      this.drawer = false
     },
 
     joinGroup() {

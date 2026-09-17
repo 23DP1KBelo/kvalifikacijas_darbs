@@ -33,8 +33,7 @@
               class="text-right pt-4 px-4"
             >
               {{
-                post.dance_group_member?.dance_group?.name ||
-                'Nezināms kolektīvs'
+                post.dance_group_member?.dance_group?.name || 'Nezināms kolektīvs'
               }}
             </h4>
             <!-- Raksta nosaukums -->
@@ -102,7 +101,9 @@
             </div>
             <!-- Kolektīva nosaukums -->
             <h4 class="mt-4">
-              <div class="text-subtitle-1 text-medium-emphasis text-right">
+              <div 
+                class="text-subtitle-1 text-medium-emphasis text-right"
+              >
                 {{
                   selectedPost?.dance_group_member?.dance_group?.name ||
                   'Nezināms kolektīvs'
