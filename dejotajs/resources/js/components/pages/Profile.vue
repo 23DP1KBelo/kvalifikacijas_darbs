@@ -92,8 +92,9 @@
                 </h2>
                 <v-btn
                   variant="text"
+                  @click="editProfileDialog = true"
                 >
-                  <v-icon>mdi-pencil-outline</v-icon>
+                  <v-icon>mdi-cog</v-icon>
                 </v-btn>
               </div>
 
@@ -155,14 +156,22 @@
       </v-col>
     </v-row>
   </v-container>
+  <update-profile
+    v-model="editProfileDialog"
+  />
+
 </template>
 
 <script>
 import { useAuthStore } from '@/stores/auth'
+import UpdateProfile from './UpdateProfile.vue'
 
 export default {
   name: 'Profile',
 
+  components: {
+    UpdateProfile
+  },
   data() {
     return {
       authStore: useAuthStore(),
@@ -175,6 +184,7 @@ export default {
       error: '',
       showError: false,
       showLeaderDialog: false,
+      editProfileDialog: false,
     }
   },
 

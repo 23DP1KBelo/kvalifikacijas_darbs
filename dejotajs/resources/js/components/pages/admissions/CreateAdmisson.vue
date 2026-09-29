@@ -1,11 +1,18 @@
 <template>
-     <v-container class="d-flex justify-center align-center mt-8">
-        <v-card class=" bg-softblue" elevation="16" width="500px">
-            <v-card-title class="text-center mb-4 mt-4">Uzņemšana</v-card-title>
+    <v-dialog
+        max-width="520"
+        :model-value="modelValue"
+        @update:model-value="$emit('update:modelValue', $event)"
+    >
+        <v-card elevation="16" >
+            <v-card-title class="text-small text-accent text-center">Jauna uzņemšana</v-card-title>
             <v-card-text>
-                <v-form ref="form" v-model="valid">
+                <v-form 
+                    ref="form" 
+                    v-model="valid"
+                    fall-first
+                >
                 <v-row class="mb-4" dense>
-
                     <!-- Nosaukums -->
                     <v-col cols="12" md="12">
                     <v-text-field
@@ -13,6 +20,7 @@
                         label="Nosaukums"
                         variant="outlined"
                         density="comfortable"
+                        :rules="nameRules"
                     ></v-text-field>
                     </v-col>
 
@@ -31,6 +39,7 @@
                             label="Sākuma datums"
                             prepend-icon="mdi-calendar"
                             readonly
+                            :rules="dateRules"
                             v-bind="props"
                         ></v-text-field>
                         </template>
@@ -40,7 +49,6 @@
                         ></v-date-picker>
                     </v-menu>
                     </v-col>
-
                     <!-- Beigu datums -->
                     <v-col cols="12" md="6">
                     <v-menu
@@ -56,6 +64,7 @@
                             label="Beigu datums"
                             prepend-icon="mdi-calendar"
                             readonly
+                            :rules="dateRules"
                             v-bind="props"
                         ></v-text-field>
                         </template>
@@ -66,7 +75,7 @@
                     </v-menu>
                     </v-col>
 
-                    <!-- Vecuma grupas  select -->
+                    <!-- Vecuma grupas -->
                     <v-col cols="12" md="12">
                     <v-select
                         v-model="selectedAgeGroup"
@@ -77,6 +86,7 @@
                         variant="outlined"
                         density="comfortable"
                         clearable
+                        :rules="ageGroupRules"
                         prepend-icon="mdi-dance-ballroom"
                     ></v-select>
                     </v-col>
@@ -90,13 +100,30 @@
                 </v-form>
             </v-card-text>
         </v-card>
-    </v-container>
+    </v-dialog>
 </template>
 
 <script>
 import axios from 'axios'
 
 export default {
+    props: {
+        modelValue: {
+            type: Boolean,
+            default: false
+        },
+
+        group: {
+            type: Object,
+            required: true
+        }
+    },
+
+    emits: [
+        'update:modelValue',
+        'updated'
+    ],
+
     data() {
         return {
             valid: false,
@@ -107,70 +134,96 @@ export default {
             menuStart: false,
             menuEnd: false,
             selectedAgeGroup: null,
-            ageGroups: []
+            ageGroups: [],
+            nameRules: [
+                v => !!v || 'Kolektīva nosaukums ir obligāts lauks'
+            ],
+            dateRules: [
+                v => !!v || 'Datums ir obligāts lauks'
+            ],
+            ageGroupRules: [
+                v => !!v || 'Izvēlieties vecuma grupu'
+            ],
         }
     },
+
+    watch: {
+        group: {
+            immediate: true,
+            handler(newGroup) {
+                this.ageGroups = newGroup?.age_groups || []
+            }
+        }
+    },
+
     methods: {
         formatDate(date) {
-            if (!date) return null;
-            const d = new Date(date);
-            const month = (d.getMonth() + 1).toString().padStart(2, '0');
-            const day = d.getDate().toString().padStart(2, '0');
-            const year = d.getFullYear();
-            return `${year}-${month}-${day}`; // "YYYY-MM-DD"
+            if (!date) return null
+
+            const d = new Date(date)
+            const month = (d.getMonth() + 1)
+                .toString()
+                .padStart(2, '0')
+
+            const day = d.getDate()
+                .toString()
+                .padStart(2, '0')
+
+            const year = d.getFullYear()
+
+            return `${year}-${month}-${day}`
         },
 
         async submitForm() {
-            this.error = '';
-            if (!this.name || !this.startDate || !this.endDate || !this.selectedAgeGroup) {
-                this.error = 'Lūdzu aizpildiet visus laukus un izvēlieties vecuma grupu.';
-                return;
+            this.error = ''
+
+            if (
+                !this.name ||
+                !this.startDate ||
+                !this.endDate ||
+                !this.selectedAgeGroup
+            ) {
+                this.error =
+                    'Lūdzu aizpildiet visus laukus un izvēlieties vecuma grupu.'
+
+                return
             }
+
             const payload = {
                 name: this.name,
                 start_date: this.formatDate(this.startDate),
                 end_date: this.formatDate(this.endDate),
                 age_group_id: Number(this.selectedAgeGroup),
                 dance_group_id: this.group.id
-            };
-
-            console.log('Submitting:', payload);
+            }
 
             try {
-                const response = await axios.post('/api/admission/create', payload, { withCredentials: true });
-                alert('Uzņemšana ir sākta!');
-                this.$router.push('/');
+                await axios.post( '/api/admission/create', payload,{withCredentials: true})
+
+                this.$emit('update:modelValue', false)
+                this.$emit('updated')
+
+                this.name = ''
+                this.startDate = null
+                this.endDate = null
+                this.selectedAgeGroup = null
+
             } catch (err) {
-                console.log(err.response?.data);
+                console.log(err.response?.data)
 
                 if (err.response?.data?.errors) {
-                    this.error = Object.values(err.response.data.errors).flat().join(' ');
+                    this.error = Object
+                        .values(err.response.data.errors)
+                        .flat()
+                        .join(' ')
                 } else if (err.response?.data?.message) {
-                    this.error = err.response.data.message;
+                    this.error = err.response.data.message
                 } else {
-                    this.error = 'Nezināma kļūda. Mēģiniet vēlreiz.';
+                    this.error =
+                        'Nezināma kļūda. Mēģiniet vēlreiz.'
                 }
             }
-        },
-        async fetchGroup() {
-            try {
-                const res = await axios.get(`/api/dance-group-info/${this.$route.params.id}`, { withCredentials: true })
-                this.group = res.data.data
-                this.leaders = this.group.leaders
-                this.ageGroups = this.group.age_groups
-
-                if (!this.ageGroups.length) {
-                    this.error = "Nav pieejamu vecuma grupu";
-                }
-                console.log(this.ageGroups)
-            } catch (err) {
-                console.error('Kļūda ielādējot deju grupu:', err)
-                this.group = null
-            }
-        },
-    },
-    mounted(){
-        this.fetchGroup()
+        }
     }
 }
 </script>

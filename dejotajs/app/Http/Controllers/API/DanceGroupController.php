@@ -40,6 +40,43 @@ class DanceGroupController extends Controller
             ->where('dance_groups.status', 'approved') 
             ->whereNull('dance_group_members.user_id')
             ->select('dance_groups.*')
+            ->with('members')
+            ->get();
+
+        return DanceGroupResource::collection($danceGroups);
+    }
+
+    public function searchAvailableGroups(Request $request)
+    {
+        $queryText = $request->input('q');
+        $userId = Auth::id();
+
+        $danceGroups = DanceGroup::where('dance_groups.status', 'approved')
+            ->whereDoesntHave('members', function ($query) use ($userId) {
+                $query->where('user_id', $userId);
+            })
+            ->when($queryText, function ($query) use ($queryText) {
+                $query->where(function ($q) use ($queryText) {
+                    $q->where('name', 'like', $queryText . '%')
+                        ->orWhereHas('members', function ($memberQuery) use ($queryText) {
+                            $memberQuery
+                                ->where('role', 'leader')
+                                ->where('status', 'approved')
+                                ->whereHas('appUser', function ($userQuery) use ($queryText) {
+                                    $userQuery
+                                        ->where('name', 'like', $queryText . '%')
+                                        ->orWhere('surname', 'like', $queryText . '%');
+                                });
+                        });
+                });
+            })
+            ->with([
+                'ageGroups',
+                'members' => fn ($q) => $q
+                    ->where('status', 'approved')
+                    ->where('role', 'leader')
+                    ->with('appUser')
+            ])
             ->get();
 
         return DanceGroupResource::collection($danceGroups);

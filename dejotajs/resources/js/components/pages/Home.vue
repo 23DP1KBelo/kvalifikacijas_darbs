@@ -10,7 +10,7 @@
           style="height: 100%;"
         >
           <h2 class="text-center text-accents mb-7">
-            JAUNĀKIE RAKSTI
+            AKTUALITĀTES
           </h2>
           <div class="overflow-y-auto flex-grow-1 mt-3">
             <v-card
@@ -57,7 +57,7 @@
                 :key="event.id"
                 class="border-b hover-effect"
               >
-                  <v-list-item-title class="text-h6 text-wrap">
+                  <v-list-item-title class="text-h6 text-wrap text-small">
                     {{ formatDate(event.date_start) }} -
                     {{ event.name || 'Nezināms pasākums' }}
                   </v-list-item-title>

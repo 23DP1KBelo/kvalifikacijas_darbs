@@ -144,79 +144,58 @@
               </div>
               <v-divider class="mt-7 mb-7"/>
               <!-- Uzņemšanu apraksti -->
-             <!-- Uzņemšanas -->
-<div>
-  <h3 class="text-small">
-    Kolektīva uzņemšanas
-  </h3>
-
-  <!-- Pievienot uzņemšanu -->
-  <div class="d-flex justify-end">
-    <v-btn
-      v-if="isLeader"
-      rounded="lg"
-      class="bg-accent mt-6 text-none text-small letter-spacing-0"
-      @click="$router.push('/calender')"
-    >
-      Pievienot uzņemšanu
-    </v-btn>
-  </div>
-
-  <!-- Uzņemšanas -->
-    <div
-      v-if="group?.age_groups?.some(
-        ageGroup => ageGroup.admissions?.length
-      )"
-      class="d-flex flex-wrap ga-3"
-    >
-      <template
-        v-for="ageGroup in group.age_groups"
-        :key="ageGroup.id"
-      >
-        <v-card
-          v-for="admission in ageGroup.admissions"
-          :key="admission.id"
-          variant="outlined"
-          rounded="lg"
-          class="bg-primary elevation-3 mb-8 pa-6 pa-md-8 mx-auto d-flex flex-column justify-center mt-7"
-          width="700"
-        >
-
-          <!-- Uzņemšanas nosaukums -->
-          <h3 class="text-small text-center">
-            {{ admission.name }} ( {{ ageGroup.name }} {{ ageGroup.age_group }})
-          </h3>
-          <!-- Datumi -->
-          <div class="text-para text-center mt-3">
-            <h4>
-              {{ admission.start_date }} -
-              {{ admission.end_date }}
-            </h4>
-          </div>
-          <!-- Pievienoties -->
-          <div class="d-flex justify-end">
-            <v-btn
-              rounded="lg"
-              class="bg-accent mt-6 text-none text-small letter-spacing-0"
-            >
-              Pievienoties
-            </v-btn>
-          </div>
-        </v-card>
-            </template>
-          </div>
-
-              <!-- Nav uzņemšanu -->
-              <v-chip
-                v-else
-                class="mt-7 text-small pa-4"
-              >
-                Nav pieejamu uzņemšanu
-              </v-chip>
-            </div>
-
+              <div>
+                <h3 class="text-small">
+                  Kolektīva uzņemšanas
+                </h3>
+                <!-- Pievienot uzņemšanu -->
+                <div class="d-flex justify-end">
+                  <v-btn
+                    v-if="isLeader"
+                    rounded="lg"
+                    class="bg-accent mt-6 text-none text-small letter-spacing-0"
+                    @click="admissonForm = true"
+                  >
+                    Pievienot uzņemšanu
+                  </v-btn>
+                </div>
+                <div
+                  v-if="group?.age_groups?.some( ageGroup => ageGroup.admissions?.length)"
+                  class="d-flex flex-wrap ga-3"
+                >
+                  <template
+                    v-for="ageGroup in group.age_groups"
+                    :key="ageGroup.id"
+                  >
+                    <v-card
+                      v-for="admission in ageGroup.admissions"
+                      :key="admission.id"
+                      variant="outlined"
+                      rounded="lg"
+                      class="bg-primary elevation-3 mb-8 pa-6 pa-md-8 mx-auto d-flex flex-column justify-center mt-7"
+                      width="700"
+                    >
+                      <h3 class="text-small text-center">
+                        {{ admission.name }} ( {{ ageGroup.name }} {{ ageGroup.age_group }})
+                      </h3>
+                      <div class="text-para text-center mt-3">
+                        <h4>
+                          {{ admission.start_date }} -
+                          {{ admission.end_date }}
+                        </h4>
+                      </div>
+                    </v-card>
+                  </template>
+                </div>
+                <v-chip
+                  v-else
+                  class="mt-7 text-small pa-4"
+                >
+                  Nav pieejamu uzņemšanu
+                </v-chip>
+              </div>
               <v-divider class="mt-7 mb-7"/>
-            </div>
+              </div>
           </v-expand-transition>
           <!-- Kolektīva raksti -->
           <div class="d-flex flex-row justify-center align-center">
@@ -248,6 +227,16 @@
                 </v-list-item>
               </v-list>
             </v-menu>
+          </div>
+          <div class="d-flex justify-end">
+            <v-btn
+              v-if="isLeader"
+              rounded="lg"
+              class="bg-accent mt-6 text-none text-small letter-spacing-0"
+              @click="addPost = true"
+            >
+              Pievienot ierakstu
+            </v-btn>
           </div>
           <v-row class="mt-4">
             <v-col
@@ -317,13 +306,11 @@
                           }}
                         </div>
                       </h4>
-                      <!-- Pilnais teksts -->
                       <div class="flex-grow-1 d-flex align-center py-8">
                         <div class=" text-para text-black">
                           {{ selectedPost?.description || '' }}
                         </div>
                       </div>
-                      <!-- Datums -->
                       <div class="text-caption text-medium-emphasis">
                         {{ formatDate(selectedPost?.created_at) }}
                       </div>
@@ -334,10 +321,20 @@
                       md="6"
                       class="d-flex flex-column pa-8 order-first order-md-last"
                     >
-                      <!-- Raksta nosaukums -->
-                      <h2 class="text-accent text-accents mt-6 text-uppercase text-center">
-                        {{ selectedPost?.title }}
-                      </h2>
+                      <!-- Raksta nosaukums, edit poga -->
+                       <div class="d-flex flex-row ">
+                        <v-btn
+                          v-if="isLeader"
+                          variant="text"
+                          class="mt-5 ml-2"
+                          @click="openPostEditDialog(selectedPost)"
+                        >
+                          <v-icon>mdi-pencil-outline</v-icon>
+                        </v-btn>
+                        <h2 class="text-accent text-accents mt-6 text-uppercase text-center">
+                          {{ selectedPost?.title }}
+                        </h2>
+                       </div>
                       <!-- Bilde -->
                       <v-img
                         :src="
@@ -384,151 +381,64 @@
       v-model="editDialog"
       :group="group"
       @updated="fetchGroup"
+      @deleted="$router.push('/profile')"
     />
     <AddAgeGroup
       v-model="addAgeGroup"
       :group="group"
       @updated="fetchGroup"
     />
-</template>
-<!-- <template>
-  <v-container fluid class="group-page pa-0">
-    <section class="hero-section">
-      <v-container>
-        <v-row justify="center">
-          <v-col cols="12" md="10" lg="8">
-            <div class="hero-card">
-              <div>
-                <p class="text-caption text-uppercase text-secondary mb-1">
-                  Kolektīva ieraksti
-                </p>
-                <h1
-                  class="text-h3 font-weight-bold text-primary cursor-pointer"
-                  @click="$router.push(`/group-profile/${group.id}`)"
-                >
-                  {{ group.name || 'Kolektīvs' }}
-                </h1>
-              </div>
-              <div class="hero-actions" v-if="isLeader">
-                <v-btn
-                  class="bg-primary text-white"
-                  rounded="xl"
-                  elevation="6"
-                  prepend-icon="mdi-plus"
-                  @click="$router.push(`/create-post/${group.id}`)"
-                >
-                  Pievienot ierakstu
-                </v-btn>
-                <v-btn
-                  icon="mdi-delete-outline"
-                  variant="tonal"
-                  color="secondary"
-                  rounded="xl"
-                  @click="deleteDanceGroup"
-                />
-              </div>
-            </div>
-          </v-col>
-        </v-row>
-      </v-container>
-    </section>
-    <v-container class="posts-container">
-      <v-row justify="center" v-if="posts.length">
-        <v-col
-          v-for="post in posts"
-          :key="post.id"
-          cols="12"
-          md="10"
-          lg="8"
-          class="mb-8"
-        >
-          <v-card class="post-card" elevation="0">
-            <div class="post-image-wrapper">
-              <v-img
-                :src="post.picture || `https://picsum.photos/id/${post.id}/900/500`"
-                height="360"
-                cover
-                class="post-image"
-              />
-              <div v-if="isLeader" class="post-actions">
-                <v-btn
-                  icon="mdi-pencil-outline"
-                  variant="flat"
-                  size="small"
-                  class="text-secondary"
-                  @click="openEditDialog(post)"
-                />
-                <v-btn
-                  icon="mdi-delete-outline"
-                  variant="flat"
-                  size="small"
-                  class="text-secondary"
-                  @click="deletePost(post.id)"
-                />
-              </div>
-            </div>
-
-            <v-card-text class="pa-7">
-              <div class="d-flex justify-space-between align-center flex-wrap ga-2 mb-3">
-                <v-chip color="primary" variant="tonal" size="small">
-                  {{ post.dance_group_member?.dance_group?.name || group.name || 'Kolektīvs' }}
-                </v-chip>
-
-                <span class="text-primary text-medium-emphasis">
-                  {{ formatDate(post.created_at) }}
-                </span>
-              </div>
-
-              <h2 class="text-h5 font-weight-bold mb-3 text-black">
-                {{ post.title }}
-              </h2>
-
-              <p class="text-body-1 text-black">
-                {{ post.description }}
-              </p>
-            </v-card-text>
-          </v-card>
-        </v-col>
-      </v-row>
-
-      <v-row v-else justify="center">
-        <v-col cols="12" md="8">
-          <v-card class="empty-card text-center pa-10" elevation="0">
-
-            <h2 class="text-h5 font-weight-bold mb-2">
-              Šim kolektīvam vēl nav ierakstu
-            </h2>
-
-            <p class="text-body-1 text-medium-emphasis mb-6">
-              Kad kolektīva vadītājs pievienos ierakstu, tas būs redzams šajā sadaļā.
-            </p>
-          </v-card>
-        </v-col>
-      </v-row>
-    </v-container>
-
-    <v-dialog v-model="editDialog" max-width="560px">
+    <AdmissonForm
+      v-model="admissonForm"
+      :group="group"
+      @updated="fetchGroup"
+    />
+    <AddPost
+      v-model="addPost"
+      :group="group"
+      @created="fetchPosts"
+    />
+    <!-- Ieraksta rediģēšana -->
+    <v-dialog 
+      v-model="editPostDialog" 
+      max-width="560px"
+    >
       <v-card class="dialog-card">
-        <v-card-title class="text-h5 font-weight-bold px-6 pt-6">
-          Rediģēt ierakstu
-        </v-card-title>
+        <div class="d-flex flex-row text-center justify-center align-center">
+          <h2 class=" text-small text-accent text-center mt-3">
+            Rediģēt ierakstu
+          </h2>
+          <v-btn
+            v-if="isLeader"
+            variant="text"
+            class="mt-4"
+            @click="deletePostDiolog = true"
+          >
+            <v-icon>mdi-trash-can-outline</v-icon>
+          </v-btn>
+        </div>
 
         <v-card-text class="px-6">
-          <v-form ref="editForm">
+          <v-form 
+            ref="editForm"
+            fall-first
+          >
             <v-text-field
               label="Virsraksts"
               v-model="editPostData.title"
-              variant="outlined"
               rounded="lg"
+              :rules="titleRules"
+              maxlenght="255"
               required
             />
 
             <v-textarea
               label="Apraksts"
               v-model="editPostData.description"
-              variant="outlined"
               rounded="lg"
               rows="5"
+              maxlenght="500"
+              :rules="descriptionRules"
               required
             />
           </v-form>
@@ -536,25 +446,64 @@
 
         <v-card-actions class="px-6 pb-6">
           <v-spacer />
-
-          <v-btn variant="text" @click="editDialog = false">
+          <v-btn 
+            variant="text" 
+            @click="editPostDialog = false"
+            class="text-small text-none"
+          >
             Atcelt
           </v-btn>
 
-          <v-btn color="primary" rounded="xl" @click="submitEdit">
+          <v-btn 
+            class=" bg-accent text-white text-small text-none" 
+            @click="submitPostEdit"
+          >
             Saglabāt
           </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
-  </v-container>
-</template> -->
+    <!-- Ieraksta dzēšana -->
+    <v-dialog
+      v-model="deletePostDiolog"
+      max-width="560px"
+    >
+      <v-card class="pa-4">
+        <v-card-title class="text-h6 text-center">
+          Dzēst ierakstu
+        </v-card-title>
+
+        <v-card-text class="text-center text-wrap text-para">
+          Vai vēlies dzēst šo ierakstu?
+        </v-card-text>
+
+        <v-card-actions class="justify-center">
+          <v-btn
+            variant="outlined"
+            @click="deletePost(selectedPost.id)"
+          >
+            Jā
+          </v-btn>
+
+          <v-btn
+            class="bg-accent"
+            @click="deletePostDiolog = false"
+          >
+            Nē
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+</template>
+
 
 <script>
 import axios from 'axios'
 import { useAuthStore } from '@/stores/auth'
 import EditDanceGroupDialog from './EditDanceGroupDialog.vue'
-import AddAgeGroup from './AddAgeGroup.vue'
+import AddAgeGroup from '../ageGroups/CreateAgeGroup.vue'
+import AdmissonForm from '../admissions/CreateAdmisson.vue'
+import AddPost from '../posts/CreatePosts.vue'
 
 const genreMap = {
   'lyrical dance': 'Liriskā deja',
@@ -568,7 +517,9 @@ const genreMap = {
 export default {
   components: {
     EditDanceGroupDialog,
-    AddAgeGroup
+    AddAgeGroup,
+    AdmissonForm,
+    AddPost
   },
   name: 'GroupPosts',
   data() {
@@ -577,12 +528,16 @@ export default {
       postFilter: 'all',
       currentPage: 1,
       postsPerPage: 9,
+      editPostDialog: false,
       authStore: useAuthStore(),
       group: {},
       postFilter: 'all',
       editDialog: false,
+      admissonForm: false,
       addAgeGroup: false,
       dialog: false,
+      addPost: false,
+      deletePostDiolog: false,
       selectedPost: null,
       posts: [],
       editPostData: {
@@ -590,6 +545,12 @@ export default {
         title: '',
         description: ''
       },
+      titleRules: [
+          v => !!v || 'Raksta virsraksts ir obligāts lauks'
+      ],
+      descriptionRules: [
+        v => !!v || 'Raksta apraksts ir obligāts lauks'
+      ],
     }
   },
   computed: {
@@ -671,69 +632,92 @@ export default {
         }
       }
     },
-    // async deletePost(postId) {
-    //   try {
-    //     await axios.delete(`/api/posts/${postId}`, { withCredentials: true })
-    //     this.posts = this.posts.filter(post => post.id !== postId)
-    //     alert('Ieraksts veiksmīgi dzēsts')
-    //   } catch (err) {
-    //     console.error('Kļūda dzēšot ierakstu:', err)
-    //     alert('Neizdevās dzēst ierakstu')
-    //   }
-    // },
-    // openEditDialog(post) {
-    //   this.editPostData = {
-    //     id: post.id,
-    //     title: post.title,
-    //     description: post.description,
-    //     private: post.private,                  
-    //     dance_group_member_id: post.dance_group_member_id,
-    //     picture: post.picture
-    //   }
-    //   this.editDialog = true
-    // },
-    //   async submitEdit() {
-    //     try {
-    //       const payload = {
-    //         title: this.editPostData.title,
-    //         description: this.editPostData.description,
-    //         private: this.editPostData.private === 'Privāts',
-    //       }
-
-    //       if (this.editPostData.picture instanceof File) {
-    //         payload.picture = this.editPostData.picture
-    //       }
-
-    //       const res = await axios.put(`/api/posts/${this.editPostData.id}`, payload, { withCredentials: true })
-
-    //       const index = this.posts.findIndex(p => p.id === this.editPostData.id)
-    //       if (index !== -1) this.posts[index] = res.data
-
-    //       this.editDialog = false
-    //       alert('Ieraksts veiksmīgi atjaunināts')
-    //       this.fetchPosts() 
-    //     } catch (err) {
-    //       console.error('Kļūda atjauninot ierakstu:', err.response?.data || err)
-    //       alert('Neizdevās atjaunināt ierakstu')
-    //     }
-    //   },
-      async deleteDanceGroup() {
-      if (!confirm('Vai tiešām vēlaties dzēst šo kolektīvu? Šī darbība ir neatgriezeniska.')) {
-        return
-      }
+    async deletePost(postId) {
       try {
-        const id = this.route.params.id
-        await axios.delete(`/api/danceGroups/${id}`, { withCredentials: true })
-          alert('Kolektīvs veiksmīgi dzēsts')
-          this.$router.push('/')
+        await axios.delete(`/api/posts/${postId}`, { withCredentials: true })
+        this.posts = this.posts.filter(post => post.id !== postId)
+
+        this.editPostDialog = false
+        this.deletePostDiolog = false
+        this.dialog = false
+
       } catch (err) {
-        console.error('Kļūda dzēšot kolektīvu:', err)
-        this.$router.push('/')
+        alert('Neizdevās dzēst ierakstu')
       }
     },
-    formatDate(date) {
-      return new Date(date).toLocaleDateString()
+    openPostEditDialog(post) {
+      this.editPostData = {
+        id: post.id,
+        title: post.title,
+        description: post.description,
+        private: post.private,                  
+        dance_group_member_id: post.dance_group_member_id,
+        picture: post.picture
+      }
+      this.editPostDialog = true
+    },
+    async submitPostEdit() {
+    try {
+        const response = await axios.put(
+            `/api/posts/${this.editPostData.id}`,
+            {
+                title: this.editPostData.title,
+                description: this.editPostData.description
+            },
+            {
+                withCredentials: true
+            }
+        )
+        this.editPostDialog = false
+        await this.fetchPosts()
+        const updatedPost = this.posts.find(
+            post => post.id === this.editPostData.id
+        )
+        if (updatedPost) {
+            this.selectedPost = updatedPost
+        }
+        } catch (err) {
+            console.error('Kļūda rediģējot ierakstu:', err)
+
+            if (err.response?.data?.errors) {
+                alert(
+                    Object.values(err.response.data.errors)
+                        .flat()
+                        .join('\n')
+                )
+            } else if (err.response?.data?.message) {
+                alert(err.response.data.message)
+            } else {
+                alert('Neizdevās atjaunināt ierakstu.')
+            }
+        }
+    },
+
+    formatDate(dateStr) {
+      if (!dateStr) return ''
+
+      return new Date(dateStr).toLocaleDateString('lv-LV', {
+        day: '2-digit',
+        month: 'short',
+        year: 'numeric'
+      })
+    },
+
+    async deleteDanceGroup() {
+    if (!confirm('Vai tiešām vēlaties dzēst šo kolektīvu? Šī darbība ir neatgriezeniska.')) {
+      return
     }
+    try {
+      const id = this.route.params.id
+      await axios.delete(`/api/danceGroups/${id}`, { withCredentials: true })
+        alert('Kolektīvs veiksmīgi dzēsts')
+        this.$router.push('/')
+    } catch (err) {
+      console.error('Kļūda dzēšot kolektīvu:', err)
+      this.$router.push('/')
+    }
+  },
+
   },
   async mounted() {
     await this.authStore.fetchProfile()

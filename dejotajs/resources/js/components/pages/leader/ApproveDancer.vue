@@ -139,7 +139,7 @@ export default {
       const url = action === "approve" ? "/api/dancers/approval" : "/api/dancers/decline";
 
       if(!dancer.selectAgeGroup ) {
-        dancer.error = 'Lūdzu, izvēlieties vecuma grupu pirms apstiprināšanas.';
+        dancer.error = 'Lūdzu, izvēlieties deju grupu pirms apstiprināšanas.';
         return;
       }
       axios

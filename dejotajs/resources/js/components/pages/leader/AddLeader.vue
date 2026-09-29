@@ -1,0 +1,351 @@
+<template>
+  <v-container fluid class="py-10">
+    <!-- Virsraksts -->
+    <div class="d-flex justify-center flex-column mb-10">
+      <h1 class="text-center text-accents">
+        Kļūsti par vadītāju savā deju kolektīvā
+      </h1>
+
+      <p class="text-subhed text-center">
+        Ja neatrodiet kolektīvu, izveidojiet to savā profilā.
+      </p>
+    </div>
+    <v-container>
+      <v-card
+        class="pa-4 mb-8 rounded-0 elevation-2"
+      >
+        <v-row class="align-center">
+          <!-- Meklēšana -->
+          <v-col
+            cols="12"
+            md="12"
+          >
+            <v-text-field
+              v-model="searchQuery"
+              label="Meklēt kolektīvu"
+              prepend-inner-icon="mdi-magnify"
+              clearable
+              variant="outlined"
+              density="comfortable"
+              hide-details
+              @input="searchGroups"
+              class="text-text"
+            />
+          </v-col>
+        </v-row>
+      </v-card>
+      <v-alert
+        v-if="joinAlert.show"
+        :type="joinAlert.type"
+        class="mb-6"
+        @click:close="joinAlert.show = false"
+      >
+          {{ joinAlert.message }}
+      </v-alert>
+      <!-- Nav rezultātu -->
+      <v-alert
+        v-if="!groups.length"
+        type="info"
+        variant="tonal"
+        icon="mdi-information-outline"
+        class="mb-8"
+      >
+        Nav atrasts neviens kolektīvs pēc izvēlētajiem filtriem.
+      </v-alert>
+      <!-- Kolektīvu kartītes -->
+      <v-row>
+        <v-col
+          v-for="group in groups"
+          :key="group.id"
+          cols="12"
+          sm="6"
+          lg="3"
+          class="d-flex"
+        >
+          <v-card
+            class="w-100 d-flex flex-column elevation-3 rounded-0 card-hover"
+            height="350"
+            @click="goTo(`/group-info/${group.id}`)"
+          >
+
+            <!-- Kolektīva nosaukums -->
+            <h2
+              class="font-weight-bold text-left px-4 pt-10 text-accent"
+            >
+              {{ group.name }}
+            </h2>
+
+            <!-- Vadītāji -->
+            <div class="px-4 pt-1">
+              <div class="text-caption text-medium-emphasis mb-1">
+                <v-icon size="16" class="mr-1">
+                  mdi-account-outline
+                </v-icon>
+                Vadītāji
+              </div>
+              <div class="text-body-2 text-truncate">
+                {{
+                  group.leaders?.length
+                    ? group.leaders
+                        .map(
+                          l =>
+                            `${l.user?.name || ''} ${l.user?.surname || ''}`
+                        )
+                        .join(', ')
+                    : 'Nav vadītāju'
+                }}
+              </div>
+            </div>
+            <!-- Adrese -->
+            <div class="px-4 pt-4">
+              <div class="text-caption text-medium-emphasis mb-1">
+                <v-icon size="16" class="mr-1">
+                  mdi-map-marker-outline
+                </v-icon>
+                Atrašanās vieta
+              </div>
+              <div class="text-body-2 text-truncate">
+                {{ group.city }}
+                <span v-if="group.address">
+                  · {{ group.address }}
+                </span>
+              </div>
+            </div>
+            <!-- Žanrs -->
+            <div class="px-4 pt-4">
+              <div class="text-caption text-medium-emphasis mb-1">
+                <v-icon size="16" class="mr-1">
+                  mdi-dance-ballroom
+                </v-icon>
+                Žanrs
+              </div>
+              <div class="text-body-2 text-truncate">
+                <span v-if="group.genre">
+                  {{ getGenreTitle(group.genre) }}
+                </span>
+              </div>
+            </div>
+            <v-spacer />
+            <!-- Apakšējā daļa -->
+            <v-card-actions
+              class="d-flex justify-end px-4 pb-4"
+            >
+              <v-btn
+                variant="text"
+                @click.stop="joinGroup(group.id)"
+                class="bg-accent text-small letter-spacing-0"
+              >
+              Pievienoties
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-col>
+      </v-row>
+    </v-container>
+  </v-container>
+</template>
+
+<script>
+import axios from 'axios'
+
+export default {
+  data() {
+    return {
+      groups: [],
+      cities: [],
+      searchQuery: '',
+
+      genres: [
+        { title: "Liriskās dejas", value: "lyrical dance" },
+        { title: "Balets", value: "ballet" },
+        { title: "Mūsdienīgās dejas", value: "contemporary dance" },
+        { title: "Tautas dejas", value: "folk dance" },
+        { title: "Hip-hop", value: "hip hop" },
+        { title: "Cits", value: "other" }
+      ],
+
+      joinAlert: {
+        show: false,
+        type: 'success',
+        message: ''
+      }
+    }
+  },
+
+  methods: {
+    fetchDanceGroups() {
+      axios
+        .get('/api/danceGroups-list')
+        .then(res => {
+          this.groups = Array.isArray(res.data.data)
+            ? res.data.data
+            : []
+        })
+        .catch(err => {
+          console.error('STATUS:', err.response?.status)
+          console.error('DATA:', err.response?.data)
+          console.error('URL:', err.config?.url)
+        })
+    },
+
+    goTo(route) {
+      this.$router.push(route)
+    },
+
+    getGenreTitle(genre) {
+      const foundGenre = this.genres.find(
+        item => item.value === genre
+      )
+
+      return foundGenre?.title || genre
+    },
+
+    searchGroups() {
+      if (!this.searchQuery) {
+        this.fetchDanceGroups()
+        return
+      }
+
+      axios
+        .get('/api/danceGroups-list/searchList', {
+          params: {
+            q: this.searchQuery
+          }
+        })
+        .then(res => {
+          this.groups = Array.isArray(res.data.data)
+            ? res.data.data
+            : []
+        })
+        .catch(err => {
+          console.error('Meklēšanas kļūda:', err.response?.data)
+        })
+    },
+
+    joinGroup(groupId) {
+      axios
+        .post('/api/members', {
+          dance_group_id: groupId
+        })
+        .then(res => {
+          console.log('JOIN SUCCESS:', res.data)
+
+            this.joinAlert = {
+                show: true,
+                type: 'success',
+                message: 'Jūsu pieteikums ir saņemts! Gaidiet apstiprinājumu no kolektīva vadītāja.'
+            }
+
+            this.fetchDanceGroups()
+
+        })
+        .catch(err => {
+          console.error('Pievienošanās kļūda:', err.response?.data)
+
+          this.joinAlert = {
+            show: true,
+            type: 'error',
+            message: err.response?.data?.message || 'Neizdevās pievienoties.'
+          }
+        })
+    }
+  },
+
+  mounted() {
+    this.fetchDanceGroups()
+  }
+}
+</script>
+
+<style>
+.page-title{
+  font-size: 34px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.page-subtitle{
+  opacity: 0.7;
+  font-size: 15px;
+}
+
+.search-card{
+  border-radius:16px;
+}
+
+.group-card{
+  border-radius:18px;
+  cursor:pointer;
+  transition:all .25s ease;
+  overflow:hidden;
+}
+
+.group-card:hover{
+  transform:translateY(-6px);
+  box-shadow:0 15px 35px rgba(0,0,0,0.15);
+}
+
+.group-title{
+  font-weight:600;
+  font-size:18px;
+}
+
+.text-truncate{
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+</style>
+<!-- <template>
+    <h1 class="text-center mt-8">Izvēlies kolektīvu:</h1>
+    <v-container>
+        <v-card v-for="group in groups" :key="group.id" class="mb-8">
+            <v-card-title>{{ group.name }}</v-card-title>
+            <v-card-text>{{ group.city }}, {{ group.address }}</v-card-text>
+            <div class="d-flex justify-end">
+                <v-btn color="primary" size="small" class="mb-4 mr-6"  @click="joinGroup(group.id)">Pievienoties</v-btn>
+            </div>
+        </v-card>
+        <v-alert v-if="groups.length === 0" type="info" class="mt-4">
+            Šobrīd nav pieejami kolektīvi, kuros iespējams kļūt par vadītāju.
+        </v-alert>
+
+    </v-container>
+</template>
+
+<script>
+import axios from 'axios';
+
+export default {
+    data(){
+        return{
+             groups: []
+        }
+    },
+    mounted(){
+        this.fetchDanceGroups();
+    },
+    methods: {
+        fetchDanceGroups(){
+            axios.get('/api/danceGroups', {withCredentials: true})
+            .then(res => {
+                this.groups = Array.isArray(res.data.data) ? res.data.data : [];
+                console.log(this.groups);
+            })
+            .catch(err => console.log(err));
+        },
+        joinGroup(groupId) {
+            axios.post('/api/members', { dance_group_id: groupId }, { withCredentials: true })
+            .then(res => {
+                alert('Gaidiet apstiprinājumu no kolektīva vadītāja!');
+                window.location.reload();
+            })
+            .catch(err => {
+                console.error(err.response?.data); 
+                alert(err.response?.data?.message || 'Neizdevās pievienoties.');
+            });
+        }
+    }
+}
+</script> -->

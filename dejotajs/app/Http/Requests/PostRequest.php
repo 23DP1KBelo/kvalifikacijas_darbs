@@ -26,7 +26,7 @@ class PostRequest extends FormRequest
             'description' => 'max:500',
             'picture' => 'nullable|image|max:2048',
             'private' => 'required|boolean',
-            'dance_group_member_id' => 'integer|exists:dance_group_members,id'
+            'dance_group_id' => 'required|integer|exists:dance_groups,id',
         ];
     }
 

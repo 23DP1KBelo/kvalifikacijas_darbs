@@ -150,7 +150,6 @@
 </template>
 
 <script>
-import axios from 'axios'
 
 export default {
   data() {
@@ -199,21 +198,6 @@ export default {
       } catch (err) {
         console.error('Kļūda ielādējot ierakstus:', err)
         this.posts = []
-      }
-    },
-
-    async deletePost(postId) {
-      try {
-        await axios.delete(`/api/posts/admin/${postId}`, {
-          withCredentials: true
-        })
-
-        this.posts = this.posts.filter(p => p.id !== postId)
-
-        alert('Ieraksts veiksmīgi dzēsts')
-      } catch (err) {
-        console.error('Kļūda dzēšot ierakstu:', err)
-        alert('Neizdevās dzēst ierakstu')
       }
     },
 

@@ -64,7 +64,7 @@ export default {
 
             passwordRules: [
                 v => !!v || 'Parole ir obligāta',
-                v => v.length >= 6 || 'Parolei jābūt vismaz 6 rakstzīmēm'
+                v => v.length >= 6 || 'Parolei jābūt vismaz 8 rakstzīmēm'
             ]
         }
     },

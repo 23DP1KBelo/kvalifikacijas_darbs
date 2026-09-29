@@ -11,6 +11,7 @@ use App\Http\Resources\PostShowResource;
 use App\Http\Resources\DanceGroupResource;
 use App\Models\DanceGroupMember;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Requests\PostUpdateRequest;
 class PostController extends Controller
 {
     /**
@@ -63,27 +64,25 @@ class PostController extends Controller
      * Store a newly created resource in storage.
      */
 // PostController.php
-    public function store(PostRequest $request)
-    {
+    public function store(PostRequest $request){
         $validated = $request->validated();
 
-        // Ja dance_group_member_id nav nosūtīts, atrodam to automātiski
-        if (!$request->filled('dance_group_member_id')) {
-            $member = DanceGroupMember::where('user_id', Auth::id())
-                ->where('dance_group_id', $request->dance_group_id)
-                ->firstOrFail();
-            $validated['dance_group_member_id'] = $member->id;
-        }
+        $member = DanceGroupMember::where('user_id', Auth::id())
+            ->where('dance_group_id', $request->dance_group_id)
+            ->firstOrFail();
 
-        // Ja ir attēls, vienmēr saglabā publiskajā diskā
+        $validated['dance_group_member_id'] = $member->id;
+
         if ($request->hasFile('picture')) {
             $path = $request->file('picture')->store('posts', 'public');
-            $validated['picture'] = $path; // saglabā ceļu DB
+            $validated['picture'] = $path;
         }
 
         $post = Post::create($validated);
 
-        return (new PostResource($post))->response()->setStatusCode(201);
+        return (new PostResource($post))
+            ->response()
+            ->setStatusCode(201);
     }
     
 
@@ -99,16 +98,13 @@ class PostController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(PostRequest $request, Post $post)
+    public function update(PostUpdateRequest $request, Post $post)
     {
         $validated = $request->validated(); // Šeit validē visi nepieciešamie lauki
 
         $post->update([
             'title' => $validated['title'],
             'description' => $validated['description'],
-            'private' => $validated['private'] ?? $post->private,
-            'dance_group_member_id' => $validated['dance_group_member_id'] ?? $post->dance_group_member_id,
-            'picture' => $validated['picture'] ?? $post->picture
         ]);
 
         return new PostResource($post->load('danceGroupMember.appUser', 'danceGroupMember.danceGroup'));

@@ -63,12 +63,16 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::middleware(['auth:sanctum'])->group(function () {
 
     Route::post('/danceGroups', [DanceGroupController::class, 'store']);
-    Route::get('/danceGroups', [DanceGroupController::class, 'groupList']);
+    Route::get('/danceGroups-list', [DanceGroupController::class, 'groupList']);
+    Route::get('/danceGroups-list/searchList', [DanceGroupController::class, 'searchAvailableGroups']);
 
     Route::post('/members', [DanceGroupMemberController::class, 'leaderStore']);
     Route::post('/members/join', [DanceGroupMemberController::class, 'store']);
 
     Route::get('/profile', [ProfileController::class, 'index']);
+    Route::put('/profile', [AppUserController::class, 'update']);
+    Route::put('/profile/password', [AppUserController::class, 'updatePassword']);
+
     Route::get('/my-posts/{danceGroupId}', [PostController::class, 'myGroupPosts']);
     Route::get('/groupListApproved', [DanceGroupController::class, 'groupListApprovedMember']);
 

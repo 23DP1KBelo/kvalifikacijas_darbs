@@ -22,7 +22,7 @@ class IsLeader
             return $next($request);
         }
 
-        // 3. Dabū group ID
+        // 3. Grupas ID
         $group = $request->route('group');
         $groupId = $group instanceof \App\Models\DanceGroup
             ? $group->id
@@ -33,7 +33,7 @@ class IsLeader
             return $next($request);
         }
 
-        // 5. Pārbauda vai user ir leader šajā grupā
+        // 5. Pārbauda vai user ir vadītājs šajā grupā
         $isLeader = $user->danceGroupMembers()
             ->where('dance_group_id', $groupId)
             ->where('role', 'leader')

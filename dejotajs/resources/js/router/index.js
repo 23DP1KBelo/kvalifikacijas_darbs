@@ -5,26 +5,21 @@ import Login from '../components/pages/Login.vue';
 import Registration from '../components/pages/Registration.vue';
 import Profile from '../components/pages/Profile.vue';
 import AdminDashboard from '../components/pages/admin/AdminDashboard.vue';
-import DanceGroupForm from '../components/pages/danceGroups/DanceGroupForm.vue';
+import DanceGroupForm from '../components/pages/danceGroups/CreateDanceGroup.vue';
 import DanceGroupPage from '../components/pages/danceGroups/DanceGroupPage.vue';
 import NoAccess from '../components/errors/NoAccess.vue';
-import DancerApproval from '../components/pages/DancerApproval.vue';
-import LeaderForm from '../components/pages/LeaderForm.vue';
-import DanceGroupList from '../components/pages/danceGroups/DanceGroupList.vue';
-import LeaderApproval from '../components/pages/LeaderApproval.vue';
-import DanceGroupDashboard from '../components/pages/danceGroups/DanceGroupDashboard.vue';
-import DanceGroupInfo from '../components/pages/danceGroups/DanceGroupInfo.vue';
-import PostCreate from '../components/pages/PostCreate.vue';
-import PostsShow from '../components/pages/PostsShow.vue';
-import AgeGroupForm from '../components/pages/AgeGroupForm.vue';
-import DanceGroupProfile from '../components/pages/danceGroups/DanceGroupProfile.vue';
-import AdmissonForm from '../components/pages/AdmissonForm.vue';
-import AdmissonDashboard from '../components/pages/AdmissonDashboard.vue';
+import DancerApproval from '../components/pages/leader/ApproveDancer.vue';
+import LeaderForm from '../components/pages/leader/CreateLeader.vue';
+import DanceGroupList from '../components/pages/leader/AddLeader.vue';
+import LeaderApproval from '../components/pages/leader/ApproveLeader.vue';
+import DanceGroupDashboard from '../components/pages/danceGroups/SearchDanceGroup.vue';
+import DanceGroupInfo from '../components/pages/danceGroups/ShowDanceGroup.vue';
+import PostsShow from '../components/pages/posts/ShowPosts.vue';
+import AdmissonDashboard from '../components/pages/admissions/ShowAdmission.vue';
 import CalenderDashboard from '../components/pages/calender/calenderDashboard.vue';
 import EventForm from '../components/pages/calender/EventForm.vue';
 import AdminStats from '../components/pages/admin/AdminStats.vue';
 import DancerChat from '../components/pages/chat/dancerChat.vue';
-import DanceGroupControls from '../components/pages/danceGroups/DanceGroupControls.vue';
 const routes = [
     { path: '/', component: Home },
     { path: '/login', component: Login },
@@ -40,17 +35,12 @@ const routes = [
     { path: '/leaderApproval/:id', component: LeaderApproval, meta: {requiresAuth: true, requiresLeader:true}},
     { path: '/dance-groups', component: DanceGroupDashboard},
     { path: '/group-info/:id', component: DanceGroupInfo},
-    { path: '/create-post/:id', component: PostCreate, meta: { requiresAuth: true, requiresLeader: true }},
     { path: '/posts', component: PostsShow },
-    { path: '/age-group-form/:id', component: AgeGroupForm, meta: { requiresAuth: true, requiresLeader: true }},
-    { path: '/group-profile/:id', component: DanceGroupProfile},
-    { path: '/admisson/:id', component: AdmissonForm, meta: { requiresAuth: true, requiresLeader: true }},
     { path: '/admisson', component: AdmissonDashboard},
     { path: '/calender', component: CalenderDashboard},
     { path: '/calender/event', component: EventForm, meta: {requiresAuth: true, requiresLeader: true}},
     { path: '/dashboard/stats', component: AdminStats, meta: { requiresAuth: true, requiresAdmin: true }},
-    { path: '/chat', component: DancerChat},
-    { path: '/danceGroup/controls', component:DanceGroupControls, meta: {requiresAuth: true, requiresLeader: true}}
+    { path: '/chat', component: DancerChat}
 ];
 
 const router = createRouter({

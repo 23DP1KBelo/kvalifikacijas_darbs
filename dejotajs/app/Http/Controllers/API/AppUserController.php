@@ -5,7 +5,11 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\AppUser;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Resources\AppUserResource;
+use Illuminate\Support\Facades\Hash;
+use App\Http\Requests\PasswordChangeRequest;
+use App\Http\Requests\AppUserUpdateRequest;
 
 use App\Http\Requests\AppUserRequest;
 
@@ -41,16 +45,41 @@ class AppUserController extends Controller
         return new AppUserResource($appUser);
     }
 
+    // Update password
+    public function updatePassword(PasswordChangeRequest $request) {
+         /** @var AppUser $user */
+
+        $user = Auth::user();
+
+        if(!Hash::check($request->current_password, $user->password)) {
+            return response()->json([
+                'message' => 'Pašreizējā parole neatbilst'
+            ], 422);
+        }
+
+        $user->update([
+            'password' => Hash::make($request->password)
+        ]);
+
+        return response()->json([
+            'message' => 'Parole veiksmīgi nomainīta.'
+        ]);
+
+    }
+
     /**
      * Update the specified resource in storage.
      */
-    public function update(AppUserRequest $request, AppUser $appUser)
-    {
-         $validated = $request->validated();
+    public function update(AppUserUpdateRequest $request){
 
-         $appUser->update($validated);
+        /** @var AppUser $user */
 
-         return new AppUserResource($appUser);
+        $user = Auth::user();
+        $validated = $request->validated();
+
+        $user->update($validated);
+
+        return new AppUserResource($user);
     }
 
     /**
