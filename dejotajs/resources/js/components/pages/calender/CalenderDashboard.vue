@@ -20,13 +20,35 @@
     </div>
     <v-card class="mx-auto my-4" max-width="1200" outlined>
       <v-card-text>
-          <v-row dense>
-          <v-col v-for="(color, genre) in genreColorsLV" :key="genre" cols="auto">
-            <v-chip 
-              :style="{ backgroundColor: color, color: '#fff' }" 
-              small 
+        <v-row dense align="center">
+          <!-- Visi pasākumi -->
+          <v-col cols="auto">
+            <v-chip
+              :color="selectedGenre === null ? 'primary' : undefined"
+              :variant="selectedGenre === null ? 'flat' : 'outlined'"
               pill
               class="text-small"
+              @click="filterEvents(null)"
+            >
+              Visi
+            </v-chip>
+          </v-col>
+          <!-- Žanru filtri -->
+          <v-col
+            v-for="(color, genre) in genreColorsLV"
+            :key="genre"
+            cols="auto"
+          >
+            <v-chip
+              :color="color"
+              :variant="selectedGenre === genre ? 'flat' : 'outlined'"
+              :style="{
+                backgroundColor: selectedGenre === genre ? color : 'transparent',
+                color: selectedGenre === genre ? '#fff' : color
+              }"
+              pill
+              class="text-small"
+              @click="filterEvents(genre)"
             >
               {{ genre }}
             </v-chip>
@@ -162,6 +184,7 @@ export default {
       dialog: false,
       editDialog: false,
       selectedEvent: null,
+      selectedGenre: null,
 
       editForm: {
         id: null,
@@ -228,9 +251,14 @@ export default {
   },
 
   methods: {
-    async fetchEvents() {
+    async fetchEvents(genre = null) {
       try {
-        const res = await axios.get('/api/events')
+        const url = genre
+          ? `/api/events/filter/${encodeURIComponent(genre)}`
+          : '/api/events'
+
+        const res = await axios.get(url)
+
         this.events = res.data.data || []
 
         const genreColors = {
@@ -244,8 +272,6 @@ export default {
         this.calendarOptions.events = this.events.map(e => {
           const genre = e.dance_group_member?.genre
           const color = genreColors[genre] || '#808080'
-
-          console.log(this.events)
 
           return {
             id: e.id,
@@ -265,6 +291,23 @@ export default {
       } catch (err) {
         console.error('Neizdevās ielādēt pasākumus:', err)
       }
+    },
+
+    async filterEvents(genre) {
+      this.selectedGenre = genre
+
+      const genreApiValues = {
+        'Liriskā deja': 'lyrical dance',
+        'Balets': 'ballet',
+        'Mūsdienu deja': 'contemporary dance',
+        'Tautas deja': 'folk dance',
+        'Hip-hops': 'hip hop',
+        'Cits': 'other'
+      }
+
+      const apiGenre = genre ? genreApiValues[genre] : null
+
+      await this.fetchEvents(apiGenre)
     },
 
     genreLV(genre) {
