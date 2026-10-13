@@ -154,6 +154,11 @@ export default {
 
                 this.$emit('created');
                 this.$emit('update:modelValue', false);
+                this.title= "";
+                this.description= '';
+                this.isPrivate= false;
+                this.picture = null;
+                this.error = null;
 
             } catch (error) {
                 console.error('Kļūda izveidojot ierakstu:', error);

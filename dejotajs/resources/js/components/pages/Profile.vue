@@ -34,8 +34,13 @@
               </h2>
 
               <v-divider class="my-7"></v-divider>
-              <div v-if="approvedGroups.length === 0" class="text-center text-white">
-                Šobrīd nav apstiprinātu kolektīvu.
+              <div v-if="approvedGroups.length <= 0" class="text-center text-white">
+                <v-alert
+                  type="info"
+                  class="text-small"
+                >
+                 Šobrīd nepiederat nevienam kolektīvam!
+                </v-alert>
               </div>
               <div v-else>
                 <v-alert

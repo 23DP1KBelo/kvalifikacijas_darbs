@@ -39,12 +39,32 @@
         </div>
         <!-- Dalībnieki -->
         <div class="d-flex flex-row">
-          <v-icon>
-            mdi-account-group-outline
-          </v-icon>
-          <p class="text-small ml-3">
-            Dalībnieki: {{ group?.dancers?.length || 0 }}
-          </p>
+          <v-btn 
+            v-if="isLeader"
+            @click="this.$router.push(`/members/${this.group.id}`)"
+          >
+            <v-icon>
+              mdi-account-group-outline
+            </v-icon>
+            <p class="text-small ml-3">
+              Dalībnieki: {{ group?.dancers?.length || 0 }}
+            </p>
+            <v-badge
+              v-if="notificationCount > 0"
+              :content="notificationCount"
+              color="red"
+              inline
+              class="ml-3"
+            />
+          </v-btn>
+          <div v-else>
+            <v-icon>
+              mdi-account-group-outline
+            </v-icon>
+            <p class="text-small ml-3">
+              Dalībnieki: {{ group?.dancers?.length || 0 }}
+            </p>
+          </div>
         </div>
         <div class="d-flex flex-row">
           <v-icon>
@@ -539,6 +559,8 @@ export default {
       addPost: false,
       deletePostDiolog: false,
       selectedPost: null,
+      waitingDancers: [],
+      leaders: [],
       posts: [],
       editPostData: {
         id: null,
@@ -559,6 +581,9 @@ export default {
     },
     user() {
       return this.authStore.user
+    },
+    notificationCount() {
+      return this.waitingDancers.length + this.leaders.length
     },
     isLeader() {
       if (!this.authStore.user || !this.group?.leaders) {
@@ -614,6 +639,30 @@ export default {
         } catch (err) {
           this.group = null
         }
+    },
+    fetchLeaders() {
+            axios
+                .get(`/api/approval-leader/${this.group.id}`, { withCredentials: true })
+                .then((res) => {
+                this.leaders = Array.isArray(res.data.data) ? res.data.data : [];
+                console.log(this.leaders)
+                })
+                .catch((err) => console.log(err));
+    },
+    fetchDancers() {
+      axios
+          .get(`/api/dancers/${this.group.id}`, { withCredentials: true })
+          .then((res) => {
+              this.waitingDancers = (res.data.data || []).map(dancer => ({
+                  ...dancer,
+                  selectAgeGroup: null,
+                  error: '' 
+              }));
+              console.log(this.waitingDancers)
+          })
+          .catch((err) => 
+              console.log(err)
+          );
     },
     async fetchPosts() {
       try {
@@ -723,6 +772,8 @@ export default {
     await this.authStore.fetchProfile()
     await this.fetchPosts()
     await this.fetchGroup()
+    this.fetchDancers()
+    this.fetchLeaders()
   },
   watch: {
     'route.params.id': function () {

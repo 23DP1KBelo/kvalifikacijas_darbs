@@ -144,4 +144,28 @@ class DanceGroupMemberController extends Controller
 
         return DanceGroupMemberResource::collection($dancers);
     }
+
+    //  meklēt grupas dalībniekus
+    public function searchGroupMembers(Request $request, DanceGroup $group)
+    {
+        $queryText = $request->input('q');
+
+        $members = $group->members()
+            ->where('status', 'approved')
+            ->when($queryText, function ($query) use ($queryText) {
+                $query->whereHas('appUser', function ($userQuery) use ($queryText) {
+                    $userQuery
+                        ->where('name', 'like', $queryText . '%')
+                        ->orWhere('surname', 'like', $queryText . '%');
+                });
+            })
+            ->with([
+                'appUser',
+                'danceGroup',
+                'ageGroup'
+            ])
+            ->get();
+
+        return DanceGroupMemberResource::collection($members);
+    }
 }

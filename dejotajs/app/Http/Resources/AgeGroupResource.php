@@ -25,6 +25,8 @@ class AgeGroupResource extends JsonResource
             'dance_group' => $this->danceGroup ? [
                 'id' => $this->danceGroup->id,
                 'name' => $this->danceGroup->name,
+                'city' => $this->danceGroup->city,
+                'genre' => $this->danceGroup->genre,
             ] : null,
 
             'admissions' => AdmissionResource::collection($this->whenLoaded('admissions')),

@@ -24,7 +24,7 @@ class AdmissionRequest extends FormRequest
         return [
             'name' => 'required|max:255',
             'start_date' => 'required|date',
-            'end_date' => 'required|date',
+            'end_date' => 'required|date|after:start_date',
             'age_group_id' => 'required|integer|exists:age_groups,id'
             
         ];

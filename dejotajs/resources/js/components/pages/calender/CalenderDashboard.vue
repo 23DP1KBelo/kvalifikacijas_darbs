@@ -1,12 +1,18 @@
 <template>
   <v-container class="pa-4">
-    <h1 class="text-center mt-8 mb-8">Pasākumu kalendārs</h1>
+      <h1 class="text-center text-accents">
+        KALENDĀRS
+      </h1>
+      <p class="text-subhed text-center">
+        Ieraugi, apskati, apmeklē!
+      </p>
     <div class="mb-2 d-flex flex-row justify-end">
       <v-btn
         v-if="!loadingProfile && isLeader"
-        color="secondary"
+        color="accent"
         rounded="xl"
         prepend-icon="mdi-plus"
+        class="text-none text-small"
         @click="$router.push('/calender/event')"
       >
         Pievienot pasākumu
@@ -16,7 +22,12 @@
       <v-card-text>
           <v-row dense>
           <v-col v-for="(color, genre) in genreColorsLV" :key="genre" cols="auto">
-            <v-chip :style="{ backgroundColor: color, color: '#fff' }" small pill>
+            <v-chip 
+              :style="{ backgroundColor: color, color: '#fff' }" 
+              small 
+              pill
+              class="text-small"
+            >
               {{ genre }}
             </v-chip>
           </v-col>
@@ -139,21 +150,19 @@ import timeGridPlugin from '@fullcalendar/timegrid'
 import interactionPlugin from '@fullcalendar/interaction'
 import lvLocale from '@fullcalendar/core/locales/lv'
 import axios from 'axios'
+import { useAuthStore } from '@/stores/auth'
 
 export default {
   components: { FullCalendar },
+
   data() {
     return {
       events: [],
-      danceGroups: [],
-      isLeader: false,
-      loadingProfile: true,
       isEventCreator: false,
       dialog: false,
-      isAdmin: false,
-      localUser: null,
       editDialog: false,
       selectedEvent: null,
+
       editForm: {
         id: null,
         name: '',
@@ -163,48 +172,81 @@ export default {
         date_end: '',
         dance_groups: []
       },
+
       genreColorsLV: {
-        'Liriskā deja': '#bf63b9',
-        'Balets': '#1e90ff',
-        'Mūsdienu deja': '#32cd32',
-        'Tautas deja': '#ffa500',
-        'Hip-hops': '#447574',
-        'Cits': '#4f2552'
+        'Liriskā deja': '#777FC4',
+        'Balets': '#4776B8',
+        'Mūsdienu deja': '#368FA8',
+        'Tautas deja': '#5B9BCB',
+        'Hip-hops': '#345A91',
+        'Cits': '#899BB8'
       },
       calendarOptions: {
         plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
         locale: lvLocale,
         initialView: 'dayGridMonth',
-        headerToolbar: { right: 'dayGridMonth,timeGridWeek,timeGridDay' },
-        buttonText: { today: 'Šodien', month: 'Mēnesis', week: 'Nedēļa', day: 'Diena' },
+        headerToolbar: {
+          right: 'dayGridMonth,timeGridWeek,timeGridDay'
+        },
+        buttonText: {
+          today: 'Šodien',
+          month: 'Mēnesis',
+          week: 'Nedēļa',
+          day: 'Diena'
+        },
         events: [],
         eventClick: (info) => this.openEventDialog(info.event)
       }
     }
   },
+
   computed: {
+    authStore() {
+      return useAuthStore()
+    },
+
+    isLeader() {
+      return this.authStore.isLeader
+    },
+
+    isAdmin() {
+      return this.authStore.isAdmin
+    },
+
+    loadingProfile() {
+      return this.authStore.loading
+    },
+
+    danceGroups() {
+      return this.authStore.leaderGroups
+    },
+
     monthTitle() {
       const calendarApi = this.$refs.fullCalendar?.getApi()
       return calendarApi ? calendarApi.view.title : ''
     }
   },
+
   methods: {
     async fetchEvents() {
       try {
         const res = await axios.get('/api/events')
         this.events = res.data.data || []
 
-      const genreColors = { 
-        'lyrical dance' : '#bf63b9', 
-        'ballet' : '#1e90ff', 
-        'contemporary dance' : '#32cd32', 
-        'folk dance' : '#ffa500', 
-        'hip hop': '#447574',
-        'other' : '#4f2552' 
-      }
+        const genreColors = {
+          'lyrical dance': '#777FC4',
+          'ballet': '#4776B8',
+          'contemporary dance': '#368FA8',
+          'folk dance': '#5B9BCB',
+          'hip hop': '#345A91',
+          'other': '#899BB8'
+        }
         this.calendarOptions.events = this.events.map(e => {
-          let genre = e.dance_group_member.genre
-          let color = genreColors[genre] || '#808080'
+          const genre = e.dance_group_member?.genre
+          const color = genreColors[genre] || '#808080'
+
+          console.log(this.events)
+
           return {
             id: e.id,
             title: e.name,
@@ -220,81 +262,93 @@ export default {
             }
           }
         })
-      } catch (err) { console.error(err) }
+      } catch (err) {
+        console.error('Neizdevās ielādēt pasākumus:', err)
+      }
     },
-    async fetchProfileInfo() {
-  try {
-    const profileRes = await axios.get('/api/profile', { withCredentials: true })
 
-    const user = profileRes.data?.user || null
-    this.localUser = user
-
-    this.isAdmin = user?.role === 'admin'
-
-    const groupRes = await axios.get('/api/leader-groups', { withCredentials: true })
-
-    this.danceGroups = groupRes.data || []
-    this.isLeader = this.danceGroups.length > 0
-
-  } catch (err) {
-    console.error(err)
-    this.localUser = null
-    this.isAdmin = false
-    this.isLeader = false
-    this.danceGroups = []
-  } finally {
-    this.loadingProfile = false
-  }
-},
     genreLV(genre) {
       const map = {
-        'lyrical dance': 'Liriskā dejas',
+        'lyrical dance': 'Liriskā deja',
         'ballet': 'Balets',
-        'contemporary dance': 'Mūsdienīgās dejas',
-        'folk dance': 'Tautasdejas',
+        'contemporary dance': 'Mūsdienu deja',
+        'folk dance': 'Tautas deja',
         'hip hop': 'Hip-hops',
         'other': 'Cits'
       }
-      return map[genre] || genre
+
+      return map[genre] || genre || 'Nezināms žanrs'
     },
+
     openEventDialog(event) {
       this.selectedEvent = event
       this.dialog = true
       this.eventeditMember()
     },
+
     formatDate(date) {
-      return new Date(date).toLocaleString('lv-LV', { dateStyle: 'short', timeStyle: 'short' })
+      if (!date) return '—'
+
+      return new Date(date).toLocaleString('lv-LV', {
+        dateStyle: 'short',
+        timeStyle: 'short'
+      })
     },
-    prev() { this.$refs.fullCalendar.getApi().prev() },
-    next() { this.$refs.fullCalendar.getApi().next() },
+
+    prev() {
+      this.$refs.fullCalendar?.getApi().prev()
+    },
+
+    next() {
+      this.$refs.fullCalendar?.getApi().next()
+    },
+
     eventeditMember() {
-      const eventMemberId = this.selectedEvent.extendedProps.dance_group_member?.id
-      this.isEventCreator = this.danceGroups.some(group => group.member_id === eventMemberId)
+      const eventMemberId =
+        this.selectedEvent?.extendedProps?.dance_group_member?.id
+
+      this.isEventCreator = this.authStore.danceGroupMembers.some(member =>
+        member.member_id === eventMemberId &&
+        member.role === 'leader' &&
+        member.status === 'approved'
+      )
     },
+
     editEvent() {
       const e = this.selectedEvent
+      if (!e) return
+
       this.editForm = {
         id: e.id,
         name: e.title,
-        location: e.extendedProps.location,
-        description: e.extendedProps.description,
+        location: e.extendedProps.location || '',
+        description: e.extendedProps.description || '',
         date_start: this.formatForInput(e.start),
         date_end: this.formatForInput(e.end),
+        dance_groups: e.extendedProps.dance_groups || []
       }
+
       this.editDialog = true
     },
+
     formatForInput(date) {
       if (!date) return ''
+
       const d = new Date(date)
       const pad = n => n.toString().padStart(2, '0')
-      return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`
+
+      return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`
     },
+
     formatForDB(date) {
       if (!date) return null
+
       const d = new Date(date)
       const pad = n => n.toString().padStart(2, '0')
-      return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`
+
+      return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`
     },
+
     async submitEditEvent() {
       try {
         const payload = {
@@ -302,41 +356,70 @@ export default {
           date_start: this.formatForDB(this.editForm.date_start),
           date_end: this.formatForDB(this.editForm.date_end)
         }
-        await axios.put(`/api/event/${payload.id}`, payload, { withCredentials: true })
+
+        await axios.put(
+          `/api/event/${payload.id}`,
+          payload,
+          { withCredentials: true }
+        )
+
         this.editDialog = false
         this.dialog = false
-        this.fetchEvents()
+
+        await this.fetchEvents()
       } catch (err) {
-        console.error(err)
+        console.error('Neizdevās atjaunināt pasākumu:', err)
         alert('Neizdevās atjaunināt pasākumu')
       }
     },
+
     async deleteEvent() {
+      if (!this.selectedEvent) return
+
       const id = this.selectedEvent.id
+
       try {
-        await axios.delete(`/api/event/${id}`, { withCredentials: true })
+        await axios.delete(`/api/event/${id}`, {
+          withCredentials: true
+        })
+
         this.dialog = false
-        this.fetchEvents()
+        this.selectedEvent = null
+
+        await this.fetchEvents()
       } catch (err) {
-        console.error(err)
+        console.error('Neizdevās dzēst pasākumu:', err)
         alert('Neizdevās dzēst ierakstu')
       }
     },
-     async deleteEventAdmin() {
+
+    async deleteEventAdmin() {
+      if (!this.selectedEvent) return
+
       const id = this.selectedEvent.id
+
       try {
-        await axios.delete(`/api/event/admin/${id}`, { withCredentials: true })
+        await axios.delete(`/api/event/admin/${id}`, {
+          withCredentials: true
+        })
+
         this.dialog = false
-        this.fetchEvents()
+        this.selectedEvent = null
+
+        await this.fetchEvents()
       } catch (err) {
-        console.error(err)
+        console.error('Neizdevās dzēst pasākumu:', err)
         alert('Neizdevās dzēst ierakstu')
       }
     }
   },
-  mounted() {
+
+  async mounted() {
     this.fetchEvents()
-    this.fetchProfileInfo()
+
+    if (this.authStore.loading) {
+      await this.authStore.fetchUser()
+    }
   }
 }
 </script>

@@ -38,6 +38,22 @@ class EventController extends Controller
         return (new EventResource($event->load('member.danceGroup')))->response()->setStatusCode(201);
     }
 
+    public function eventFilter($genre)
+    {
+        $events = Event::with([
+                'member.danceGroup',
+                'ageGroups.danceGroup',
+                'ageGroups.admissions'
+            ])
+            ->whereHas('member.danceGroup', function ($query) use ($genre) {
+                $query->where('genre', $genre);
+            })
+            ->orderByDesc('created_at')
+            ->get();
+
+        return EventResource::collection($events);
+    }
+
     public function attachAgeGroups(Request $request, Event $event)
     {
         $validated = $request->validate([

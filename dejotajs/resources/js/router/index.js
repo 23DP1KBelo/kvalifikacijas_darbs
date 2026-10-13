@@ -8,10 +8,8 @@ import AdminDashboard from '../components/pages/admin/AdminDashboard.vue';
 import DanceGroupForm from '../components/pages/danceGroups/CreateDanceGroup.vue';
 import DanceGroupPage from '../components/pages/danceGroups/DanceGroupPage.vue';
 import NoAccess from '../components/errors/NoAccess.vue';
-import DancerApproval from '../components/pages/leader/ApproveDancer.vue';
 import LeaderForm from '../components/pages/leader/CreateLeader.vue';
 import DanceGroupList from '../components/pages/leader/AddLeader.vue';
-import LeaderApproval from '../components/pages/leader/ApproveLeader.vue';
 import DanceGroupDashboard from '../components/pages/danceGroups/SearchDanceGroup.vue';
 import DanceGroupInfo from '../components/pages/danceGroups/ShowDanceGroup.vue';
 import PostsShow from '../components/pages/posts/ShowPosts.vue';
@@ -20,6 +18,7 @@ import CalenderDashboard from '../components/pages/calender/calenderDashboard.vu
 import EventForm from '../components/pages/calender/EventForm.vue';
 import AdminStats from '../components/pages/admin/AdminStats.vue';
 import DancerChat from '../components/pages/chat/dancerChat.vue';
+import Memberpage from '../components/pages/leader/Memberpage.vue';
 const routes = [
     { path: '/', component: Home },
     { path: '/login', component: Login },
@@ -29,10 +28,8 @@ const routes = [
     { path: '/create-dance-group', component: DanceGroupForm},
     { path: '/group/:id', component: DanceGroupPage},
     { path: '/no-access', component: NoAccess },
-    { path: '/dancerApproval/:id', component: DancerApproval, meta: { requiresAuth: true, requiresLeader: true } },
     { path: '/dance-leader', component: LeaderForm, meta: { requiresAuth: true } },
     { path: '/danceGroup-list', component: DanceGroupList, meta: {requiresAuth: true}},
-    { path: '/leaderApproval/:id', component: LeaderApproval, meta: {requiresAuth: true, requiresLeader:true}},
     { path: '/dance-groups', component: DanceGroupDashboard},
     { path: '/group-info/:id', component: DanceGroupInfo},
     { path: '/posts', component: PostsShow },
@@ -40,7 +37,8 @@ const routes = [
     { path: '/calender', component: CalenderDashboard},
     { path: '/calender/event', component: EventForm, meta: {requiresAuth: true, requiresLeader: true}},
     { path: '/dashboard/stats', component: AdminStats, meta: { requiresAuth: true, requiresAdmin: true }},
-    { path: '/chat', component: DancerChat}
+    { path: '/chat', component: DancerChat},
+    { path: '/members/:id', component: Memberpage, meta: {requiresAuth: true, requiresLeader: true}},
 ];
 
 const router = createRouter({

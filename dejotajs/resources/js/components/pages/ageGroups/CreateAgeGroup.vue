@@ -89,6 +89,9 @@ export default {
             this.$emit('update:modelValue', false);
             this.$emit('updated');
 
+            this.name = '';
+            this.age_group = '';
+
         } catch (err) {
             this.error =
             err.response?.data?.message ||

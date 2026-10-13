@@ -40,6 +40,7 @@ Route::post('/login', Login::class);
 Route::post('/register', [RegistrationController::class, 'register']);
 
 Route::get('/danceGroups-all', [DanceGroupController::class, 'getAllGroups']);
+Route::get('/events/filter/{genre}', [EventController::class, 'eventFilter']);
 Route::get('/search-dance-groups', [DanceGroupController::class, 'search']);
 Route::get('/filter-dance-groups', [DanceGroupController::class, 'filterGroups']);
 Route::get('/sort-dance-groups/{sort}', [DanceGroupController::class, 'groupSorting']);
@@ -91,10 +92,13 @@ Route::middleware(['auth:sanctum', 'leader'])->group(function () {
 
     Route::get('/dancers/{group}', [DanceGroupMemberController::class, 'showDancers']);
 
+    Route::get('/members/{group}/search', [DanceGroupMemberController::class, 'searchGroupMembers']);
+
     Route::post('/dancers/approval', [DanceGroupMemberController::class, 'approveMember']);
     Route::post('/dancers/decline', [DanceGroupMemberController::class, 'declineMember']);
 
     Route::get('/approval-leader/{group}', [DanceGroupMemberController::class, 'showLeaders']);
+    Route::delete('/delete-member/{member}', [DanceGroupMemberController::class, 'destroy']);
 
     Route::post('/approval-leader', [DanceGroupMemberController::class, 'approveMember']);
     Route::post('/decline-leader', [DanceGroupMemberController::class, 'declineMember']);
