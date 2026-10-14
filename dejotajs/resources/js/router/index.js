@@ -14,7 +14,7 @@ import DanceGroupDashboard from '../components/pages/danceGroups/SearchDanceGrou
 import DanceGroupInfo from '../components/pages/danceGroups/ShowDanceGroup.vue';
 import PostsShow from '../components/pages/posts/ShowPosts.vue';
 import AdmissonDashboard from '../components/pages/admissions/ShowAdmission.vue';
-import CalenderDashboard from '../components/pages/calender/calenderDashboard.vue';
+import CalenderDashboard from '../components/pages/calender/CalenderDashboard.vue';
 import EventForm from '../components/pages/calender/EventForm.vue';
 import AdminStats from '../components/pages/admin/AdminStats.vue';
 import DancerChat from '../components/pages/chat/dancerChat.vue';

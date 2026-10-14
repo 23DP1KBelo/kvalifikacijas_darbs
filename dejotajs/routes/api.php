@@ -46,6 +46,7 @@ Route::get('/filter-dance-groups', [DanceGroupController::class, 'filterGroups']
 Route::get('/sort-dance-groups/{sort}', [DanceGroupController::class, 'groupSorting']);
 Route::get('/filter-options', [DanceGroupController::class, 'filterOptions']);
 Route::get('/events', [EventController::class, 'index']);
+Route::get('/event/{event}', [EventController::class, 'show']);
 Route::get('/dance-group-info/{danceGroup}', [DanceGroupController::class, 'show']);
 Route::get('/admission-age-groups', [AgeGroupController::class, 'getAdmissonAgeGroups']);
 

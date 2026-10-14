@@ -3,8 +3,8 @@
       <h1 class="text-center text-accents">
         KALENDĀRS
       </h1>
-      <p class="text-subhed text-center">
-        Ieraugi, apskati, apmeklē!
+      <p class="text-subhed text-center mb-6">
+        Vieta, kur satiekas deja un notikumi
       </p>
     <div class="mb-2 d-flex flex-row justify-end">
       <v-btn
@@ -71,96 +71,16 @@
         />
       </v-card-text>
     </v-card>
-    <v-dialog v-model="dialog" max-width="520">
-      <v-card v-if="selectedEvent" rounded="xl" elevation="6" class="bg-background">
-        <v-card-title class="text-h5 font-weight-bold d-flex align-center justify-space-between">
-          <div class="d-flex align-center">
-            <v-icon class="mr-3" color="text">mdi-calendar-star</v-icon>
-            {{ selectedEvent.title }}
-          </div>
-          <div>
-            <v-btn v-if="isEventCreator" icon="mdi-pencil" variant="text" @click="editEvent()"/>
-            <v-btn v-if="isEventCreator" icon="mdi-delete" variant="text" color="red" @click="deleteEvent()"/>
-            <v-btn v-if="isAdmin" icon="mdi-delete" variant="text" color="red" @click="deleteEventAdmin()"/>
-          </div>
-        </v-card-title>
-        <v-divider />
-        <v-card-text>
-        <v-card-text>
-          Izveidoja: {{ selectedEvent.extendedProps.dance_group_member.name }} ({{ genreLV(selectedEvent.extendedProps.dance_group_member.genre) }})
-        </v-card-text>
-          <v-list density="comfortable" class="bg-background" >
-            <v-list-item>
-              <template #prepend>
-                <v-icon color="text">mdi-map-marker</v-icon>
-              </template>
-              <v-list-item-title>
-                {{ selectedEvent.extendedProps.location }}
-              </v-list-item-title>
-              <v-list-item-subtitle>Norises vieta</v-list-item-subtitle>
-            </v-list-item>
-            <v-list-item>
-              <template #prepend>
-                <v-icon color="text">mdi-clock-outline</v-icon>
-              </template>
-              <v-list-item-title>
-                {{ formatDate(selectedEvent.start) }} - {{ formatDate(selectedEvent.end) }}
-              </v-list-item-title>
-              <v-list-item-subtitle>Laiks</v-list-item-subtitle>
-            </v-list-item>
-          </v-list>
-          <v-divider class="my-4"/>
-          <div class="text-body-1">{{ selectedEvent.extendedProps.description }}</div>
-          <v-divider class="my-4"/>
-          <div class="text-subtitle-1 font-weight-medium mb-3">Piedalās grupas</div>
-          <div v-if="selectedEvent.extendedProps.dance_groups?.length">
-            <v-chip
-              v-for="group in selectedEvent.extendedProps.dance_groups"
-              :key="group.id"
-              class="ma-1"
-              color="text"
-              variant="tonal"
-            >
-              <strong class="mr-2">
-                {{ group.dance_group?.name || group.name || 'Nezināma grupa' }}:
-              </strong>
-              {{ group.name || '—' }}
-
-              <span v-if="group.age_group">
-                ({{ group.age_group }})
-              </span>
-        </v-chip>
-          </div>
-          <div v-else>
-            Nav norādītas grupas, kas piedalās šajā pasākumā.
-          </div>
-        </v-card-text>
-        <v-divider />
-        <v-card-actions class="px-4 pb-4">
-          <v-spacer/>
-          <v-btn color="white" variant="tonal" @click="dialog=false">Aizvērt</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-
-    <v-dialog v-model="editDialog" max-width="600">
-      <v-card rounded="xl">
-        <v-card-title class="text-h5 font-weight-bold">Rediģēt pasākumu</v-card-title>
-        <v-divider/>
-        <v-card-text>
-          <v-text-field v-model="editForm.name" label="Pasākuma nosaukums"/>
-          <v-text-field v-model="editForm.location" label="Vieta"/>
-          <v-textarea v-model="editForm.description" label="Apraksts"/>
-          <v-text-field v-model="editForm.date_start" label="Sākuma laiks" type="datetime-local"/>
-          <v-text-field v-model="editForm.date_end" label="Beigu laiks" type="datetime-local"/>
-        </v-card-text>
-        <v-divider/>
-        <v-card-actions>
-          <v-spacer/>
-          <v-btn variant="text" @click="editDialog=false">Atcelt</v-btn>
-          <v-btn color="primary" @click="submitEditEvent">Saglabāt</v-btn>
-        </v-card-actions>
-      </v-card>
+    <v-dialog
+      v-model="dialog"
+      max-width="1100"
+      width="calc(100% - 24px)"
+    >
+      <ShowEvent
+        v-if="selectedEvent"
+        :event-id="selectedEvent.id"
+        @close="dialog = false"
+      />
     </v-dialog>
   </v-container>
 </template>
@@ -173,9 +93,13 @@ import interactionPlugin from '@fullcalendar/interaction'
 import lvLocale from '@fullcalendar/core/locales/lv'
 import axios from 'axios'
 import { useAuthStore } from '@/stores/auth'
+import ShowEvent from '../calender/ShowEvent.vue';
 
 export default {
-  components: { FullCalendar },
+  components: { 
+    FullCalendar,
+    ShowEvent
+  },
 
   data() {
     return {

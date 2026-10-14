@@ -86,12 +86,12 @@
 
         <span>{{ link }}</span>
       </v-btn>
-      <v-btn @click="goTo('/danceGroup/controls')">
+      <v-btn @click="goTo('/chat')">
         <v-icon>
-            mdi-account-group
+            mdi-message-text-outline
         </v-icon>
 
-        <span>Pārvaldība</span>
+        <span> Saziņa</span>
       </v-btn>
     </v-bottom-navigation>
 </template>

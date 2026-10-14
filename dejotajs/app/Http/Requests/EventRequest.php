@@ -26,7 +26,7 @@ class EventRequest extends FormRequest
             'description' => 'max:500',
             'location' => 'required',
             'date_start' => 'required',
-            'date_end' => 'required',
+            'date_end' => 'required|date|after:date_start',
             'dance_group_member_id' => 'required|exists:dance_group_members,id',
             'age_group_ids' => 'array',
             'age_group_ids.*' => 'exists:age_groups,id',
@@ -41,6 +41,7 @@ class EventRequest extends FormRequest
             'description.max' => 'Aprakstam jabūt līdz 500 simboliem.',
             'date_start.required' => 'Norādiet sākuma datumu un laiku,',
             'date_end.required' => 'Norādiet beigu datumu un laiku',
+            'date_end.after' => 'Beigu datumam jābūt vēlākam par sākuma datumu',
             'dance_group_member_id' => 'Nav norādīts veidotājs',
         ];
     }

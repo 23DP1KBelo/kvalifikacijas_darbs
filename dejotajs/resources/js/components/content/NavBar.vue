@@ -3,10 +3,44 @@
   <img src="../../assets/img/logo.png" alt="Logo" class="logo" @click="$router.push('/')"/>
 
   <v-spacer/>
+<!-- Datorā: pogas ar tekstu -->
+  <div class="d-none d-md-flex align-center mr-4">
+    <v-btn
+      variant="plain"
+      class="text-black text text-none letter-spacing-0"
+      @click="goTo('/register')"
+    >
+      Reģistrēties
+    </v-btn>
 
-  <div class="d-flex align-center">
-    <v-btn class="pt-0 pb-0 pl-0 text-black text text-none letter-spacing-0" variant="plain" @click="$router.push('/register')">Reģistrēties / </v-btn>
-    <v-btn rounded="lg" class="bg-accent pt-0 pb-0 pl-4 pr-5 text text-none letter-spacing-0 mr-3" @click="$router.push('/login')">Pieslēgties</v-btn>
+    <v-btn
+      rounded="lg"
+      class="bg-accent text text-none letter-spacing-0"
+      @click="goTo('/login')"
+    >
+      Pieslēgties
+    </v-btn>
+  </div>
+
+  <!-- Telefonā: tikai ikonas -->
+  <div class="d-flex d-md-none align-center mr-2">
+    <v-btn
+      icon
+      variant="text"
+      aria-label="Reģistrēties"
+      @click="goTo('/register')"
+    >
+      <v-icon size="26">mdi-account-plus-outline</v-icon>
+    </v-btn>
+
+    <v-btn
+      icon
+      variant="text"
+      aria-label="Pieslēgties"
+      @click="goTo('/login')"
+    >
+      <v-icon size="26">mdi-login</v-icon>
+    </v-btn>
   </div>
 </v-app-bar>
   <v-navigation-drawer class="pt-10 d-flex flex-colum ">
@@ -18,14 +52,34 @@
         class="hover-effect pt-6 ml-5 text-2xl"
         @click="goTo(linkRoutes[index])"
       >
-        <v-list-item-title class="text-text text-h7 mb-6"><v-icon class="mr-5 ml-5">{{ icons[index] }}</v-icon> {{ link }}</v-list-item-title>
+        <v-list-item-title class="text-text text-h7 mb-6">
+          <v-icon class="mr-5 ml-5">
+            {{ icons[index] }}
+          </v-icon> 
+          {{ link }}
+        </v-list-item-title>
       </v-list-item>
     </v-list>
-    <!-- <v-btn icon @click="toggleTheme" aria-label="Fona maiņa">
-        <v-icon>
-          {{ isDark ? 'mdi-white-balance-sunny' : 'mdi-weather-night' }}
-        </v-icon>
-      </v-btn> -->
+    <!-- Telefons -->
+    <div class="d-flex d-md-none align-center mr-2">
+      <v-btn
+        icon
+        variant="text"
+        aria-label="Reģistrēties"
+        @click="goTo('/register')"
+      >
+        <v-icon size="26">mdi-account-plus-outline</v-icon>
+      </v-btn>
+
+      <v-btn
+        icon
+        variant="text"
+        aria-label="Pieslēgties"
+        @click="goTo('/login')"
+      >
+        <v-icon size="26">mdi-login</v-icon>
+      </v-btn>
+    </div>
   </v-navigation-drawer>
 
    <v-bottom-navigation

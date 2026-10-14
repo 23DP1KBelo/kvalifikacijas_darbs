@@ -75,7 +75,10 @@ class EventController extends Controller
      */
     public function show(Event $event)
     {
-        $event->load('member.danceGroup');
+        $event->load([
+            'ageGroups',
+        ]);
+
         return new EventResource($event);
     }
 
