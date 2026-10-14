@@ -28,7 +28,7 @@
         alt="Kolektīva attēls"
       />
       <!-- Vieta, dalībnieki, žanrs -->
-      <div class="d-flex flex-row justify-space-between mt-7">
+      <div class="d-flex flex-column flex-md-row justify-space-between mt-7 ga-4">
         <div class="mb-3 d-flex flex-row">
           <v-icon>
             mdi-map-marker-outline
@@ -295,10 +295,13 @@
               <v-dialog
                 v-model="dialog"
                 max-width="1100"
+                scrim="rgba(0, 0, 0, 0.4)"
               >
                 <v-card
                   class="rounded-0 order-last order-md-first"
                   min-height="600"
+                  color="white"
+                  elevation="0"
                 >
                   <v-row no-gutters class="h-100">
                     <v-col
@@ -346,12 +349,12 @@
                         <v-btn
                           v-if="isLeader"
                           variant="text"
-                          class="mt-5 ml-2"
+                          class="mt-5 "
                           @click="openPostEditDialog(selectedPost)"
                         >
                           <v-icon>mdi-pencil-outline</v-icon>
                         </v-btn>
-                        <h2 class="text-accent text-accents mt-6 text-uppercase text-center">
+                        <h2 class="text-accent  mt-6 text-uppercase text-center">
                           {{ selectedPost?.title }}
                         </h2>
                        </div>
