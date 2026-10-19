@@ -131,6 +131,11 @@ Route::middleware(['auth:sanctum', 'admin'])->group(function () {
 
     Route::get('/admin/stats', [DanceGroupController::class, 'index']);
     Route::get('/admin/stats-dancers', [DanceGroupController::class, 'getAllGroups']);
+
+    Route::get('/admin/users/search', [AdminController::class,'UserSearch']);
+    Route::get('/admin/danceGroups/search', [AdminController::class,'DanceGroupSearch']);
+    Route::get('/admin/posts/search', [AdminController::class,'PostSearch']);
+    Route::get('/admin/events/search', [AdminController::class,'EventSearch']);
 });
 
 

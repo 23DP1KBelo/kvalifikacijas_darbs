@@ -1,68 +1,36 @@
+
 <template>
   <v-container fluid class="pa-4 pa-md-8">
     <!-- Lapas galvene -->
-    <div class=" mb-8">
-      <div>
-        <h1 class="">
-          ADMINISTRĒŠANA
-        </h1>
-
-        <p class="text-body-2 text-small mt-2">
+    <div class="mb-8">
+      <h1>ADMINISTRĒŠANA</h1>
+      <p class="text-body-2 text-small mt-2">
         Pārvaldi pieteikumus, lietotājus, kolektīvus, pasākumus un ierakstus.
       </p>
-      </div>
     </div>
-    <!-- Kopsavilkuma kartītes -->
-    <v-row dense class="mb-8 ">
-      <v-col cols="12" sm="3">
-        <!-- Lietotaji -->
-        <v-card 
-          class="pa-4" 
-          elevation="1"
-        >
-          <div class="d-flex align-center  ga-5 mt-5">
-              <v-icon color="blue-darken-2">
-                mdi-account-group-outline
-              </v-icon>
 
+    <!-- Kopsavilkuma kartītes -->
+    <v-row dense class="mb-8">
+      <v-col cols="12" sm="3">
+        <v-card class="pa-4" elevation="1">
+          <div class="d-flex align-center ga-5 mt-5">
+            <v-icon color="blue-darken-2">mdi-account-group-outline</v-icon>
             <div class="ml-6">
               <div class="text-h5 font-weight-bold">
-                  Lietotāji {{ users.length }}
+                Lietotāji {{ userTotal }}
               </div>
             </div>
           </div>
         </v-card>
       </v-col>
+
       <v-col cols="12" sm="3">
-        <!-- Kolektivi -->
-         <v-card 
-            class=" pa-4" 
-            elevation="1"
-          >
+        <v-card class="pa-4" elevation="1">
           <div class="d-flex align-center ga-5 mt-5">
-              <v-icon color="green-darken-2">
-                mdi-dance-ballroom
-              </v-icon>
-              <div class="ml-6">
+            <v-icon color="green-darken-2">mdi-dance-ballroom</v-icon>
+            <div class="ml-6">
               <div class="text-h5 font-weight-bold">
-                   Kolektīvi {{ allGroups.length }}
-              </div>
-            </div>
-          </div>
-        </v-card>
-      </v-col>
-      <v-col cols="12" sm="2">
-        <v-card 
-          class="pa-4" 
-          elevation="1"
-        >
-          <div class="d-flex align-center ga-2 mt-5">
-              <v-icon color="yellow-darken-2">
-                mdi-text-box-multiple
-              </v-icon>
-              <div class="ml-6">
-              <div class="text-h6 font-weight-bold">
-                  Ieraksti {{ allGroups.length }}
+                Kolektīvi {{ groupTotal }}
               </div>
             </div>
           </div>
@@ -70,17 +38,25 @@
       </v-col>
 
       <v-col cols="12" sm="2">
-         <v-card 
-            class="pa-4" 
-            elevation="1"
-          >
+        <v-card class="pa-4" elevation="1">
           <div class="d-flex align-center ga-2 mt-5">
-              <v-icon color="blue-darken-2">
-                mdi-calendar-month
-              </v-icon>
-              <div class="ml-6">
+            <v-icon color="yellow-darken-2">mdi-text-box-multiple</v-icon>
+            <div class="ml-6">
               <div class="text-h6 font-weight-bold">
-                  Pasākumi {{ allGroups.length }}
+                Ieraksti {{ postTotal }}
+              </div>
+            </div>
+          </div>
+        </v-card>
+      </v-col>
+
+      <v-col cols="12" sm="2">
+        <v-card class="pa-4" elevation="1">
+          <div class="d-flex align-center ga-2 mt-5">
+            <v-icon color="blue-darken-2">mdi-calendar-month</v-icon>
+            <div class="ml-6">
+              <div class="text-h6 font-weight-bold">
+                Pasākumi {{ eventTotal }}
               </div>
             </div>
           </div>
@@ -88,7 +64,7 @@
       </v-col>
     </v-row>
 
-    <!-- Kļūdas paziņojums -->
+    <!-- Lapas kļūda -->
     <v-alert
       v-if="pageError"
       type="error"
@@ -99,16 +75,14 @@
     >
       {{ pageError }}
     </v-alert>
+
     <!-- Apstiprinājumi -->
     <section class="mb-10">
       <v-expansion-panels variant="accordion">
         <v-expansion-panel elevation="0">
           <v-expansion-panel-title class="px-0">
             <div class="d-flex align-center ga-5">
-              <h2 class="text-small">
-                Apstiprinājumi
-              </h2>
-
+              <h2 class="text-small">Apstiprinājumi</h2>
               <v-chip color="red-darken-2" variant="tonal">
                 {{ groups.length }}
               </v-chip>
@@ -119,9 +93,10 @@
             <v-progress-linear
               v-if="loadingGroups"
               indeterminate
-              color="primary"
+              color="accent"
               class="mb-4"
             />
+
             <v-row v-if="groups.length" dense>
               <v-col
                 v-for="group in groups"
@@ -137,9 +112,9 @@
                     </h3>
 
                     <p class="text-body-2 text-medium-emphasis mb-4">
-                      {{ group.city || 'Pilsēta nav norādīta' }},
+                      {{ group.city || 'Pilsēta nav norādīta' }}
                       <span v-if="group.address">
-                        {{ group.address }}
+                        , {{ group.address }}
                       </span>
                     </p>
 
@@ -155,17 +130,19 @@
                   </v-card-text>
 
                   <v-divider />
+
                   <v-card-actions class="pa-4 flex-wrap">
                     <v-btn
                       color="success"
                       variant="tonal"
                       prepend-icon="mdi-check"
-                      :loading="processingId === group.id"
+                      :loading="processingId === group.id && processingAction === 'approve'"
                       :disabled="!!processingId"
                       @click="updateStatus(group.id, 'approve')"
                     >
                       Apstiprināt
                     </v-btn>
+
                     <v-btn
                       color="error"
                       variant="tonal"
@@ -176,15 +153,15 @@
                     >
                       Noraidīt
                     </v-btn>
+
                     <v-spacer />
 
                     <v-btn
                       v-if="group.approval_url"
                       icon="mdi-file-document-outline"
                       variant="text"
-                      color="primary"
+                      color="accent"
                       aria-label="Atvērt dokumentu"
-                      title="Atvērt dokumentu"
                       :href="group.approval_url"
                       target="_blank"
                       rel="noopener noreferrer"
@@ -199,224 +176,248 @@
               class="empty-card pa-8 text-center"
               elevation="0"
             >
-                <v-icon color="success" size="32">
-                  mdi-check-circle-outline
-                </v-icon>
-
-              <h3 class="text-small">
-                Visi pieteikumi izskatīti!
-              </h3>
+              <v-icon color="success" size="32">
+                mdi-check-circle-outline
+              </v-icon>
+              <h3 class="text-small">Visi pieteikumi izskatīti!</h3>
             </v-card>
           </v-expansion-panel-text>
         </v-expansion-panel>
       </v-expansion-panels>
     </section>
-    <!-- Lietotāji un visi kolektīvi -->
-    <v-row dense>
-      <!-- Lietotāji -->
-      <v-col cols="12" lg="5">
-        <v-card class="admin-card h-100" elevation="0">
-          <v-card-title class="pa-5">
-            <div class="d-flex align-center ga-3">
-              <v-avatar color="blue-lighten-5">
-                <v-icon color="primary">mdi-account-multiple</v-icon>
-              </v-avatar>
 
-              <div>
-                <div class="text-h6 font-weight-bold">
-                  Lietotāji
-                </div>
-                <div class="text-caption text-medium-emphasis">
-                  Reģistrētie sistēmas lietotāji
-                </div>
+    <!-- Navigācija: lietotāji, kolektīvi, ieraksti, pasākumi -->
+    <v-card class="admin-card mt-6" elevation="0">
+      <v-tabs
+        v-model="activeSection"
+        color="accent"
+        class="text-small"
+        show-arrows
+        @update:model-value="changeSection"
+      >
+        <v-tab value="users" prepend-icon="mdi-account-multiple">
+          Lietotāji
+        </v-tab>
+        <v-tab value="groups" prepend-icon="mdi-dance-ballroom">
+          Kolektīvi
+        </v-tab>
+        <v-tab value="posts" prepend-icon="mdi-text-box-multiple">
+          Ieraksti
+        </v-tab>
+        <v-tab value="events" prepend-icon="mdi-calendar-month">
+          Pasākumi
+        </v-tab>
+      </v-tabs>
+
+      <v-divider />
+
+      <v-card-text class="pa-4">
+        <div class="d-flex flex-wrap align-center ga-3 mb-4">
+          <div>
+            <div class="text-h6 font-weight-bold">{{ activeTitle }}</div>
+            <div class="text-caption text-medium-emphasis">
+              {{ activeSubtitle }}
+            </div>
+          </div>
+        </div>
+        <!-- Meklēšana -->
+        <v-text-field
+          v-model="searchQuery"
+          :placeholder="searchPlaceholder"
+          prepend-inner-icon="mdi-magnify"
+          variant="outlined"
+          density="compact"
+          hide-details
+          clearable
+          class="mb-4"
+        />
+
+        <v-alert
+          v-if="searchError"
+          type="error"
+          variant="tonal"
+          closable
+          class="mb-4"
+          @click:close="searchError = ''"
+        >
+          {{ searchError }}
+        </v-alert>
+
+        <!-- Lietotāji -->
+        <v-data-table-server
+          v-if="activeSection === 'users'"
+          :headers="userHeaders"
+          :items="activeItems"
+          :items-length="totalItems"
+          :loading="searchLoading"
+          :page="page"
+          :items-per-page="perPage"
+          :items-per-page-options="[5, 10, 25, 50]"
+          item-value="id"
+          no-data-text="Lietotāji nav atrasti."
+          loading-text="Ielādē lietotājus..."
+          items-per-page-text="Ieraksti lapā"
+          @update:options="onTableOptions"
+        >
+          <template v-slot:[`item.email`]="{ item }">
+            <div class="d-flex align-center ga-3 py-1">
+                <v-icon color="accent">mdi-account-outline</v-icon>
+              <p>
+                {{ item.name }} {{ item.surname }} ({{ item.email }})
+              </p>
+            </div>
+          </template>
+
+          <template v-slot:[`item.role`]="{ item }">
+            <v-chip
+              :color="item.role === 'admin' ? 'accent' : 'default'"
+              size="small"
+            >
+              {{ roleMap[item.role] || item.role }}
+            </v-chip>
+          </template>
+        </v-data-table-server>
+
+        <!-- Kolektīvi -->
+        <v-data-table-server
+          v-else-if="activeSection === 'groups'"
+          :headers="groupHeaders"
+          :items="activeItems"
+          :items-length="totalItems"
+          :loading="searchLoading"
+          :page="page"
+          :items-per-page="perPage"
+          :items-per-page-options="[5, 10, 25, 50]"
+          item-value="id"
+          no-data-text="Kolektīvi nav atrasti."
+          loading-text="Ielādē kolektīvus..."
+          items-per-page-text="Ieraksti lapā"
+          @update:options="onTableOptions"
+        >
+          <template v-slot:[`item.name`]="{ item }">
+            <div class="py-2">
+              <div class="font-weight-bold">{{ item.name }}</div>
+              <div class="text-caption text-medium-emphasis">
+                {{ item.city || 'Pilsēta nav norādīta' }}
               </div>
 
-              <v-spacer />
-
-              <v-chip size="small" variant="tonal">
-                {{ users.length }}
-              </v-chip>
-            </div>
-          </v-card-title>
-
-          <v-divider />
-
-          <v-card-text class="pa-3">
-            <v-text-field
-              v-model="userSearch"
-              placeholder="Meklēt pēc e-pasta..."
-              prepend-inner-icon="mdi-magnify"
-              variant="outlined"
-              density="compact"
-              hide-details
-              clearable
-              class="mb-3"
-            />
-
-            <v-list v-if="filteredUsers.length" class="pa-0">
-              <v-list-item
-                v-for="user in filteredUsers"
-                :key="user.id"
-                rounded="lg"
-                class="mb-1"
+              <div
+                v-if="item.age_groups?.length"
+                class="d-flex flex-wrap ga-1 mt-2"
               >
-                <template #prepend>
-                  <v-avatar color="blue-lighten-5" size="42">
-                    <v-icon color="primary">mdi-account-outline</v-icon>
-                  </v-avatar>
-                </template>
-
-                <v-list-item-title class="text-body-2 font-weight-medium">
-                  {{ user.email }}
-                </v-list-item-title>
-
-                <v-list-item-subtitle>
-                  {{ roleMap[user.role] || user.role }}
-                </v-list-item-subtitle>
-
-                <template #append>
-                  <v-chip
-                    :color="user.role === 'admin' ? 'primary' : 'default'"
-                    size="x-small"
-                    variant="tonal"
-                  >
-                    {{ roleMap[user.role] || user.role }}
-                  </v-chip>
-                </template>
-              </v-list-item>
-            </v-list>
-
-            <div v-else class="text-center text-medium-emphasis pa-6">
-              Lietotāji nav atrasti.
-            </div>
-          </v-card-text>
-        </v-card>
-      </v-col>
-
-      <!-- Visi deju kolektīvi -->
-      <v-col cols="12" lg="7">
-        <v-card class="admin-card h-100" elevation="0">
-          <v-card-title class="pa-5">
-            <div class="d-flex align-center ga-3">
-              <v-avatar color="purple-lighten-5">
-                <v-icon color="purple-darken-1">
-                  mdi-dance-ballroom
-                </v-icon>
-              </v-avatar>
-
-              <div>
-                <div class="text-h6 font-weight-bold">
-                  Deju kolektīvi
-                </div>
-                <div class="text-caption text-medium-emphasis">
-                  Visi reģistrētie kolektīvi
-                </div>
-              </div>
-
-              <v-spacer />
-
-              <v-chip size="small" variant="tonal">
-                {{ allGroups.length }}
-              </v-chip>
-            </div>
-          </v-card-title>
-
-          <v-divider />
-
-          <v-card-text class="pa-3">
-            <v-text-field
-              v-model="groupSearch"
-              placeholder="Meklēt kolektīvu..."
-              prepend-inner-icon="mdi-magnify"
-              variant="outlined"
-              density="compact"
-              hide-details
-              clearable
-              class="mb-3"
-            />
-
-            <v-list v-if="filteredGroups.length" class="pa-0">
-              <v-list-item
-                v-for="group in filteredGroups"
-                :key="group.id"
-                rounded="lg"
-                class="mb-2 group-list-item"
-              >
-                <template #prepend>
-                  <v-avatar color="purple-lighten-5" rounded="lg">
-                    <v-icon color="purple-darken-1">
-                      mdi-account-group
-                    </v-icon>
-                  </v-avatar>
-                </template>
-
-                <v-list-item-title class="font-weight-bold">
-                  {{ group.name }}
-                </v-list-item-title>
-
-                <v-list-item-subtitle class="mt-1">
-                  <template v-if="group.leaders?.length">
-                    Vadītāji:
-                    {{ group.leaders.map(leader =>
-                      `${leader.user?.name || ''} ${leader.user?.surname || ''}`.trim()
-                    ).filter(Boolean).join(', ') }}
-                  </template>
-                  <template v-else>
-                    Vadītāja informācija nav pieejama
-                  </template>
-                </v-list-item-subtitle>
-
-                <div
-                  v-if="group.age_groups?.length"
-                  class="d-flex flex-wrap ga-1 mt-2"
+                <v-chip
+                  v-for="ageGroup in item.age_groups"
+                  :key="ageGroup.id"
+                  size="x-small"
+                  color="accent"
+                  variant="tonal"
                 >
-                  <v-chip
-                    v-for="ageGroup in group.age_groups"
-                    :key="ageGroup.id"
-                    size="x-small"
-                    variant="tonal"
-                    color="primary"
-                  >
-                    {{ ageGroup.name }}
-                    <template v-if="ageGroup.age_group">
-                      ({{ ageGroup.age_group }})
-                    </template>
-                  </v-chip>
-                </div>
-
-                <template #append>
-                  <v-btn
-                    icon="mdi-delete-outline"
-                    variant="text"
-                    color="error"
-                    aria-label="Dzēst kolektīvu"
-                    title="Dzēst kolektīvu"
-                    :loading="deletingId === group.id"
-                    :disabled="!!deletingId"
-                    @click.stop="deleteDanceGroups(group.id)"
-                  />
-                </template>
-              </v-list-item>
-            </v-list>
-
-            <div v-else class="text-center text-medium-emphasis pa-6">
-              Kolektīvi nav atrasti.
+                  {{ ageGroup.name }}
+                </v-chip>
+              </div>
             </div>
-          </v-card-text>
-        </v-card>
-      </v-col>
-    </v-row>
+          </template>
+
+          <template v-slot:[`item.leaders`]="{ item }">
+            {{
+              item.leaders?.map(leader =>
+                `${leader.user?.name || ''} ${leader.user?.surname || ''}`.trim()
+              ).filter(Boolean).join(', ') || 'Vadītāja informācija nav pieejama'
+            }}
+          </template>
+
+          <template v-slot:[`item.actions`]="{ item }">
+            <v-btn
+              icon="mdi-delete-outline"
+              variant="text"
+              color="error"
+              aria-label="Dzēst kolektīvu"
+              :loading="deletingId === item.id"
+              :disabled="!!deletingId"
+              @click="deleteDanceGroups(item.id)"
+            />
+          </template>
+        </v-data-table-server>
+
+        <!-- Ieraksti -->
+        <v-data-table-server
+          v-else-if="activeSection === 'posts'"
+          :headers="postHeaders"
+          :items="activeItems"
+          :items-length="totalItems"
+          :loading="searchLoading"
+          :page="page"
+          :items-per-page="perPage"
+          :items-per-page-options="[5, 10, 25, 50]"
+          item-value="id"
+          no-data-text="Ieraksti nav atrasti."
+          loading-text="Ielādē ierakstus..."
+          items-per-page-text="Ieraksti lapā"
+          @update:options="onTableOptions"
+        >
+
+          <template v-slot:[`item.title`]="{ item }">
+            <div class="py-2" style="white-space: normal; min-width: 180px">
+              {{ item.title || 'Nav nosaukuma' }}
+            </div>
+          </template>
+
+          <template v-slot:[`item.dance_group_member.dance_group.name`]="{ item }">
+            {{ item.dance_group_member?.dance_group?.name || 'Nav norādīts' }}
+          </template>
+
+          <template v-slot:[`item.created_at`]="{ item }">
+            {{ formatDate(item.created_at) }}
+          </template>
+        </v-data-table-server>
+
+        <!-- Pasākumi -->
+        <v-data-table-server
+          v-else-if="activeSection === 'events'"
+          :headers="eventHeaders"
+          :items="activeItems"
+          :items-length="totalItems"
+          :loading="searchLoading"
+          :page="page"
+          :items-per-page="perPage"
+          :items-per-page-options="[5, 10, 25, 50]"
+          item-value="id"
+          no-data-text="Pasākumi nav atrasti."
+          loading-text="Ielādē pasākumus..."
+          items-per-page-text="Ieraksti lapā"
+          @update:options="onTableOptions"
+        >
+          <template v-slot:[`item.name`]="{ item }">
+            <div class="py-2">
+              <div class="font-weight-medium">
+                {{ item.name || item.title || 'Bez nosaukuma' }}
+              </div>
+              <div
+                v-if="item.location"
+                class="text-caption text-medium-emphasis"
+              >
+                {{ [item.location].filter(Boolean).join(', ') }}
+              </div>
+            </div>
+          </template>
+
+          <template v-slot:[`item.date`]="{ item }">
+            {{ formatDate(item.date || item.start_date || item.created_at) }}
+          </template>
+        </v-data-table-server>
+      </v-card-text>
+    </v-card>
+
     <!-- Kolektīva informācijas logs -->
     <AdminDanceGroupDialog
       v-model="groupInfoDialog"
       :group="selectedGroup"
     />
+
     <!-- Dzēšanas apstiprinājums -->
     <v-dialog v-model="deleteDialog" max-width="420">
       <v-card rounded="xl">
-        <v-card-title class="pa-5">
-          Dzēst kolektīvu?
-        </v-card-title>
+        <v-card-title class="pa-5">Dzēst kolektīvu?</v-card-title>
 
         <v-card-text>
           Vai tiešām vēlies dzēst kolektīvu
@@ -426,7 +427,6 @@
 
         <v-card-actions class="pa-4">
           <v-spacer />
-
           <v-btn
             variant="text"
             :disabled="!!deletingId"
@@ -434,7 +434,6 @@
           >
             Atcelt
           </v-btn>
-
           <v-btn
             color="error"
             variant="tonal"
@@ -447,7 +446,7 @@
       </v-card>
     </v-dialog>
 
-    <!-- Darbību paziņojums -->
+    <!-- Paziņojumi -->
     <v-snackbar
       v-model="snackbar.show"
       :color="snackbar.color"
@@ -456,11 +455,8 @@
     >
       {{ snackbar.message }}
 
-      <template #actions>
-        <v-btn
-          variant="text"
-          @click="snackbar.show = false"
-        >
+      <template v-slot:actions>
+        <v-btn variant="text" @click="snackbar.show = false">
           Aizvērt
         </v-btn>
       </template>
@@ -474,19 +470,66 @@ import AdminDanceGroupDialog from '../admin/AdminShowDanceGroup.vue'
 
 export default {
   components: {
-      AdminDanceGroupDialog
+    AdminDanceGroupDialog
   },
+
   data() {
     return {
       groups: [],
-      users: [],
       allGroups: [],
+      users: [],
 
       selectedGroup: null,
       groupInfoDialog: false,
 
-      userSearch: '',
-      groupSearch: '',
+      activeSection: 'users',
+      activeItems: [],
+      searchQuery: '',
+      searchLoading: false,
+      searchError: '',
+
+      page: 1,
+      perPage: 10,
+      totalItems: 0,
+
+      userTotal: 0,
+      groupTotal: 0,
+      postTotal: 0,
+      eventTotal: 0,
+
+      requestNumber: 0,
+      searchTimer: null,
+
+      searchEndpoints: {
+        users: '/api/admin/users/search',
+        groups: '/api/admin/danceGroups/search',
+        posts: '/api/admin/posts/search',
+        events: '/api/admin/events/search'
+      },
+
+      userHeaders: [
+        { title: 'E-pasts', key: 'email', sortable: false },
+        { title: 'Loma', key: 'role', sortable: false },
+        { title: 'Darbības', key: 'actions', sortable: false, align: 'end' }
+      ],
+
+      groupHeaders: [
+        { title: 'Kolektīvs', key: 'name', sortable: false },
+        { title: 'Vadītāji', key: 'leaders', sortable: false },
+        { title: 'Darbības', key: 'actions', sortable: false, align: 'end' }
+      ],
+
+      postHeaders: [
+        { title: 'Ieraksts', key: 'title', sortable: false },
+        { title: 'Izveidots', key: 'created_at', sortable: false },
+        { title: 'Darbības', key: 'actions', sortable: false, align: 'end' }
+      ],
+
+      eventHeaders: [
+        { title: 'Pasākums', key: 'name', sortable: false },
+        { title: 'Datums', key: 'date', sortable: false },
+        { title: 'Darbības', key: 'actions', sortable: false, align: 'end' }
+      ],
 
       loading: false,
       loadingGroups: false,
@@ -505,12 +548,6 @@ export default {
         color: 'success'
       },
 
-      statusMap: {
-        waiting: 'Gaida apstiprinājumu',
-        approved: 'Apstiprināts',
-        declined: 'Noraidīts'
-      },
-
       roleMap: {
         user: 'Lietotājs',
         admin: 'Administrators'
@@ -519,36 +556,62 @@ export default {
   },
 
   computed: {
-    filteredUsers() {
-      const search = this.userSearch.trim().toLowerCase()
+    activeTitle() {
+      const titles = {
+        users: 'Lietotāji',
+        groups: 'Deju kolektīvi',
+        posts: 'Ieraksti',
+        events: 'Pasākumi'
+      }
 
-      if (!search) return this.users
-
-      return this.users.filter(user =>
-        (user.email || '').toLowerCase().includes(search)
-      )
+      return titles[this.activeSection]
     },
 
-    filteredGroups() {
-      const search = this.groupSearch.trim().toLowerCase()
+    activeSubtitle() {
+      const subtitles = {
+        users: 'Reģistrētie sistēmas lietotāji',
+        groups: 'Visi reģistrētie deju kolektīvi',
+        posts: 'Visi publicētie ieraksti',
+        events: 'Visi reģistrētie pasākumi'
+      }
 
-      if (!search) return this.allGroups
+      return subtitles[this.activeSection]
+    },
 
-      return this.allGroups.filter(group =>
-        (group.name || '').toLowerCase().includes(search)
-      )
+    searchPlaceholder() {
+      const placeholders = {
+        users: 'Meklēt pēc e-pasta...',
+        groups: 'Meklēt kolektīvu...',
+        posts: 'Meklēt ierakstu...',
+        events: 'Meklēt pasākumu...'
+      }
+
+      return placeholders[this.activeSection]
+    }
+  },
+
+  watch: {
+    searchQuery() {
+      clearTimeout(this.searchTimer)
+
+      this.searchTimer = setTimeout(() => {
+        this.page = 1
+        this.loadActiveItems()
+      }, 350)
     }
   },
 
   mounted() {
     this.refreshData()
+    this.loadActiveItems()
+  },
+
+  beforeUnmount() {
+    clearTimeout(this.searchTimer)
+    this.requestNumber++
   },
 
   methods: {
-    openGroupInfo(group) {
-      this.selectedGroup = group
-      this.groupInfoDialog = true
-    },
     async refreshData() {
       this.loading = true
       this.pageError = ''
@@ -556,14 +619,40 @@ export default {
       try {
         await Promise.all([
           this.fetchGroups(),
-          this.fetchUsers(),
-          this.fetchAllGroups()
+          this.fetchAllGroups(),
+          this.fetchSummaryCounts()
         ])
       } catch (error) {
+        console.error('Neizdevās ielādēt administrēšanas datus:', error)
         this.pageError = 'Neizdevās ielādēt visus datus. Mēģini vēlreiz.'
       } finally {
         this.loading = false
       }
+    },
+
+    async fetchSummaryCounts() {
+      const sections = [
+        ['users', 'userTotal'],
+        ['groups', 'groupTotal'],
+        ['posts', 'postTotal'],
+        ['events', 'eventTotal']
+      ]
+
+      const results = await Promise.allSettled(
+        sections.map(([section]) =>
+          axios.get(this.searchEndpoints[section], {
+            params: { page: 1, per_page: 1 },
+            withCredentials: true
+          })
+        )
+      )
+
+      results.forEach((result, index) => {
+        if (result.status !== 'fulfilled') return
+
+        const [, property] = sections[index]
+        this[property] = result.value.data.total ?? 0
+      })
     },
 
     async fetchGroups() {
@@ -576,26 +665,11 @@ export default {
         )
 
         this.groups = response.data.data || []
-
       } catch (error) {
         console.error('Neizdevās ielādēt apstiprinājumus:', error)
         throw error
       } finally {
         this.loadingGroups = false
-      }
-    },
-
-    async fetchUsers() {
-      try {
-        const response = await axios.get(
-          '/api/admin/users',
-          { withCredentials: true }
-        )
-
-        this.users = response.data.data || []
-      } catch (error) {
-        console.error('Neizdevās ielādēt lietotājus:', error)
-        throw error
       }
     },
 
@@ -607,10 +681,96 @@ export default {
         )
 
         this.allGroups = response.data.data || []
+        this.groupTotal = response.data.total ?? this.allGroups.length
       } catch (error) {
         console.error('Neizdevās ielādēt kolektīvus:', error)
         throw error
       }
+    },
+
+    async changeSection() {
+      clearTimeout(this.searchTimer)
+
+      this.page = 1
+      this.totalItems = 0
+      this.activeItems = []
+      this.searchError = ''
+
+      await this.loadActiveItems()
+    },
+
+    async onTableOptions(options) {
+      const nextPage = options.page || 1
+      const nextPerPage = options.itemsPerPage || 10
+
+      if (this.page === nextPage && this.perPage === nextPerPage) {
+        return
+      }
+
+      this.page = nextPage
+      this.perPage = nextPerPage
+
+      await this.loadActiveItems()
+    },
+
+    async loadActiveItems() {
+      const endpoint = this.searchEndpoints[this.activeSection]
+      if (!endpoint) return
+
+      const requestId = ++this.requestNumber
+      const requestedSection = this.activeSection
+
+      this.searchLoading = true
+      this.searchError = ''
+
+      try {
+        const response = await axios.get(endpoint, {
+          params: {
+            q: this.searchQuery.trim(),
+            page: this.page,
+            per_page: this.perPage
+          },
+          withCredentials: true
+        })
+
+        if (
+          requestId !== this.requestNumber ||
+          requestedSection !== this.activeSection
+        ) {
+          return
+        }
+
+        const result = response.data
+
+        this.activeItems = result.data || []
+        this.page = result.current_page || this.page
+        this.perPage = result.per_page || this.perPage
+        this.totalItems = result.total ?? 0
+
+        if (requestedSection === 'users') this.userTotal = this.totalItems
+        if (requestedSection === 'groups') this.groupTotal = this.totalItems
+        if (requestedSection === 'posts') this.postTotal = this.totalItems
+        if (requestedSection === 'events') this.eventTotal = this.totalItems
+      } catch (error) {
+        if (requestId !== this.requestNumber) return
+
+        console.error('Neizdevās ielādēt meklēšanas rezultātus:', error)
+
+        this.activeItems = []
+        this.totalItems = 0
+        this.searchError =
+          error.response?.data?.message ||
+          'Neizdevās ielādēt datus. Mēģini vēlreiz.'
+      } finally {
+        if (requestId === this.requestNumber) {
+          this.searchLoading = false
+        }
+      }
+    },
+
+    openGroupInfo(group) {
+      this.selectedGroup = group
+      this.groupInfoDialog = true
     },
 
     async updateStatus(id, action) {
@@ -624,11 +784,7 @@ export default {
       this.processingAction = action
 
       try {
-        await axios.post(
-          url,
-          { id },
-          { withCredentials: true }
-        )
+        await axios.post(url, { id }, { withCredentials: true })
 
         this.groups = this.groups.filter(group => group.id !== id)
 
@@ -656,7 +812,9 @@ export default {
 
     deleteDanceGroups(id) {
       this.groupToDelete =
-        this.allGroups.find(group => group.id === id) || { id }
+        this.activeItems.find(group => group.id === id) ||
+        this.allGroups.find(group => group.id === id) ||
+        { id }
 
       this.deleteDialog = true
     },
@@ -665,21 +823,28 @@ export default {
       if (!this.groupToDelete || this.deletingId) return
 
       const id = this.groupToDelete.id
-
       this.deletingId = id
 
       try {
-        await axios.delete(
-          `/api/danceGroups/${id}`,
-          { withCredentials: true }
-        )
+        await axios.delete(`/api/danceGroups/${id}`, {
+          withCredentials: true
+        })
 
         this.allGroups = this.allGroups.filter(group => group.id !== id)
+        this.activeItems = this.activeItems.filter(group => group.id !== id)
+        this.totalItems = Math.max(0, this.totalItems - 1)
+        this.groupTotal = Math.max(0, this.groupTotal - 1)
 
         this.deleteDialog = false
         this.groupToDelete = null
 
         this.showMessage('Kolektīvs veiksmīgi dzēsts.', 'success')
+
+        if (this.activeItems.length === 0 && this.page > 1) {
+          this.page--
+        }
+
+        await this.loadActiveItems()
       } catch (error) {
         console.error('Neizdevās dzēst kolektīvu:', error)
 
@@ -693,19 +858,17 @@ export default {
       }
     },
 
-    openGroupInfo(group) {
-      this.selectedGroup = group
-      this.groupInfoDialog = true
-    },
+    formatDate(value) {
+      if (!value) return '—'
 
-    statusColor(status) {
-      const colors = {
-        waiting: 'orange-darken-2',
-        approved: 'success',
-        declined: 'error'
-      }
+      const date = new Date(value)
+      if (Number.isNaN(date.getTime())) return String(value)
 
-      return colors[status] || 'grey'
+      return new Intl.DateTimeFormat('lv-LV', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit'
+      }).format(date)
     },
 
     showMessage(message, color = 'success') {
