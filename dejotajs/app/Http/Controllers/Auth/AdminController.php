@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\Models\DanceGroup;
 use App\Http\Resources\DanceGroupResource;
 use App\Models\DanceGroupMember;
+use App\Http\Resources\AdminDanceGroupResource;
+
 
 class AdminController extends Controller
 {
@@ -49,5 +51,16 @@ class AdminController extends Controller
         return response()->json([
             'message' => 'Veiksmīgi neapstriprināts deju kolektīvs'
         ]);
+    }
+
+    public function DanceGroupShow(DanceGroup $group)
+    {
+        $group->load([
+            'members' => function ($query) {
+                $query->with('appUser');
+            },
+        ]);
+
+        return new AdminDanceGroupResource($group);
     }
 }

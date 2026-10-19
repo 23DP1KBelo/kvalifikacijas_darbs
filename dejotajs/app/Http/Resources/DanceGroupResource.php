@@ -25,7 +25,6 @@ class DanceGroupResource extends JsonResource
             'city' => $this->city,
             'address' => $this->address,
             'picture_url' => $this->picture ? asset('storage/' . $this->picture) : null,
-            'approval_url' => $this->approval ? asset('storage/' . $this->approval) : null,
             'status' => $this->status,
             'genre' => $this->genre,
             'created_at' => $this->created_at,

@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Models\AppUser;
 use App\Models\DanceGroup;
 use App\Models\AgeGroup;
+use Illuminate\Support\Facades\DB;
 
 class DanceGroupMember extends Model
 {
@@ -38,4 +39,16 @@ class DanceGroupMember extends Model
     public function events() {
         return $this->hasMany(Event::class, 'dance_group_member_id', 'id');
     }
+
+    protected static function booted(): void
+    {
+        static::deleting(function ($member) {
+            DB::transaction(function () use ($member) {
+                $member->posts()->delete();
+                $member->events()->delete();
+            });
+        });
+    }
+
 }
+

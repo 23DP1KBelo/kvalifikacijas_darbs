@@ -74,6 +74,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'index']);
     Route::put('/profile', [AppUserController::class, 'update']);
     Route::put('/profile/password', [AppUserController::class, 'updatePassword']);
+    Route::delete('/profile/delete/{user}', [AppUserController::class, 'destroy']);
 
     Route::get('/my-posts/{danceGroupId}', [PostController::class, 'myGroupPosts']);
     Route::get('/groupListApproved', [DanceGroupController::class, 'groupListApprovedMember']);
@@ -123,6 +124,7 @@ Route::middleware(['auth:sanctum', 'admin'])->group(function () {
     Route::get('/admin/danceGroups', [AdminController::class, 'showDanceGroups']);
     Route::post('/admin/danceGroups/approval', [AdminController::class, 'approveDanceGroup']);
     Route::post('/admin/danceGroups/decline', [AdminController::class, 'declineDanceGroup']);
+    Route::get('/admin/danceGroup/{group}', [AdminController::class, 'DanceGroupShow']);
 
     Route::delete('/posts/admin/{id}', [PostController::class, 'destroy']);
     Route::delete('/event/admin/{event}', [EventController::class, 'destroy']);

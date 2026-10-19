@@ -1,30 +1,36 @@
 <template>
     <v-dialog
         v-model="dialog"
-        max-width="700"
+        max-width="800"
+        width="100%"
     >
         <v-card>
+            <!-- Virsraksts -->
             <div>
                 <div class="d-flex justify-start mt-4 ml-4">
                     <v-btn
-                    variant="text"
-                    @click="dialog = false"
+                        variant="text"
+                        @click="dialog = false"
                     >
-                    <v-icon>mdi-arrow-left</v-icon>
+                        <v-icon>mdi-arrow-left</v-icon>
                     </v-btn>
                 </div>
+
                 <h2 class="text-accent text-center ma-4">
                     IESTATĪJUMI
                 </h2>
             </div>
+
             <v-divider />
+
             <v-row no-gutters>
-                <!-- Kreisā izvēlne -->
+                <!-- Kreisā navigācija -->
                 <v-col
                     cols="12"
-                    md="4"
+                    md="3"
+                    class="border-e"
                 >
-                    <v-list>
+                    <v-list nav>
                         <v-list-item
                             :active="activeSection === 'profile'"
                             @click="activeSection = 'profile'"
@@ -52,89 +58,104 @@
                         </v-list-item>
                     </v-list>
                 </v-col>
-                <v-divider vertical />
-                <!-- Labā puse -->
+
+                <!-- Labā satura daļa -->
                 <v-col
                     cols="12"
-                    md="8"
+                    md="9"
                     class="pa-5"
                 >
-                    <!-- PROFILS -->
-                    <div v-if="activeSection === 'profile'">
+                    <div class="settings-content">
+                        <!-- PROFILS -->
+                        <div v-if="activeSection === 'profile'">
+                            <h4 class="text-accent mb-5 text-center">
+                                Profils
+                            </h4>
 
-                        <h4 class="text-accent mb-5  text-center">
-                            Profils
-                        </h4>
-                        <div class="d-flex flex-row ga-3">
+                            <div class="d-flex flex-row ga-3">
+                                <v-text-field
+                                    v-model="profileData.name"
+                                    label="Vārds"
+                                />
+
+                                <v-text-field
+                                    v-model="profileData.surname"
+                                    label="Uzvārds"
+                                />
+                            </div>
+
                             <v-text-field
-                                v-model="profileData.name"
-                                label="Vārds"
+                                v-model="profileData.email"
+                                label="E-pasts"
                             />
+
                             <v-text-field
-                                v-model="profileData.surname"
-                                label="Uzvārds"
+                                v-model="profileData.phone_number"
+                                label="Tālrunis"
                             />
-                        </div>
-                        <v-text-field
-                            v-model="profileData.email"
-                            label="E-pasts"
-                        />
-                        <v-text-field
-                            v-model="profileData.phone_number"
-                            label="Tālrunis"
-                        />
-                        <v-alert
-                            v-if="profileAlert.show"
-                            :type="profileAlert.type"
-                            @click:close="profileAlertlert.show = false"
-                        >
-                            {{ profileAlert.message }}
-                        </v-alert>
-                        <div class="d-flex justify-end mt-4">
-                            <v-btn
-                                color="accent"
-                                @click="saveProfile"
-                                class="text-small letter-spacing-0"
+
+                            <v-alert
+                                v-if="profileAlert.show"
+                                :type="profileAlert.type"
+                                closable
+                                @click:close="profileAlert.show = false"
                             >
-                                Saglabāt
-                            </v-btn>
+                                {{ profileAlert.message }}
+                            </v-alert>
+
+                            <div class="d-flex justify-end mt-4">
+                                <v-btn
+                                    color="accent"
+                                    class="text-small letter-spacing-0"
+                                    @click="saveProfile"
+                                >
+                                    Saglabāt
+                                </v-btn>
+                            </div>
                         </div>
-                    </div>
-                    <!-- DROŠĪBA -->
-                    <div v-else-if="activeSection === 'security'">
-                        <h4 class="text-accent mb-5  text-center">
-                            Paroles maiņa
-                        </h4>
-                        <v-text-field
-                            v-model="passwordData.current_password"
-                            label="Pašreizējā parole"
-                            type="password"
-                        />
-                        <v-text-field
-                            v-model="passwordData.password"
-                            label="Jaunā parole"
-                            type="password"
-                        />
-                        <v-text-field
-                            v-model="passwordData.password_confirmation"
-                            label="Atkārtot jauno paroli"
-                            type="password"
-                        />
-                        <v-alert
-                            v-if="passwordAlert.show"
-                            :type="passwordAlert.type"
-                            @click:close="passwordAlert.show = false"
-                        >
-                            {{ passwordAlert.message }}
-                        </v-alert>
-                        <div class="d-flex justify-end mt-4">
-                            <v-btn
-                                color="accent"
-                                @click="changePassword"
-                                class="text-small letter-spacing-0"
+
+                        <!-- DROŠĪBA -->
+                        <div v-else-if="activeSection === 'security'">
+                            <h4 class="text-accent mb-5 text-center">
+                                Paroles maiņa
+                            </h4>
+
+                            <v-text-field
+                                v-model="passwordData.current_password"
+                                label="Pašreizējā parole"
+                                type="password"
+                            />
+
+                            <v-text-field
+                                v-model="passwordData.password"
+                                label="Jaunā parole"
+                                type="password"
+                            />
+
+                            <v-text-field
+                                v-model="passwordData.password_confirmation"
+                                label="Atkārtot jauno paroli"
+                                type="password"
+                            />
+
+                            <v-alert
+                                v-if="passwordAlert.show"
+                                :type="passwordAlert.type"
+                                closable
+                                @click:close="passwordAlert.show = false"
                             >
-                                Mainīt paroli
-                            </v-btn>
+                                {{ passwordAlert.message }}
+                            </v-alert>
+
+                            <div class="d-flex justify-end mt-4">
+                                <v-btn
+                                    color="accent"
+                                    class="text-small letter-spacing-0"
+                                    @click="changePassword"
+                                >
+                                    Mainīt paroli
+                                </v-btn>
+                            </div>
                         </div>
                     </div>
                 </v-col>
@@ -298,3 +319,10 @@ export default {
     },
 }
 </script>
+<style scoped>
+.settings-content {
+    width: 100%;
+    max-width: 450px;
+    margin-inline: auto;
+}
+</style>
