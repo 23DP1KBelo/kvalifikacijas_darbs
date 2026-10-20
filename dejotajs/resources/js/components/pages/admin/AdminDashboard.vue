@@ -10,59 +10,99 @@
     </div>
 
     <!-- Kopsavilkuma kartītes -->
-    <v-row dense class="mb-8">
-      <v-col cols="12" sm="3">
-        <v-card class="pa-4" elevation="1">
-          <div class="d-flex align-center ga-5 mt-5">
-            <v-icon color="blue-darken-2">mdi-account-group-outline</v-icon>
-            <div class="ml-6">
-              <div class="text-h5 font-weight-bold">
-                Lietotāji {{ userTotal }}
+    <v-row>
+      <v-col cols="12" sm="6" lg="3">
+        <v-card class="stat-card pa-5" elevation="0" rounded="xl">
+          <div class="d-flex align-center justify-space-between">
+            <div>
+              <div class="text-body-2 text-medium-emphasis mb-2">
+                Lietotāji
+              </div>
+              <div class="text-h4 font-weight-bold">
+                {{ userTotal }}
+              </div>
+              <div class="text-caption text-medium-emphasis mt-2">
+                Reģistrētie lietotāji
               </div>
             </div>
+            <v-icon color="blue-darken-2" size="30">
+              mdi-account-group-outline
+            </v-icon>
           </div>
+          <div class="stat-line bg-blue-darken-2"></div>
         </v-card>
       </v-col>
 
-      <v-col cols="12" sm="3">
-        <v-card class="pa-4" elevation="1">
-          <div class="d-flex align-center ga-5 mt-5">
-            <v-icon color="green-darken-2">mdi-dance-ballroom</v-icon>
-            <div class="ml-6">
-              <div class="text-h5 font-weight-bold">
-                Kolektīvi {{ groupTotal }}
+      <!-- Kolektīvi -->
+      <v-col cols="12" sm="6" lg="3">
+        <v-card class="stat-card pa-5" elevation="0" rounded="xl">
+          <div class="d-flex align-center justify-space-between">
+            <div>
+              <div class="text-body-2 text-medium-emphasis mb-2">
+                Kolektīvi
+              </div>
+              <div class="text-h4 font-weight-bold">
+                {{ groupTotal }}
+              </div>
+              <div class="text-caption text-medium-emphasis mt-2">
+                Reģistrētie kolektīvi
               </div>
             </div>
+            <v-icon color="green-darken-2" size="30">
+              mdi-dance-ballroom
+            </v-icon>
           </div>
+          <div class="stat-line bg-green-darken-2"></div>
         </v-card>
       </v-col>
 
-      <v-col cols="12" sm="2">
-        <v-card class="pa-4" elevation="1">
-          <div class="d-flex align-center ga-2 mt-5">
-            <v-icon color="yellow-darken-2">mdi-text-box-multiple</v-icon>
-            <div class="ml-6">
-              <div class="text-h6 font-weight-bold">
-                Ieraksti {{ postTotal }}
+      <!-- Ieraksti -->
+      <v-col cols="12" sm="6" lg="3">
+        <v-card class="stat-card pa-5" elevation="0" rounded="xl">
+          <div class="d-flex align-center justify-space-between">
+            <div>
+              <div class="text-body-2 text-medium-emphasis mb-2">
+                Ieraksti
+              </div>
+              <div class="text-h4 font-weight-bold">
+                {{ postTotal }}
+              </div>
+              <div class="text-caption text-medium-emphasis mt-2">
+                Kopējais ierakstu skaits
               </div>
             </div>
+
+            <v-icon color="orange-darken-2" size="30">
+              mdi-text-box-multiple-outline
+            </v-icon>
           </div>
+          <div class="stat-line bg-orange-darken-2"></div>
         </v-card>
       </v-col>
 
-      <v-col cols="12" sm="2">
-        <v-card class="pa-4" elevation="1">
-          <div class="d-flex align-center ga-2 mt-5">
-            <v-icon color="blue-darken-2">mdi-calendar-month</v-icon>
-            <div class="ml-6">
-              <div class="text-h6 font-weight-bold">
-                Pasākumi {{ eventTotal }}
+      <!-- Pasākumi -->
+      <v-col cols="12" sm="6" lg="3">
+        <v-card class="stat-card pa-5" elevation="0" rounded="xl">
+          <div class="d-flex align-center justify-space-between">
+            <div>
+              <div class="text-body-2 text-medium-emphasis mb-2">
+                Pasākumi
+              </div>
+              <div class="text-h4 font-weight-bold">
+                {{ eventTotal }}
+              </div>
+              <div class="text-caption text-medium-emphasis mt-2">
+                Kopējais pasākumu skaits
               </div>
             </div>
+            <v-icon color="purple-darken-2" size="30">
+              mdi-calendar-month
+            </v-icon>
           </div>
-        </v-card>
-      </v-col>
-    </v-row>
+        <div class="stat-line bg-purple-darken-2"></div>
+      </v-card>
+    </v-col>
+  </v-row>
 
     <!-- Lapas kļūda -->
     <v-alert
@@ -913,3 +953,28 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.stat-card {
+  position: relative;
+  overflow: hidden;
+  min-height: 155px;
+  border: 1px solid rgba(120, 120, 120, 0.14);
+  background: rgb(var(--v-theme-surface));
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08) !important;
+}
+
+.stat-line {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  opacity: 0.85;
+}
+</style>
