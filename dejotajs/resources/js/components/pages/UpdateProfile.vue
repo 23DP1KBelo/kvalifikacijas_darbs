@@ -3,6 +3,7 @@
         v-model="dialog"
         max-width="800"
         width="100%"
+        persistent
     >
         <v-card>
             <!-- Virsraksts -->
@@ -10,10 +11,10 @@
                 <div class="d-flex justify-start mt-4 ml-4">
                     <v-btn
                         variant="text"
-                        @click="dialog = false"
-                    >
-                        <v-icon>mdi-arrow-left</v-icon>
-                    </v-btn>
+                        icon="mdi-arrow-left"
+                        aria-label="Aizvērt iestatījumus"
+                        @click="closeDialog"
+                    />
                 </div>
 
                 <h2 class="text-accent text-center ma-4">
@@ -56,6 +57,21 @@
                                 Drošība
                             </v-list-item-title>
                         </v-list-item>
+
+                        <v-list-item
+                            :active="activeSection === 'deleteProfile'"
+                            @click="activeSection = 'deleteProfile'"
+                        >
+                            <template #prepend>
+                                <v-icon color="error">
+                                    mdi-delete-outline
+                                </v-icon>
+                            </template>
+
+                            <v-list-item-title class="text-para">
+                                Profila dzēšana
+                            </v-list-item-title>
+                        </v-list-item>
                     </v-list>
                 </v-col>
 
@@ -72,46 +88,55 @@
                                 Profils
                             </h4>
 
-                            <div class="d-flex flex-row ga-3">
+                            <v-form @submit.prevent="saveProfile">
+                                <div class="d-flex flex-row ga-3">
+                                    <v-text-field
+                                        v-model="profileData.name"
+                                        label="Vārds"
+                                        autocomplete="given-name"
+                                    />
+
+                                    <v-text-field
+                                        v-model="profileData.surname"
+                                        label="Uzvārds"
+                                        autocomplete="family-name"
+                                    />
+                                </div>
+
                                 <v-text-field
-                                    v-model="profileData.name"
-                                    label="Vārds"
+                                    v-model="profileData.email"
+                                    label="E-pasts"
+                                    type="email"
+                                    autocomplete="email"
                                 />
 
                                 <v-text-field
-                                    v-model="profileData.surname"
-                                    label="Uzvārds"
+                                    v-model="profileData.phone_number"
+                                    label="Tālrunis"
+                                    autocomplete="tel"
                                 />
-                            </div>
 
-                            <v-text-field
-                                v-model="profileData.email"
-                                label="E-pasts"
-                            />
-
-                            <v-text-field
-                                v-model="profileData.phone_number"
-                                label="Tālrunis"
-                            />
-
-                            <v-alert
-                                v-if="profileAlert.show"
-                                :type="profileAlert.type"
-                                closable
-                                @click:close="profileAlert.show = false"
-                            >
-                                {{ profileAlert.message }}
-                            </v-alert>
-
-                            <div class="d-flex justify-end mt-4">
-                                <v-btn
-                                    color="accent"
-                                    class="text-small letter-spacing-0"
-                                    @click="saveProfile"
+                                <v-alert
+                                    v-if="profileAlert.show"
+                                    :type="profileAlert.type"
+                                    closable
+                                    class="mb-4"
+                                    @click:close="profileAlert.show = false"
                                 >
-                                    Saglabāt
-                                </v-btn>
-                            </div>
+                                    {{ profileAlert.message }}
+                                </v-alert>
+
+                                <div class="d-flex justify-end mt-4">
+                                    <v-btn
+                                        type="submit"
+                                        color="accent"
+                                        :loading="savingProfile"
+                                        :disabled="savingProfile"
+                                    >
+                                        Saglabāt
+                                    </v-btn>
+                                </div>
+                            </v-form>
                         </div>
 
                         <!-- DROŠĪBA -->
@@ -120,42 +145,107 @@
                                 Paroles maiņa
                             </h4>
 
-                            <v-text-field
-                                v-model="passwordData.current_password"
-                                label="Pašreizējā parole"
-                                type="password"
-                            />
+                            <v-form @submit.prevent="changePassword">
+                                <v-text-field
+                                    v-model="passwordData.current_password"
+                                    label="Pašreizējā parole"
+                                    type="password"
+                                    autocomplete="current-password"
+                                />
 
-                            <v-text-field
-                                v-model="passwordData.password"
-                                label="Jaunā parole"
-                                type="password"
-                            />
+                                <v-text-field
+                                    v-model="passwordData.password"
+                                    label="Jaunā parole"
+                                    type="password"
+                                    autocomplete="new-password"
+                                />
 
-                            <v-text-field
-                                v-model="passwordData.password_confirmation"
-                                label="Atkārtot jauno paroli"
-                                type="password"
-                            />
+                                <v-text-field
+                                    v-model="passwordData.password_confirmation"
+                                    label="Atkārtot jauno paroli"
+                                    type="password"
+                                    autocomplete="new-password"
+                                />
 
-                            <v-alert
-                                v-if="passwordAlert.show"
-                                :type="passwordAlert.type"
-                                closable
-                                @click:close="passwordAlert.show = false"
-                            >
-                                {{ passwordAlert.message }}
-                            </v-alert>
-
-                            <div class="d-flex justify-end mt-4">
-                                <v-btn
-                                    color="accent"
-                                    class="text-small letter-spacing-0"
-                                    @click="changePassword"
+                                <v-alert
+                                    v-if="passwordAlert.show"
+                                    :type="passwordAlert.type"
+                                    closable
+                                    class="mb-4"
+                                    @click:close="passwordAlert.show = false"
                                 >
-                                    Mainīt paroli
-                                </v-btn>
-                            </div>
+                                    {{ passwordAlert.message }}
+                                </v-alert>
+
+                                <div class="d-flex justify-end mt-4">
+                                    <v-btn
+                                        type="submit"
+                                        color="accent"
+                                        :loading="changingPassword"
+                                        :disabled="changingPassword"
+                                    >
+                                        Mainīt paroli
+                                    </v-btn>
+                                </div>
+                            </v-form>
+                        </div>
+
+                        <!-- PROFILA DZĒŠANA -->
+                        <div v-else-if="activeSection === 'deleteProfile'">
+                            <v-card
+                                variant="tonal"
+                                class="pa-4"
+                            >
+                                <div class="d-flex justify-center mb-3">
+                                        <v-icon
+                                            size="34"
+                                            color="white"
+                                        >
+                                            mdi-account-remove-outline
+                                        </v-icon>
+                                </div>
+
+                                <v-card-title class="text-h6 text-center text-wrap">
+                                    Dzēst {{ user?.name || '' }}
+                                    {{ user?.surname || '' }} profilu?
+                                </v-card-title>
+
+                                <v-card-text class="text-center text-wrap">
+                                    Vai tiešām vēlaties dzēst savu profilu?
+                                    Šī darbība var būt neatgriezeniska.
+                                    Pēc dzēšanas jūs tiksiet izrakstīts no konta.
+                                </v-card-text>
+
+                                <v-alert
+                                    v-if="deleteAlert.show"
+                                    :type="deleteAlert.type"
+                                    closable
+                                    class="mb-4"
+                                    @click:close="deleteAlert.show = false"
+                                >
+                                    {{ deleteAlert.message }}
+                                </v-alert>
+
+                                <v-card-actions class="justify-center flex-wrap ga-3">
+                                    <v-btn
+                                        color="error"
+                                        variant="flat"
+                                        :loading="deletingProfile"
+                                        :disabled="deletingProfile"
+                                        @click="deleteProfile"
+                                    >
+                                        Jā, dzēst profilu
+                                    </v-btn>
+
+                                    <v-btn
+                                        variant="outlined"
+                                        :disabled="deletingProfile"
+                                        @click="closeDialog"
+                                    >
+                                        Atcelt
+                                    </v-btn>
+                                </v-card-actions>
+                            </v-card>
                         </div>
                     </div>
                 </v-col>
@@ -179,20 +269,33 @@ export default {
     emits: ['update:modelValue', 'updated'],
 
     data() {
-
         return {
-            activeSection: 'profile',
             authStore: useAuthStore(),
+
+            activeSection: 'profile',
+
+            savingProfile: false,
+            changingPassword: false,
+            deletingProfile: false,
+
             profileAlert: {
                 show: false,
                 type: 'success',
                 message: ''
             },
+
             passwordAlert: {
                 show: false,
                 type: 'success',
                 message: ''
             },
+
+            deleteAlert: {
+                show: false,
+                type: 'error',
+                message: ''
+            },
+
             profileData: {
                 name: '',
                 surname: '',
@@ -207,10 +310,12 @@ export default {
             }
         }
     },
+
     computed: {
         user() {
             return this.authStore.user
         },
+
         dialog: {
             get() {
                 return this.modelValue
@@ -221,35 +326,44 @@ export default {
             }
         }
     },
+
     watch: {
         dialog(value) {
-            if (value && this.user) {
-                this.profileData = {
-                    name: this.user.name || '',
-                    surname: this.user.surname || '',
-                    email: this.user.email || '',
-                    phone_number: this.user.phone_number || ''
-                }
+            if (value) {
+                this.resetAlerts()
+                this.loadProfileData()
             }
-        },  
+        }
     },
-    methods: {
-        closeDialog() {
-            profileAlert = {
-                show: false,
-                type: 'success',
-                message: ''
-            },
-            passwordAlert = {
-                show: false,
-                type: 'success',
-                message: ''
-            }
 
+    methods: {
+        resetAlerts() {
+            this.profileAlert.show = false
+            this.passwordAlert.show = false
+            this.deleteAlert.show = false
+        },
+
+        loadProfileData() {
+            if (!this.user) return
+
+            this.profileData = {
+                name: this.user.name || '',
+                surname: this.user.surname || '',
+                email: this.user.email || '',
+                phone_number: this.user.phone_number || ''
+            }
+        },
+
+        closeDialog() {
+            this.resetAlerts()
             this.dialog = false
         },
+
         // Profila informācijas maiņa
         async saveProfile() {
+            this.savingProfile = true
+            this.profileAlert.show = false
+
             try {
                 await axios.put(
                     '/api/profile',
@@ -266,19 +380,27 @@ export default {
                     type: 'success',
                     message: 'Profila informācija veiksmīgi atjaunota!'
                 }
-                this.$emit('updated')
 
+                this.$emit('updated')
             } catch (error) {
-                console.error(error)
+                console.error('Profila atjaunošanas kļūda:', error)
+
                 this.profileAlert = {
                     show: true,
                     type: 'error',
-                    message: error.response?.data?.message || 'Profila informāciju neizdevās atjaunot!'
+                    message: error.response?.data?.message
+                        || 'Profila informāciju neizdevās atjaunot!'
                 }
+            } finally {
+                this.savingProfile = false
             }
         },
+
         // Paroles maiņa
         async changePassword() {
+            this.changingPassword = true
+            this.passwordAlert.show = false
+
             try {
                 await axios.put(
                     '/api/profile/password',
@@ -291,7 +413,7 @@ export default {
                 this.passwordAlert = {
                     show: true,
                     type: 'success',
-                    message: 'Parole veiksmīgi atjaunota!'
+                    message: 'Parole veiksmīgi nomainīta!'
                 }
 
                 this.passwordData = {
@@ -299,30 +421,107 @@ export default {
                     password: '',
                     password_confirmation: ''
                 }
-
             } catch (error) {
-                console.error(error)
+                console.error('Paroles maiņas kļūda:', error)
+
                 this.passwordAlert = {
                     show: true,
                     type: 'error',
-                    message:  error.response?.data?.message || 'Neizdevās nomainīt paroli.'
+                    message: error.response?.data?.message
+                        || 'Neizdevās nomainīt paroli.'
                 }
+            } finally {
+                this.changingPassword = false
+            }
+        },
+
+        // Profila dzēšana
+        async deleteProfile() {
+            if (this.deletingProfile) return
+
+            const userId = this.user?.id
+
+            if (!userId) {
+                this.deleteAlert = {
+                    show: true,
+                    type: 'error',
+                    message: 'Neizdevās atrast lietotāja informāciju. Lūdzu, ielogojieties vēlreiz.'
+                }
+                return
+            }
+
+            this.deletingProfile = true
+            this.deleteAlert.show = false
+
+            try {
+                // Laravel maršrutam jābūt:
+                // DELETE /api/profile/delete/{user}
+                await axios.delete(
+                    `/api/profile/delete/${userId}`,
+                    {
+                        withCredentials: true
+                    }
+                )
+
+                // Aizveram dialogu
+                this.dialog = false
+
+                // Notīrām lokālo autentifikācijas stāvokli
+                // Ja store ir logout metode, izmantojam to.
+                if (typeof this.authStore.logout === 'function') {
+                    await this.authStore.logout()
+                } else {
+                    this.authStore.user = null
+                }
+
+                // Pārejam uz login lapu
+                if (this.$route.path !== '/login') {
+                    await this.$router.replace('/login')
+                }
+            } catch (error) {
+                console.error(
+                    'Profila dzēšanas kļūda:',
+                    error.response?.data || error
+                )
+
+                this.deleteAlert = {
+                    show: true,
+                    type: 'error',
+                    message: error.response?.data?.message
+                        || 'Neizdevās dzēst profilu. Lūdzu, mēģiniet vēlreiz.'
+                }
+            } finally {
+                this.deletingProfile = false
             }
         }
     },
+
     async mounted() {
         try {
-        await this.authStore.fetchProfile()
-        } catch (err) {
-        this.error = 'Neizdevās ielādēt profilu'
+            await this.authStore.fetchProfile()
+            this.loadProfileData()
+        } catch (error) {
+            console.error('Neizdevās ielādēt profilu:', error)
         }
-    },
+    }
 }
 </script>
+
 <style scoped>
 .settings-content {
     width: 100%;
     max-width: 450px;
     margin-inline: auto;
+}
+
+.settings-content :deep(.v-btn) {
+    letter-spacing: 0;
+}
+
+@media (max-width: 600px) {
+    .settings-content .d-flex.flex-row {
+        flex-direction: column !important;
+        gap: 0 !important;
+    }
 }
 </style>
