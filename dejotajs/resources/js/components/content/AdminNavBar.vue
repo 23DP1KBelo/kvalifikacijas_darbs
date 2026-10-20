@@ -110,9 +110,9 @@ export default {
             linkRoutes: ['/posts', '/dance-groups', '/calender', '/admisson'],
             links: ['Raksti','Kolektīvi', 'Pasākumi', 'Uzņemšana'],
             icons:[ 'mdi-view-grid', 'mdi-account-group', 'mdi-calendar-month','mdi-hand-wave-outline'],
-            adminRoutes: ['/dashboard', '/dashboard/stats'],
-            adminIcons: ['mdi-chart-bar', 'mdi-view-dashboard-outline'],
-            adminlinks: ['Pārvaldība', 'Statistika'],
+            adminRoutes: ['/dashboard'],
+            adminIcons: [ 'mdi-view-dashboard-outline'],
+            adminlinks: ['Pārvaldība'],
         }
     },
 

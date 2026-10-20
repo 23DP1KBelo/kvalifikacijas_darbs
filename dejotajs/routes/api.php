@@ -128,6 +128,7 @@ Route::middleware(['auth:sanctum', 'admin'])->group(function () {
 
     Route::delete('/posts/admin/{id}', [PostController::class, 'destroy']);
     Route::delete('/event/admin/{event}', [EventController::class, 'destroy']);
+    Route::delete('/admin/user/{user}', [AppUserController::class, 'destroy']);
 
     Route::get('/admin/stats', [DanceGroupController::class, 'index']);
     Route::get('/admin/stats-dancers', [DanceGroupController::class, 'getAllGroups']);

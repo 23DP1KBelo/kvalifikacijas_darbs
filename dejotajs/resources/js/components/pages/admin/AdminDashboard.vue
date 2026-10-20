@@ -268,6 +268,18 @@
             </div>
           </template>
 
+          <template v-slot:[`item.actions`]="{ item }">
+            <v-btn
+              icon="mdi-delete-outline"
+              variant="text"
+              color="error"
+              aria-label="Dzēst lietotāju"
+              :loading="deletingId === item.id && deletingType === 'users'"
+              :disabled="!!deletingId"
+              @click="deleteItem('users', item.id, item.email)"
+            />
+          </template>
+
           <template v-slot:[`item.role`]="{ item }">
             <v-chip
               :color="item.role === 'admin' ? 'accent' : 'default'"
@@ -332,9 +344,9 @@
               variant="text"
               color="error"
               aria-label="Dzēst kolektīvu"
-              :loading="deletingId === item.id"
+              :loading="deletingId === item.id && deletingType === 'groups'"
               :disabled="!!deletingId"
-              @click="deleteDanceGroups(item.id)"
+              @click="deleteItem('groups', item.id, item.name)"
             />
           </template>
         </v-data-table-server>
@@ -362,12 +374,24 @@
             </div>
           </template>
 
-          <template v-slot:[`item.dance_group_member.dance_group.name`]="{ item }">
+          <template v-slot:[`item.danceGroup`]="{ item }">
             {{ item.dance_group_member?.dance_group?.name || 'Nav norādīts' }}
           </template>
 
           <template v-slot:[`item.created_at`]="{ item }">
             {{ formatDate(item.created_at) }}
+          </template>
+
+          <template v-slot:[`item.actions`]="{ item }">
+            <v-btn
+              icon="mdi-delete-outline"
+              variant="text"
+              color="error"
+              aria-label="Dzēst ierakstu"
+              :loading="deletingId === item.id && deletingType === 'posts'"
+              :disabled="!!deletingId"
+              @click="deleteItem('posts', item.id, item.title)"
+            />
           </template>
         </v-data-table-server>
 
@@ -401,8 +425,25 @@
             </div>
           </template>
 
+          <template v-slot:[`item.danceGroup`]="{ item }">
+            {{ item.dance_group_member?.dance_group || 'Nav norādīts' }}
+          </template>
+
+
           <template v-slot:[`item.date`]="{ item }">
             {{ formatDate(item.date || item.start_date || item.created_at) }}
+          </template>
+
+          <template v-slot:[`item.actions`]="{ item }">
+            <v-btn
+              icon="mdi-delete-outline"
+              variant="text"
+              color="error"
+              aria-label="Dzēst pasākumu"
+              :loading="deletingId === item.id && deletingType === 'events'"
+              :disabled="!!deletingId"
+              @click="deleteItem('events', item.id, item.name || item.title)"
+            />
           </template>
         </v-data-table-server>
       </v-card-text>
@@ -413,38 +454,6 @@
       v-model="groupInfoDialog"
       :group="selectedGroup"
     />
-
-    <!-- Dzēšanas apstiprinājums -->
-    <v-dialog v-model="deleteDialog" max-width="420">
-      <v-card rounded="xl">
-        <v-card-title class="pa-5">Dzēst kolektīvu?</v-card-title>
-
-        <v-card-text>
-          Vai tiešām vēlies dzēst kolektīvu
-          <strong>{{ groupToDelete?.name }}</strong>?
-          Šo darbību var nebūt iespējams atsaukt.
-        </v-card-text>
-
-        <v-card-actions class="pa-4">
-          <v-spacer />
-          <v-btn
-            variant="text"
-            :disabled="!!deletingId"
-            @click="deleteDialog = false"
-          >
-            Atcelt
-          </v-btn>
-          <v-btn
-            color="error"
-            variant="tonal"
-            :loading="!!deletingId"
-            @click="confirmDeleteGroup"
-          >
-            Dzēst
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
 
     <!-- Paziņojumi -->
     <v-snackbar
@@ -521,12 +530,14 @@ export default {
 
       postHeaders: [
         { title: 'Ieraksts', key: 'title', sortable: false },
+        { title: 'Kolektīvs', key:'danceGroup', sortable: false},
         { title: 'Izveidots', key: 'created_at', sortable: false },
         { title: 'Darbības', key: 'actions', sortable: false, align: 'end' }
       ],
 
       eventHeaders: [
         { title: 'Pasākums', key: 'name', sortable: false },
+        { title: 'Kolektīvs', key:'danceGroup', sortable: false},
         { title: 'Datums', key: 'date', sortable: false },
         { title: 'Darbības', key: 'actions', sortable: false, align: 'end' }
       ],
@@ -536,9 +547,7 @@ export default {
       processingId: null,
       processingAction: null,
       deletingId: null,
-
-      deleteDialog: false,
-      groupToDelete: null,
+      deletingType: null,
 
       pageError: '',
 
@@ -651,7 +660,8 @@ export default {
         if (result.status !== 'fulfilled') return
 
         const [, property] = sections[index]
-        this[property] = result.value.data.total ?? 0
+        const data = result.value.data
+        this[property] = data.meta?.total ?? data.total ?? 0
       })
     },
 
@@ -699,19 +709,22 @@ export default {
       await this.loadActiveItems()
     },
 
+
     async onTableOptions(options) {
-      const nextPage = options.page || 1
-      const nextPerPage = options.itemsPerPage || 10
+      const nextPage = Number(options.page) || 1
+      const nextPerPage = Number(options.itemsPerPage) || 10
 
-      if (this.page === nextPage && this.perPage === nextPerPage) {
-        return
-      }
+      const pageChanged = this.page !== nextPage
+      const perPageChanged = this.perPage !== nextPerPage
 
-      this.page = nextPage
+      if (!pageChanged && !perPageChanged) return
+
+      this.page = nextPerPage !== this.perPage ? 1 : nextPage
       this.perPage = nextPerPage
 
       await this.loadActiveItems()
     },
+
 
     async loadActiveItems() {
       const endpoint = this.searchEndpoints[this.activeSection]
@@ -741,16 +754,18 @@ export default {
         }
 
         const result = response.data
+        const meta = result.meta || result
 
         this.activeItems = result.data || []
-        this.page = result.current_page || this.page
-        this.perPage = result.per_page || this.perPage
-        this.totalItems = result.total ?? 0
+        this.page = meta.current_page || this.page
+        this.perPage = meta.per_page || this.perPage
+        this.totalItems = meta.total ?? 0
 
         if (requestedSection === 'users') this.userTotal = this.totalItems
         if (requestedSection === 'groups') this.groupTotal = this.totalItems
         if (requestedSection === 'posts') this.postTotal = this.totalItems
         if (requestedSection === 'events') this.eventTotal = this.totalItems
+
       } catch (error) {
         if (requestId !== this.requestNumber) return
 
@@ -810,51 +825,68 @@ export default {
       }
     },
 
-    deleteDanceGroups(id) {
-      this.groupToDelete =
-        this.activeItems.find(group => group.id === id) ||
-        this.allGroups.find(group => group.id === id) ||
-        { id }
+    async deleteItem(type, id, label = '') {
+      if (!id || this.deletingId) return
 
-      this.deleteDialog = true
-    },
+      const endpoints = {
+        users: `/api/admin/user/${id}`,
+        groups: `/api/danceGroups/${id}`,
+        posts: `/api/posts/admin/${id}`,
+        events: `/api/event/admin/${id}`
+      }
 
-    async confirmDeleteGroup() {
-      if (!this.groupToDelete || this.deletingId) return
+      const labels = {
+        users: 'lietotāju',
+        groups: 'kolektīvu',
+        posts: 'ierakstu',
+        events: 'pasākumu'
+      }
 
-      const id = this.groupToDelete.id
+      const endpoint = endpoints[type]
+      if (!endpoint) {
+        this.showMessage('Nezināms dzēšamā objekta veids.', 'error')
+        return
+      }
+
+      const description = label ? ` \"${label}\"` : ''
+      const confirmed = window.confirm(
+        `Vai tiešām vēlies dzēst ${labels[type]}${description}? Šo darbību var nebūt iespējams atsaukt.`
+      )
+      if (!confirmed) return
+
       this.deletingId = id
+      this.deletingType = type
 
       try {
-        await axios.delete(`/api/danceGroups/${id}`, {
-          withCredentials: true
-        })
+        await axios.delete(endpoint, { withCredentials: true })
 
-        this.allGroups = this.allGroups.filter(group => group.id !== id)
-        this.activeItems = this.activeItems.filter(group => group.id !== id)
-        this.totalItems = Math.max(0, this.totalItems - 1)
-        this.groupTotal = Math.max(0, this.groupTotal - 1)
-
-        this.deleteDialog = false
-        this.groupToDelete = null
-
-        this.showMessage('Kolektīvs veiksmīgi dzēsts.', 'success')
-
-        if (this.activeItems.length === 0 && this.page > 1) {
-          this.page--
+        if (type === 'groups') {
+          this.allGroups = this.allGroups.filter(group => group.id !== id)
+          this.groups = this.groups.filter(group => group.id !== id)
         }
 
-        await this.loadActiveItems()
-      } catch (error) {
-        console.error('Neizdevās dzēst kolektīvu:', error)
+        if (this.activeSection === type) {
+          this.activeItems = this.activeItems.filter(item => item.id !== id)
+          this.totalItems = Math.max(0, this.totalItems - 1)
 
+          if (this.activeItems.length === 0 && this.page > 1) {
+            this.page--
+          }
+
+          await this.loadActiveItems()
+        }
+
+        await this.fetchSummaryCounts()
+        this.showMessage('Ieraksts veiksmīgi dzēsts.', 'success')
+      } catch (error) {
+        console.error(`Neizdevās dzēst: ${type}`, error)
         this.showMessage(
-          error.response?.data?.message ||
-            'Neizdevās dzēst kolektīvu.',
+          error.response?.data?.message || 'Neizdevās izdzēst ierakstu.',
           'error'
         )
       } finally {
         this.deletingId = null
+        this.deletingType = null
       }
     },
 

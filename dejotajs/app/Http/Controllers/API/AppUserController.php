@@ -85,10 +85,12 @@ class AppUserController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(AppUser $appUser)
+    public function destroy(AppUser $user)
     {
-        $appUser->delete();
-        
-        return new AppUserResource($appUser);
+         $user->delete();
+
+        return response()->json([
+            'message' => 'Lietotājs veiksmīgi izdzēsts.',
+        ]);
     }
 }
