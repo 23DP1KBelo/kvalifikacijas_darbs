@@ -12,6 +12,7 @@
             v-if="isLeader"
             variant="text"
             class="mt-6 ml-2"
+            color="error"
             @click="deleteGroupDialog = true"
           >
             <v-icon>mdi-trash-can-outline</v-icon>

@@ -434,6 +434,7 @@
           <v-btn
             v-if="isLeader"
             variant="text"
+            color="error"
             class="mt-4"
             @click="deletePostDiolog = true"
           >
